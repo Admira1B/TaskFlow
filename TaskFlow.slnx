@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="Src/ApiGateway/TaskFlow.Gateway/TaskFlow.Gateway.csproj" Id="cfa21412-b893-4117-ac66-fe9a8fd79465" />
   <Project Path="Src/Services/Identity/TaskFlow.Identity.API/TaskFlow.Identity.API.csproj" Id="b1ce5b3f-bd6f-4004-aff9-6657e047927d" />
   <Project Path="Src/Services/Identity/TaskFlow.Identity.Contracts/TaskFlow.Identity.Contracts.csproj" Id="ef82ace1-3d53-4384-b26c-fb8a6b93a3c9" />
   <Project Path="Src/Services/Identity/TaskFlow.Identity.Domain/TaskFlow.Identity.Domain.csproj" Id="63af9e88-32e3-430e-901d-6341cee6bb6a" />
