@@ -1,1 +1,11 @@
-<Solution />
+<Solution>
+  <Project Path="Src/Services/Identity/TaskFlow.Identity.API/TaskFlow.Identity.API.csproj" Id="b1ce5b3f-bd6f-4004-aff9-6657e047927d" />
+  <Project Path="Src/Services/Identity/TaskFlow.Identity.Contracts/TaskFlow.Identity.Contracts.csproj" Id="ef82ace1-3d53-4384-b26c-fb8a6b93a3c9" />
+  <Project Path="Src/Services/Identity/TaskFlow.Identity.Domain/TaskFlow.Identity.Domain.csproj" Id="63af9e88-32e3-430e-901d-6341cee6bb6a" />
+  <Project Path="Src/Services/Tasks/TaskFlow.Tasks.API/TaskFlow.Tasks.API.csproj" Id="8bff9054-9633-4197-b9aa-30c65fed3c2a" />
+  <Project Path="Src/Services/Tasks/TaskFlow.Tasks.Contracts/TaskFlow.Tasks.Contracts.csproj" Id="ef8fe1a6-b4bf-4ac3-ab11-13a48e05a6c1" />
+  <Project Path="Src/Services/Tasks/TaskFlow.Tasks.Domain/TaskFlow.Tasks.Domain.csproj" Id="6a6cbb84-7751-4421-b775-598ee8c4298f" />
+  <Project Path="Src/Shared/TaskFlow.Shared.Core/TaskFlow.Shared.Core.csproj" Id="f392e1d1-5841-4a95-ba9d-92a9d709eaed" />
+  <Project Path="Src/Shared/TaskFlow.Shared.Logging/TaskFlow.Shared.Logging.csproj" Id="8f054e6d-d09f-4eb4-80cf-31a02450164d" />
+  <Project Path="Src/Shared/TaskFlow.Shared.Messaging/TaskFlow.Shared.Messaging.csproj" Id="ed726173-81ab-4ee9-add1-2f0245716998" />
+</Solution>
