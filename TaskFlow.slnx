@@ -1,11 +1,15 @@
 <Solution>
   <Project Path="Src/ApiGateway/TaskFlow.Gateway/TaskFlow.Gateway.csproj" Id="cfa21412-b893-4117-ac66-fe9a8fd79465" />
   <Project Path="Src/Services/Identity/TaskFlow.Identity.API/TaskFlow.Identity.API.csproj" Id="b1ce5b3f-bd6f-4004-aff9-6657e047927d" />
+  <Project Path="Src/Services/Identity/TaskFlow.Identity.Application/TaskFlow.Identity.Application.csproj" Id="216d299e-b4bc-4767-a0a1-7fa990a0b41c" />
   <Project Path="Src/Services/Identity/TaskFlow.Identity.Contracts/TaskFlow.Identity.Contracts.csproj" Id="ef82ace1-3d53-4384-b26c-fb8a6b93a3c9" />
   <Project Path="Src/Services/Identity/TaskFlow.Identity.Domain/TaskFlow.Identity.Domain.csproj" Id="63af9e88-32e3-430e-901d-6341cee6bb6a" />
+  <Project Path="Src/Services/Identity/TaskFlow.Identity.Infrastructure.SqlServer/TaskFlow.Identity.Infrastructure.SqlServer.csproj" Id="ade7e8ce-2896-453e-a75d-db4ff135c9aa" />
   <Project Path="Src/Services/Tasks/TaskFlow.Tasks.API/TaskFlow.Tasks.API.csproj" Id="8bff9054-9633-4197-b9aa-30c65fed3c2a" />
+  <Project Path="Src/Services/Tasks/TaskFlow.Tasks.Application/TaskFlow.Tasks.Application.csproj" Id="cd93385a-65ef-4a73-b87d-c7600f741faa" />
   <Project Path="Src/Services/Tasks/TaskFlow.Tasks.Contracts/TaskFlow.Tasks.Contracts.csproj" Id="ef8fe1a6-b4bf-4ac3-ab11-13a48e05a6c1" />
   <Project Path="Src/Services/Tasks/TaskFlow.Tasks.Domain/TaskFlow.Tasks.Domain.csproj" Id="6a6cbb84-7751-4421-b775-598ee8c4298f" />
+  <Project Path="Src/Services/Tasks/TaskFlow.Tasks.Infrastructure.SqlServer/TaskFlow.Tasks.Infrastructure.SqlServer.csproj" Id="e6753ed3-254c-4c96-868b-b9f149dfa8e8" />
   <Project Path="Src/Shared/TaskFlow.Shared.Core/TaskFlow.Shared.Core.csproj" Id="f392e1d1-5841-4a95-ba9d-92a9d709eaed" />
   <Project Path="Src/Shared/TaskFlow.Shared.Logging/TaskFlow.Shared.Logging.csproj" Id="8f054e6d-d09f-4eb4-80cf-31a02450164d" />
   <Project Path="Src/Shared/TaskFlow.Shared.Messaging/TaskFlow.Shared.Messaging.csproj" Id="ed726173-81ab-4ee9-add1-2f0245716998" />
