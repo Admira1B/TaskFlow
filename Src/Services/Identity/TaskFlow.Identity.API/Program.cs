@@ -1,9 +1,6 @@
-namespace TaskFlow.Identity.API
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
+namespace TaskFlow.Identity.API {
+    public class Program {
+        public static void Main(string[] args) {
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllers();
@@ -12,7 +9,7 @@ namespace TaskFlow.Identity.API
 
             var app = builder.Build();
 
-                app.MapOpenApi();
+            app.MapOpenApi();
 
             app.UseHttpsRedirection();
 
