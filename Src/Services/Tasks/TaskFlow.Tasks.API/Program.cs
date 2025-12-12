@@ -1,3 +1,5 @@
+using Microsoft.OpenApi;
+
 namespace TaskFlow.Tasks.API {
     public class Program {
         public static void Main(string[] args) {
@@ -6,15 +8,20 @@ namespace TaskFlow.Tasks.API {
             builder.Services.AddControllers();
 
             builder.Services.AddOpenApi();
+            builder.Services.AddSwaggerGen(options =>
+                options.SwaggerDoc("v1", new OpenApiInfo {
+                    Version = "v1",
+                    Title = "TaskFlow Tasks Service",
+                    Contact = new OpenApiContact {
+                        Name = "Vlad Reizenbuk", Email = "vreizenbuk@mail.ru"
+                    }
+                })
+            );
 
             var app = builder.Build();
 
-            app.MapOpenApi();
-
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-
+            app.UseSwagger();
+            app.UseSwaggerUI();
 
             app.MapControllers();
 
