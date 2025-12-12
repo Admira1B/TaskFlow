@@ -11,4 +11,8 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TaskFlow.Tasks.Application\TaskFlow.Tasks.Application.csproj" />
+  </ItemGroup>
+
 </Project>

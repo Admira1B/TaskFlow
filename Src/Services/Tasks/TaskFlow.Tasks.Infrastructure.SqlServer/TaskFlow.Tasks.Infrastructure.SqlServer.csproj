@@ -1,3 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+  <ItemGroup>
+    <ProjectReference Include="..\TaskFlow.Tasks.Domain\TaskFlow.Tasks.Domain.csproj" />
+  </ItemGroup>
 </Project>
