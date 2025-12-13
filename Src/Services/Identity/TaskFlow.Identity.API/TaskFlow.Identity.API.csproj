@@ -8,10 +8,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\TaskFlow.Identity.Application\TaskFlow.Identity.Application.csproj" />
   </ItemGroup>
 
