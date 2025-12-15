@@ -43,7 +43,7 @@ namespace TaskFlow.Identity.API.Controllers {
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] CreateRoleCommand command) {
+        public async Task<IActionResult> Create([FromBody] CreateRoleCommand command) {
             var result = await _service.CreateAsync(command);
 
             if (result is null) {
@@ -57,7 +57,7 @@ namespace TaskFlow.Identity.API.Controllers {
         public async Task<IActionResult> Update([FromBody] UpdateRoleCommand command) {
             var result = await _service.UpdateAsync(command);
 
-            if (result == false) {
+            if (!result) {
                 return BadRequest();
             }
 
@@ -70,7 +70,7 @@ namespace TaskFlow.Identity.API.Controllers {
 
             var result = await _service.DeleteAsync(command);
 
-            if (result == false) {
+            if (!result) {
                 return BadRequest();
             }
 

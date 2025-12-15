@@ -1,46 +1,19 @@
-﻿using TaskFlow.Identity.Domain.Contracts.Repositories;
+﻿using Microsoft.EntityFrameworkCore;
 using TaskFlow.Identity.Domain.Entities;
+using TaskFlow.Identity.Domain.Contracts.Repositories;
 
 namespace TaskFlow.Identity.Infrastructure.SqlServer.Repositories {
-    public class UserRepository : IUserRepository {
-        public Task AddAsync(User user, CancellationToken cancellationToken = default) {
-            throw new NotImplementedException();
-        }
+    public class UserRepository(IdentityDbContext dbContext) : IUserRepository {
+        private readonly IdentityDbContext _dbContext = dbContext;
 
-        public Task AddToRoleAsync(User user, string roleName, CancellationToken cancellationToken = default) {
-            throw new NotImplementedException();
-        }
+        public async Task<IEnumerable<User>> GetPaginatedAsync(int page, int pageSize, CancellationToken cancellationToken = default) {
+            return await _dbContext.Users
+                         .AsNoTracking()
+                         .OrderBy(u => u.UserName)
+                         .Skip(pageSize * (page - 1))
+                         .Take(pageSize)
+                         .ToListAsync(cancellationToken);
 
-        public Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellationToken = default) {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> ExistsByUserNameAsync(string userName, CancellationToken cancellationToken = default) {
-            throw new NotImplementedException();
-        }
-
-        public Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default) {
-            throw new NotImplementedException();
-        }
-
-        public Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) {
-            throw new NotImplementedException();
-        }
-
-        public Task<User?> GetByUserNameAsync(string userName, CancellationToken cancellationToken = default) {
-            throw new NotImplementedException();
-        }
-
-        public Task<IList<string>> GetRolesAsync(User user, CancellationToken cancellationToken = default) {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> IsInRoleAsync(User user, string roleName, CancellationToken cancellationToken = default) {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateAsync(User user, CancellationToken cancellationToken = default) {
-            throw new NotImplementedException();
         }
     }
 }

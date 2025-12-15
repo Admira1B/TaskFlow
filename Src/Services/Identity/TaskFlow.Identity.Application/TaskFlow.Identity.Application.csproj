@@ -4,8 +4,7 @@
     <ProjectReference Include="..\TaskFlow.Identity.Infrastructure.SqlServer\TaskFlow.Identity.Infrastructure.SqlServer.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Commands\User\" />
-    <Folder Include="DTOs\User\" />
-    <Folder Include="Queries\User\" />
+    <PackageReference Include="AutoMapper" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" />
   </ItemGroup>
 </Project>
