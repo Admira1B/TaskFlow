@@ -6,7 +6,6 @@
         string FirstName,
         string LastName,
         DateTime CreatedAt,
-        DateTime? UpdatedAt,
-        IEnumerable<string> Roles
+        DateTime? UpdatedAt
     );
 }

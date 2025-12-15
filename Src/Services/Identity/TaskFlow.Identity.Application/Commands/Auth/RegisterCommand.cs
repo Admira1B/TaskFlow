@@ -1,5 +1,5 @@
-﻿namespace TaskFlow.Identity.Application.Commands.User {
-    public record CreateUserCommand (
+﻿namespace TaskFlow.Identity.Application.Commands.Auth {
+    public record RegisterCommand (
         string UserName,
         string Email,
         string FirstName,

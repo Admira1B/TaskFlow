@@ -5,8 +5,12 @@ namespace TaskFlow.Identity.API {
         public static void Main(string[] args) {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Adding Service dependencies
+            builder.Services.AddIdentityServiceDependencies();
+
             builder.Services.AddControllers();
 
+            // Adding documentation
             builder.Services.AddOpenApi();
             builder.Services.AddSwaggerGen(options =>
                 options.SwaggerDoc("v1", new OpenApiInfo {

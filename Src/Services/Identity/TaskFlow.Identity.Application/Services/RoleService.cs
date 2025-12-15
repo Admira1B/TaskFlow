@@ -4,9 +4,11 @@ using TaskFlow.Identity.Domain.Contracts.Repositories;
 using TaskFlow.Identity.Application.DTOs.Role;
 using TaskFlow.Identity.Application.Queries.Role;
 using TaskFlow.Identity.Application.Commands.Role;
+using AutoMapper;
 
 namespace TaskFlow.Identity.Application.Services {
-    public class RoleService(IRoleRepository repository, RoleManager<Role> manager) {
+    public class RoleService(IMapper mapper, IRoleRepository repository, RoleManager<Role> manager) {
+        private readonly IMapper _mapper = mapper;
         private readonly IRoleRepository _repository = repository;
         private readonly RoleManager<Role> _manager = manager;
 
@@ -17,7 +19,7 @@ namespace TaskFlow.Identity.Application.Services {
                 return null;
             }
 
-            return BuildDto(role);
+            return _mapper.Map<RoleDto>(role);
         }
 
         public async Task<RoleDto?> GetByNameAsync(GetRoleByNameQuery query) {
@@ -27,13 +29,13 @@ namespace TaskFlow.Identity.Application.Services {
                 return null;
             }
 
-            return BuildDto(role);
+            return _mapper.Map<RoleDto>(role);
         }
 
         public async Task<IEnumerable<RoleDto>> GetPaginatedAsync(GetRolesPaginatedQuery query) {
             var roles = await _repository.GetPaginatedAsync(query.Page, query.PageSize);
 
-            return roles.Select(role => BuildDto(role));
+            return roles.Select(role => _mapper.Map<RoleDto>(role));
         }
 
         public async Task<RoleDto?> CreateAsync(CreateRoleCommand command) {
@@ -48,7 +50,7 @@ namespace TaskFlow.Identity.Application.Services {
                 return null;
             }
 
-            return BuildDto(role);
+            return _mapper.Map<RoleDto>(role);
         }
 
         public async Task<bool> UpdateAsync(UpdateRoleCommand command) {
@@ -83,17 +85,6 @@ namespace TaskFlow.Identity.Application.Services {
             }
 
             return true;
-        }
-
-        // TODO: Later replace with AutoMapper
-        private RoleDto BuildDto(Role role) {
-            return new RoleDto(
-                Id: role.Id,
-                Name: role.Name ?? string.Empty,
-                Description: role.Description ?? string.Empty,
-                CreatedAt: role.CreatedAt,
-                UpdatedAt: role.UpdatedAt
-            );
         }
     }
 }

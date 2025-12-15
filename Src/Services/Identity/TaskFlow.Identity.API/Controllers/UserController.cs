@@ -55,17 +55,6 @@ namespace TaskFlow.Identity.API.Controllers {
             return Ok(result);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateUserCommand command) { 
-            var result = await _service.CreateAsync(command);
-
-            if (result is null) {
-                return BadRequest();
-            }
-
-            return CreatedAtAction(nameof(GetById), new { result.Id }, result);
-        }
-
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] UpdateUserCommand command) { 
             var result = await _service.UpdateAsync(command);
