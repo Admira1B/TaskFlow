@@ -1,16 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using TaskFlow.Identity.Application.Commands.Auth;
-using TaskFlow.Identity.Application.Services;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using TaskFlow.Identity.Application.Commands.Auth.Login;
+using TaskFlow.Identity.Application.Commands.Auth.Logout;
+using TaskFlow.Identity.Application.Commands.Auth.Register;
 
 namespace TaskFlow.Identity.API.Controllers {
     [ApiController]
     [Route("api/auth")]
-    public class AuthController(AuthService service) : ControllerBase {
-        private readonly AuthService _service = service;
+    public class AuthController(IMediator mediator) : ControllerBase {
+        private readonly IMediator _mediator = mediator;
 
-        [HttpPost("registration")]
+        [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterCommand command) {
-            var result = await _service.RegisterAsync(command);
+            var result = await _mediator.Send(command);
 
             if (!result.Succeeded) {
                 return BadRequest(result.ErrorMessage);
@@ -21,7 +23,7 @@ namespace TaskFlow.Identity.API.Controllers {
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginCommand command) { 
-            var result = await _service.LoginAsync(command);
+            var result = await _mediator.Send(command);
 
             if (!result.Succeeded) {
                 return Unauthorized(result.ErrorMessage);
@@ -31,8 +33,8 @@ namespace TaskFlow.Identity.API.Controllers {
         }
 
         [HttpPost("logout")]
-        public async Task<IActionResult> Logout() { 
-            await _service.LogoutAsync();
+        public async Task<IActionResult> Logout() {
+            await _mediator.Send(new LogoutCommand());
 
             return Ok();
         }

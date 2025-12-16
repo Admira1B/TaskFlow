@@ -1,8 +1,8 @@
-﻿using AutoMapper;
+﻿using Microsoft.OpenApi;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using TaskFlow.Identity.Application.Commands.Auth.Login;
 using TaskFlow.Identity.Application.Mapping;
-using TaskFlow.Identity.Application.Services;
 using TaskFlow.Identity.Domain.Contracts.Repositories;
 using TaskFlow.Identity.Domain.Entities;
 using TaskFlow.Identity.Infrastructure.SqlServer;
@@ -11,6 +11,21 @@ using TaskFlow.Identity.Infrastructure.SqlServer.Repositories;
 namespace TaskFlow.Identity.API {
     internal static class ServiceCollectionExtensions {
         public static IServiceCollection AddIdentityServiceDependencies(this IServiceCollection services) {
+            // Adding controllers
+            services.AddControllers();
+
+            // Adding documentation
+            services.AddOpenApi();
+            services.AddSwaggerGen(options =>
+                options.SwaggerDoc("v1", new OpenApiInfo {
+                    Version = "v1",
+                    Title = "TaskFlow Identity Service",
+                    Contact = new OpenApiContact {
+                        Name = "Vlad Reizenbuk", Email = "vreizenbuk@mail.ru"
+                    }
+                })
+            );
+
             // DbContext
             services.AddDbContext<IdentityDbContext>((serviceProvider, options) => {
                 var configuration = serviceProvider.GetRequiredService<IConfiguration>();
@@ -22,6 +37,10 @@ namespace TaskFlow.Identity.API {
                 });
             });
 
+            // Data Access
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
+
             // ASP Identity
             services.AddIdentity<User, Role>(options => {
                 // Password Options
@@ -30,33 +49,19 @@ namespace TaskFlow.Identity.API {
                 options.Password.RequireUppercase = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequiredLength = 6;
+                
                 // User Options
-
                 options.User.RequireUniqueEmail = true;
             })
             .AddEntityFrameworkStores<IdentityDbContext>()
             .AddDefaultTokenProviders();
 
-            // Data Access
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IRoleRepository, RoleRepository>();
-
-            // Services
-            services.AddScoped<UserService>();
-            services.AddScoped<RoleService>();
-            services.AddScoped<AuthService>();
+            // MediatoR
+            services.AddMediatR(cfg =>
+                cfg.RegisterServicesFromAssembly(typeof(LoginCommandHandler).Assembly));
 
             // AutoMapper
-            services.AddSingleton<IMapper>(x => {
-                var configExpression = new MapperConfigurationExpression();
-                configExpression.AddProfile<IdentityMapperProfile>();
-
-                var config = new MapperConfiguration(
-                    configExpression, null
-                );
-
-                return config.CreateMapper();
-            });
+            services.AddAutoMapper(typeof(IdentityMapperProfile).Assembly);
 
             return services;
         }
