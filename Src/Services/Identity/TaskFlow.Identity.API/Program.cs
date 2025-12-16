@@ -1,5 +1,3 @@
-using Microsoft.OpenApi;
-
 namespace TaskFlow.Identity.API {
     public class Program {
         public static void Main(string[] args) {
@@ -7,20 +5,6 @@ namespace TaskFlow.Identity.API {
 
             // Adding Service dependencies
             builder.Services.AddIdentityServiceDependencies();
-
-            builder.Services.AddControllers();
-
-            // Adding documentation
-            builder.Services.AddOpenApi();
-            builder.Services.AddSwaggerGen(options =>
-                options.SwaggerDoc("v1", new OpenApiInfo {
-                    Version = "v1",
-                    Title = "TaskFlow Identity Service",
-                    Contact = new OpenApiContact {
-                        Name = "Vlad Reizenbuk", Email = "vreizenbuk@mail.ru"
-                    }
-                })
-            );
 
             var app = builder.Build();
 
