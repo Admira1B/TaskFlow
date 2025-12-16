@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TaskFlow.Identity.Application.Mapping;
 using TaskFlow.Identity.Application.Services;
@@ -47,16 +46,7 @@ namespace TaskFlow.Identity.API {
             services.AddScoped<AuthService>();
 
             // AutoMapper
-            services.AddSingleton<IMapper>(x => {
-                var configExpression = new MapperConfigurationExpression();
-                configExpression.AddProfile<IdentityMapperProfile>();
-
-                var config = new MapperConfiguration(
-                    configExpression, null
-                );
-
-                return config.CreateMapper();
-            });
+            services.AddAutoMapper(typeof(IdentityMapperProfile).Assembly);
 
             return services;
         }
