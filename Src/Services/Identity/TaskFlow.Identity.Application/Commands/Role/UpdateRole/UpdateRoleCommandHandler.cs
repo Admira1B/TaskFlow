@@ -1,9 +1,8 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 
 namespace TaskFlow.Identity.Application.Commands.Role.UpdateRole {
-    public class UpdateRoleCommandHandler(IMapper mapper, RoleManager<Domain.Entities.Role> manager) : IRequestHandler<UpdateRoleCommand, bool> {
+    public class UpdateRoleCommandHandler(RoleManager<Domain.Entities.Role> manager) : IRequestHandler<UpdateRoleCommand, bool> {
         private readonly RoleManager<Domain.Entities.Role> _manager = manager;
 
         public async Task<bool> Handle(UpdateRoleCommand command, CancellationToken cancellationToken) {

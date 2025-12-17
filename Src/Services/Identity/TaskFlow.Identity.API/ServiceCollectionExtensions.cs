@@ -27,12 +27,12 @@ namespace TaskFlow.Identity.API {
             );
 
             // DbContext
-            services.AddDbContext<IdentityDbContext>((serviceProvider, options) => {
+            services.AddDbContext<IdentityServiceDbContext>((serviceProvider, options) => {
                 var configuration = serviceProvider.GetRequiredService<IConfiguration>();
                 var connectionString = configuration.GetConnectionString("SqlServerConnectionString");
 
                 options.UseSqlServer(connectionString, sqlOptions => {
-                    sqlOptions.MigrationsAssembly(typeof(IdentityDbContext).Assembly.FullName);
+                    sqlOptions.MigrationsAssembly(typeof(IdentityServiceDbContext).Assembly.FullName);
                     sqlOptions.EnableRetryOnFailure();
                 });
             });
@@ -53,7 +53,7 @@ namespace TaskFlow.Identity.API {
                 // User Options
                 options.User.RequireUniqueEmail = true;
             })
-            .AddEntityFrameworkStores<IdentityDbContext>()
+            .AddEntityFrameworkStores<IdentityServiceDbContext>()
             .AddDefaultTokenProviders();
 
             // MediatoR
