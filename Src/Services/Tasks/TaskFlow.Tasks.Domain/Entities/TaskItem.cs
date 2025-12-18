@@ -22,5 +22,15 @@ namespace TaskFlow.Tasks.Domain.Entities {
         // Navigation props
         public TaskGroup? Group { get; set; }
         public List<Comment> Comments { get; set; } = [];
+
+        public TaskItem(string title, Guid groupId, Guid reporterId, string? description = null, Guid? assignedId = null, Priority? priority = null) {
+            Title = title;
+            GroupId = groupId;
+            ReporterId = reporterId;
+            Description = description;
+            AssignedId = assignedId;
+            Priority = priority;
+            Comments = [];
+        }
     }
 }

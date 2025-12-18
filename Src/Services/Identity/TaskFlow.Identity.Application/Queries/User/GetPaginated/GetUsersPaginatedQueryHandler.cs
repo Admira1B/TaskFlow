@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
-using TaskFlow.Identity.Application.DTOs.User;
+using TaskFlow.Identity.Application.DTOs;
 using TaskFlow.Identity.Domain.Contracts.Repositories;
 
 namespace TaskFlow.Identity.Application.Queries.User.GetPaginated {

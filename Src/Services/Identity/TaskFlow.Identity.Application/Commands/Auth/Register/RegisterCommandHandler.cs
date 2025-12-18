@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using TaskFlow.Identity.Application.DTOs.User;
+using TaskFlow.Identity.Application.DTOs;
 using TaskFlow.Identity.Application.Results;
 
 namespace TaskFlow.Identity.Application.Commands.Auth.Register {

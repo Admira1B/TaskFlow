@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using TaskFlow.Identity.Application.DTOs.Role;
+using TaskFlow.Identity.Application.DTOs;
 
 namespace TaskFlow.Identity.Application.Commands.Role.CreateRole {
     public record CreateRoleCommand (
