@@ -3,8 +3,8 @@ using TaskFlow.Identity.Domain.Entities;
 using TaskFlow.Identity.Domain.Contracts.Repositories;
 
 namespace TaskFlow.Identity.Infrastructure.SqlServer.Repositories {
-    public class UserRepository(IdentityDbContext dbContext) : IUserRepository {
-        private readonly IdentityDbContext _dbContext = dbContext;
+    public class UserRepository(IdentityServiceDbContext dbContext) : IUserRepository {
+        private readonly IdentityServiceDbContext _dbContext = dbContext;
 
         public async Task<IEnumerable<User>> GetPaginatedAsync(int page, int pageSize, CancellationToken cancellationToken = default) {
             return await _dbContext.Users

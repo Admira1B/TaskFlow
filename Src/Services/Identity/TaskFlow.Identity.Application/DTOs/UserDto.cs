@@ -1,4 +1,4 @@
-﻿namespace TaskFlow.Identity.Application.DTOs.User {
+﻿namespace TaskFlow.Identity.Application.DTOs {
     public record UserDto(
         Guid Id,
         string UserName,

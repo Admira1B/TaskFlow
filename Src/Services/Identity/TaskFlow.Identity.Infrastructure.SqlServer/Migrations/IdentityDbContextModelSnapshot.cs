@@ -10,7 +10,7 @@ using TaskFlow.Identity.Infrastructure.SqlServer;
 
 namespace TaskFlow.Identity.Infrastructure.SqlServer.Migrations
 {
-    [DbContext(typeof(IdentityDbContext))]
+    [DbContext(typeof(IdentityServiceDbContext))]
     partial class IdentityDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

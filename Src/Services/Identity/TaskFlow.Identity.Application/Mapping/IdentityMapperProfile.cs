@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
-using TaskFlow.Identity.Application.DTOs.Role;
-using TaskFlow.Identity.Application.DTOs.User;
+using TaskFlow.Identity.Application.DTOs;
 using TaskFlow.Identity.Domain.Entities;
 
 namespace TaskFlow.Identity.Application.Mapping {

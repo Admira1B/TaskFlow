@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using TaskFlow.Identity.Application.DTOs.Role;
+using TaskFlow.Identity.Application.DTOs;
 
 namespace TaskFlow.Identity.Application.Queries.Role.GetByName {
     public class GetRoleByNameQueryHandler(IMapper mapper, RoleManager<Domain.Entities.Role> manager) : IRequestHandler<GetRoleByNameQuery, RoleDto?> {

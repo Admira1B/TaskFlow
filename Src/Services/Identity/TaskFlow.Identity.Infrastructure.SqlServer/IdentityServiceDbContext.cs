@@ -5,7 +5,7 @@ using TaskFlow.Identity.Domain.Entities;
 using TaskFlow.Identity.Infrastructure.SqlServer.Configurations;
 
 namespace TaskFlow.Identity.Infrastructure.SqlServer {
-    public class IdentityDbContext(DbContextOptions<IdentityDbContext> options)
+    public class IdentityServiceDbContext(DbContextOptions<IdentityServiceDbContext> options)
                : IdentityDbContext<User, Role, Guid>(options) {
         protected override void OnModelCreating(ModelBuilder builder) {
             builder.HasDefaultSchema("Identity");
