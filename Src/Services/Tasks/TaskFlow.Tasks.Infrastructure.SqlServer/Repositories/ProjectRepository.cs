@@ -40,10 +40,5 @@ namespace TaskFlow.Tasks.Infrastructure.SqlServer.Repositories {
                 .Where(p => p.Id == id)
                 .ExecuteDeleteAsync();
         }
-
-        public async Task<bool> IsMemberOfProjectAsync(Guid projectId, Guid userId) {
-            return await _dbContext.Members
-                .AnyAsync(m => m.ProjectId == projectId && m.UserId == userId);
-        }
     }
 }

@@ -2,7 +2,7 @@
 using TaskFlow.Tasks.Application.DTOs;
 using TaskFlow.Tasks.Application.Results;
 
-namespace TaskFlow.Tasks.Application.Commands.Project.CreateProject {
+namespace TaskFlow.Tasks.Application.Commands.TaskGroup.CreateProject {
     public record CreateProjectCommand(
         string Name,
         string? Description,

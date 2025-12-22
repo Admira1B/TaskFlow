@@ -7,6 +7,5 @@ namespace TaskFlow.Tasks.Domain.Contracts {
         Task AddAsync(Project project);
         Task UpdateAsync(Project project);
         Task DeleteAsync(Guid id);
-        Task<bool> IsMemberOfProjectAsync(Guid projectId, Guid userId);
     }
 }

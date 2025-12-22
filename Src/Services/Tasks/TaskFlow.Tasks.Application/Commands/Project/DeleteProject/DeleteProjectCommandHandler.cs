@@ -2,7 +2,7 @@
 using TaskFlow.Tasks.Application.Results;
 using TaskFlow.Tasks.Domain.Contracts;
 
-namespace TaskFlow.Tasks.Application.Commands.Project.DeleteProject {
+namespace TaskFlow.Tasks.Application.Commands.TaskGroup.DeleteProject {
     public class DeleteProjectCommandHandler(IProjectRepository repository) : IRequestHandler<DeleteProjectCommand, RequestResult<Unit>> {
         private readonly IProjectRepository _repository = repository;
 

@@ -2,7 +2,7 @@
 using TaskFlow.Tasks.Application.Results;
 using TaskFlow.Tasks.Domain.Contracts;
 
-namespace TaskFlow.Tasks.Application.Commands.Project.UpdateProject {
+namespace TaskFlow.Tasks.Application.Commands.TaskGroup.UpdateProject {
     public class UpdateProjectCommandHandler(IProjectRepository repository) : IRequestHandler<UpdateProjectCommand, RequestResult<Unit>> {
         private readonly IProjectRepository _repository = repository;
         
