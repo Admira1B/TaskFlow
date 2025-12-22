@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using TaskFlow.Tasks.Application.Results;
 using TaskFlow.Tasks.Domain.Enums;
 
 namespace TaskFlow.Tasks.Application.Commands.TaskItem.UpdateTaskItem {
@@ -8,5 +9,5 @@ namespace TaskFlow.Tasks.Application.Commands.TaskItem.UpdateTaskItem {
         string? Description, 
         Guid? AssignedId, 
         Priority Priority
-    ) : IRequest<bool>;
+    ) : IRequest<RequestResult<Unit>>;
 }

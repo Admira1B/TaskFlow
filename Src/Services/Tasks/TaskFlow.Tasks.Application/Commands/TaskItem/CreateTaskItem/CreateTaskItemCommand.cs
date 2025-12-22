@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using TaskFlow.Tasks.Application.DTOs;
+using TaskFlow.Tasks.Application.Results;
 using TaskFlow.Tasks.Domain.Enums;
 
 namespace TaskFlow.Tasks.Application.Commands.TaskItem.CreateTaskItem {
@@ -10,5 +11,5 @@ namespace TaskFlow.Tasks.Application.Commands.TaskItem.CreateTaskItem {
         Guid ReporterId, 
         Guid? AssignedId, 
         Priority Priority
-    ) : IRequest<TaskItemDto?>;
+    ) : IRequest<RequestResult<TaskItemDto>>;
 }

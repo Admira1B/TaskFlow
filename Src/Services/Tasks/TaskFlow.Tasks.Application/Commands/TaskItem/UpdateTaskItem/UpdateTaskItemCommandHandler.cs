@@ -1,15 +1,16 @@
 ﻿using MediatR;
+using TaskFlow.Tasks.Application.Results;
 using TaskFlow.Tasks.Domain.Contracts;
 
 namespace TaskFlow.Tasks.Application.Commands.TaskItem.UpdateTaskItem {
-    public class UpdateTaskItemCommandHandler(ITaskItemRepository repository) : IRequestHandler<UpdateTaskItemCommand, bool> {
+    public class UpdateTaskItemCommandHandler(ITaskItemRepository repository) : IRequestHandler<UpdateTaskItemCommand, RequestResult<Unit>> {
         private readonly ITaskItemRepository _repository = repository;
 
-        public async Task<bool> Handle(UpdateTaskItemCommand command, CancellationToken cancellationToken) {
+        public async Task<RequestResult<Unit>> Handle(UpdateTaskItemCommand command, CancellationToken cancellationToken) {
             var task = await _repository.GetByIdAsync(command.Id);
 
-            if (task is null) { 
-                return false;
+            if (task is null) {
+                return RequestResult<Unit>.NotFound("Task");
             }
 
             task.Title = command.Title;
@@ -17,7 +18,13 @@ namespace TaskFlow.Tasks.Application.Commands.TaskItem.UpdateTaskItem {
             task.AssignedId = command.AssignedId;
             task.Priority = command.Priority;
 
-            return await _repository.UpdateAsync(task);
+            try {
+                await _repository.UpdateAsync(task);
+            } catch (Exception) {
+                return RequestResult<Unit>.Failure("Failed to update task.");
+            }
+
+            return RequestResult<Unit>.Success();
         }
     }
 }

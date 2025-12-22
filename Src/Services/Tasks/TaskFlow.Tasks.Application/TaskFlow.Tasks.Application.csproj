@@ -7,7 +7,4 @@
 		<PackageReference Include="AutoMapper" />
 		<PackageReference Include="MediatR" />
 	</ItemGroup>
-	<ItemGroup>
-		<Folder Include="Results\" />
-	</ItemGroup>
 </Project>
