@@ -7,7 +7,8 @@ namespace TaskFlow.Tasks.Infrastructure.SqlServer.Repositories {
         private readonly TaskServiceDbContext _dbContext = dbContext;
 
         public async Task<Project?> GetByIdAsync(Guid id) {
-            return await _dbContext.Projects.FirstOrDefaultAsync(p => p.Id == id);
+            return await _dbContext.Projects
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<Project?> GetByIdWithGroupsAsync(Guid id) {
@@ -16,19 +17,14 @@ namespace TaskFlow.Tasks.Infrastructure.SqlServer.Repositories {
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public async Task<Project> AddAsync(Project project) {
+        public async Task AddAsync(Project project) {
             await _dbContext.Projects.AddAsync(project);
             await _dbContext.SaveChangesAsync();
-
-            return project;
         }
 
-        public async Task<bool> UpdateAsync(Project project) {
-            var existing = await _dbContext.Projects.FindAsync(project.Id);
-            
-            if (existing is null) { 
-                return false; 
-            }
+        public async Task UpdateAsync(Project project) {
+            var existing = await _dbContext.Projects
+                .FirstAsync(p => p.Id == project.Id);
 
             existing.Name = project.Name;
             existing.Description = project.Description;
@@ -36,15 +32,13 @@ namespace TaskFlow.Tasks.Infrastructure.SqlServer.Repositories {
 
             existing.MarkAsUpdated();
 
-            return await _dbContext.SaveChangesAsync() > 0;
+            await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<bool> DeleteAsync(Guid id) {
-            var rows = await _dbContext.Projects
+        public async Task DeleteAsync(Guid id) {
+            await _dbContext.Projects
                 .Where(p => p.Id == id)
                 .ExecuteDeleteAsync();
-
-            return rows > 0;
         }
 
         public async Task<bool> IsMemberOfProjectAsync(Guid projectId, Guid userId) {

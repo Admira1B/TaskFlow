@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using TaskFlow.Tasks.Application.Results;
 
 namespace TaskFlow.Tasks.Application.Commands.Project.UpdateProject {
     public record UpdateProjectCommand(
@@ -6,5 +7,5 @@ namespace TaskFlow.Tasks.Application.Commands.Project.UpdateProject {
         string Name, 
         string? Description, 
         bool IsActive
-    ) : IRequest<bool>;
+    ) : IRequest<RequestResult<Unit>>;
 }

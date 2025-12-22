@@ -7,22 +7,19 @@ namespace TaskFlow.Tasks.Infrastructure.SqlServer.Repositories {
         private readonly TaskServiceDbContext _dbContext = dbContext;
         
         public async Task<TaskItem?> GetByIdAsync(Guid id) {
-            return await _dbContext.Tasks.Where(t => t.Id == id).FirstOrDefaultAsync();
+            return await _dbContext.Tasks.Where(t => t.Id == id)
+                .FirstOrDefaultAsync();
         }
 
-        public async Task<TaskItem> AddAsync(TaskItem task) {
+        public async Task AddAsync(TaskItem task) {
             await _dbContext.Tasks.AddAsync(task);
             await _dbContext.SaveChangesAsync();
-
-            return task;
         }
 
-        public async Task<bool> UpdateAsync(TaskItem task) {
-            var existing = await _dbContext.Tasks.Where(t => t.Id == task.Id).FirstOrDefaultAsync();
-
-            if (existing is null) {
-                return false;
-            }
+        public async Task UpdateAsync(TaskItem task) {
+            var existing = await _dbContext.Tasks
+                .Where(t => t.Id == task.Id)
+                .FirstAsync();
 
             existing.Title = task.Title;
             existing.Description = task.Description;
@@ -30,15 +27,13 @@ namespace TaskFlow.Tasks.Infrastructure.SqlServer.Repositories {
 
             existing.MarkAsUpdated();
 
-            return await _dbContext.SaveChangesAsync() > 0;
+            await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<bool> DeleteAsync(Guid id) {
-            var rows = await _dbContext.Tasks
+        public async Task DeleteAsync(Guid id) {
+            await _dbContext.Tasks
                 .Where(t => t.Id == id)
                 .ExecuteDeleteAsync();
-
-            return rows > 0;
         }
     }
 }
