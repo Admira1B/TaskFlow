@@ -10,7 +10,7 @@ namespace TaskFlow.Tasks.Application.Commands.TaskItem.UpdateTaskItem {
             var task = await _repository.GetByIdAsync(command.Id);
 
             if (task is null) {
-                return RequestResult<Unit>.NotFound("Task");
+                return RequestResult<Unit>.NotFound("Task", command.Id);
             }
 
             task.Title = command.Title;

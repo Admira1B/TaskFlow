@@ -3,6 +3,6 @@ using TaskFlow.Tasks.Application.Results;
 
 namespace TaskFlow.Tasks.Application.Commands.ProjectMember.DeleteProjectMember {
     public record DeleteProjectMemberCommand(
-        Guid MemberId
+        Guid Id
     ) : IRequest<RequestResult<Unit>>;
 }

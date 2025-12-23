@@ -11,7 +11,7 @@ namespace TaskFlow.Tasks.Application.Commands.TaskItem.DeleteTaskItem {
             var task = await _repository.GetByIdAsync(command.Id);
 
             if (task is null) {
-                return RequestResult<Unit>.NotFound("Task");
+                return RequestResult<Unit>.NotFound("Task", command.Id);
             }
 
             try {

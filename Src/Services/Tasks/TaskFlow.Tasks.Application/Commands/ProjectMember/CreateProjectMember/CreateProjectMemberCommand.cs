@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using TaskFlow.Tasks.Application.DTOs;
 using TaskFlow.Tasks.Application.Results;
 using TaskFlow.Tasks.Domain.Enums;
 
@@ -7,5 +8,5 @@ namespace TaskFlow.Tasks.Application.Commands.ProjectMember.CreateProjectMember 
         Guid ProjectId,
         Guid UserId,
         ProjectRole Role
-    ) : IRequest<RequestResult<Unit>>;
+    ) : IRequest<RequestResult<ProjectMemberDto>>;
 }

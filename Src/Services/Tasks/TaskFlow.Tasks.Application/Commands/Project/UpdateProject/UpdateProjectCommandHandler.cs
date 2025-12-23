@@ -10,7 +10,7 @@ namespace TaskFlow.Tasks.Application.Commands.TaskGroup.UpdateProject {
             var project = await _repository.GetByIdAsync(command.Id);
 
             if (project is null) {
-                return RequestResult<Unit>.NotFound(nameof(Domain.Entities.Project));
+                return RequestResult<Unit>.NotFound(nameof(Domain.Entities.Project), command.Id);
             }
 
             project.Name = command.Name;

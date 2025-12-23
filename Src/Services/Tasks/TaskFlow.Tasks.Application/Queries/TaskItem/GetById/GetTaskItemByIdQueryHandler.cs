@@ -9,11 +9,11 @@ namespace TaskFlow.Tasks.Application.Queries.TaskItem.GetById {
         private readonly IMapper _mapper = mapper;
         private readonly ITaskItemRepository _repository = repository;
 
-        public async Task<RequestResult<TaskItemDto>> Handle(GetTaskItemByIdQuery request, CancellationToken cancellationToken) {
-            var task = await _repository.GetByIdAsync(request.Id);
+        public async Task<RequestResult<TaskItemDto>> Handle(GetTaskItemByIdQuery query, CancellationToken cancellationToken) {
+            var task = await _repository.GetByIdAsync(query.Id);
 
             if (task is null) {
-                return RequestResult<TaskItemDto>.NotFound("Task");
+                return RequestResult<TaskItemDto>.NotFound("Task", query.Id);
             }
 
             return RequestResult<TaskItemDto>.Success(_mapper.Map<TaskItemDto>(task));
