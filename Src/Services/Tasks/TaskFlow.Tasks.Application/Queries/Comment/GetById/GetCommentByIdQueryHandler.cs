@@ -13,7 +13,7 @@ namespace TaskFlow.Tasks.Application.Queries.Comment.GetById {
             var comment = await _repository.GetByIdAsync(query.Id);
 
             if (comment is null) {
-                return RequestResult<CommentDto>.NotFound(nameof(Domain.Entities.Comment), query.Id);
+                return RequestResult<CommentDto>.NotFound("Comment", query.Id);
             }
 
             return RequestResult<CommentDto>.Success(_mapper.Map<CommentDto>(comment));

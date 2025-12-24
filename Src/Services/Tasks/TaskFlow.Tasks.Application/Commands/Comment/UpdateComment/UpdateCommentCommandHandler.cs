@@ -10,7 +10,7 @@ namespace TaskFlow.Tasks.Application.Commands.Comment.UpdateComment {
             var comment = await _repository.GetByIdAsync(command.Id);
 
             if (comment is null) {
-                return RequestResult<Unit>.NotFound(nameof(Domain.Entities.Comment), command.Id);
+                return RequestResult<Unit>.NotFound("Comment", command.Id);
             }
 
             comment.Content = command.Content;

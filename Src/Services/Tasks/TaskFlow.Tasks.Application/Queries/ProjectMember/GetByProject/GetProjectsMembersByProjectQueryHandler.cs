@@ -14,7 +14,7 @@ namespace TaskFlow.Tasks.Application.Queries.ProjectMember.GetByProject {
             var project = await _projectRepository.GetByIdAsync(query.ProjectId);
 
             if (project is null) {
-                return RequestResult<List<ProjectMemberDto>>.NotFound(nameof(Domain.Entities.Project), query.ProjectId);
+                return RequestResult<List<ProjectMemberDto>>.NotFound("Project", query.ProjectId);
             }
 
             var members = await _repository.GetByProjectAsync(query.ProjectId);

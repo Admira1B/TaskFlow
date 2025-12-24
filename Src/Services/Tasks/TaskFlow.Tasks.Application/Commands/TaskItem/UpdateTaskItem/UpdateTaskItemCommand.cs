@@ -8,6 +8,7 @@ namespace TaskFlow.Tasks.Application.Commands.TaskItem.UpdateTaskItem {
         string Title, 
         string? Description, 
         Guid? AssignedId, 
-        Priority Priority
+        Priority Priority,
+        Guid GroupId
     ) : IRequest<RequestResult<Unit>>;
 }

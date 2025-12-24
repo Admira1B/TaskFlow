@@ -17,6 +17,7 @@ namespace TaskFlow.Tasks.Application.Commands.TaskItem.UpdateTaskItem {
             task.Description = command.Description;
             task.AssignedId = command.AssignedId;
             task.Priority = command.Priority;
+            task.GroupId = command.GroupId;
 
             try {
                 await _repository.UpdateAsync(task);

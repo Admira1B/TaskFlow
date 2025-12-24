@@ -13,7 +13,7 @@ namespace TaskFlow.Tasks.Application.Queries.Project.GetById {
             var project = await _repository.GetByIdAsync(query.Id);
 
             if (project is null) {
-                return RequestResult<ProjectDto>.NotFound(nameof(Domain.Entities.Project), query.Id);
+                return RequestResult<ProjectDto>.NotFound("Project", query.Id);
             }
 
             return RequestResult<ProjectDto>.Success(_mapper.Map<ProjectDto>(project));

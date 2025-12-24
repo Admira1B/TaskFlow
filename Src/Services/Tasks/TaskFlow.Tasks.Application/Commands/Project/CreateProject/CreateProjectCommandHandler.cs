@@ -4,7 +4,7 @@ using TaskFlow.Tasks.Application.DTOs;
 using TaskFlow.Tasks.Application.Results;
 using TaskFlow.Tasks.Domain.Contracts;
 
-namespace TaskFlow.Tasks.Application.Commands.TaskGroup.CreateProject {
+namespace TaskFlow.Tasks.Application.Commands.Project.CreateProject {
     public class CreateProjectCommandHandler(IMapper mapper, IProjectRepository repository) : IRequestHandler<CreateProjectCommand, RequestResult<ProjectDto>> {
         private readonly IMapper _mapper = mapper;
         private readonly IProjectRepository _repository = repository;

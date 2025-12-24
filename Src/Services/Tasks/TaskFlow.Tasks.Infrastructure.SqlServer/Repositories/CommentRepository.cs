@@ -6,16 +6,16 @@ namespace TaskFlow.Tasks.Infrastructure.SqlServer.Repositories {
     public class CommentRepository(TaskServiceDbContext dbContext) : ICommentRepository {
         private readonly TaskServiceDbContext _dbContext = dbContext;
 
+        public async Task<Comment?> GetByIdAsync(Guid id) {
+            return await _dbContext.Comments
+                .FirstOrDefaultAsync(c => c.Id == id);
+        }
+
         public async Task<List<Comment>> GetByTaskIdAsync(Guid taskId) {
             return await _dbContext.Comments
                 .AsNoTracking()
                 .Where(c => c.TaskId == taskId)
                 .ToListAsync();
-        }
-
-        public async Task<Comment?> GetByIdAsync(Guid id) {
-            return await _dbContext.Comments
-                .FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task AddAsync(Comment comment) {
