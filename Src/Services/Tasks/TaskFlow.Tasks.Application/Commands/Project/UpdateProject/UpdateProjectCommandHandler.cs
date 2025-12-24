@@ -2,7 +2,7 @@
 using TaskFlow.Tasks.Application.Results;
 using TaskFlow.Tasks.Domain.Contracts;
 
-namespace TaskFlow.Tasks.Application.Commands.TaskGroup.UpdateProject {
+namespace TaskFlow.Tasks.Application.Commands.Project.UpdateProject {
     public class UpdateProjectCommandHandler(IProjectRepository repository) : IRequestHandler<UpdateProjectCommand, RequestResult<Unit>> {
         private readonly IProjectRepository _repository = repository;
         
@@ -10,7 +10,7 @@ namespace TaskFlow.Tasks.Application.Commands.TaskGroup.UpdateProject {
             var project = await _repository.GetByIdAsync(command.Id);
 
             if (project is null) {
-                return RequestResult<Unit>.NotFound(nameof(Domain.Entities.Project));
+                return RequestResult<Unit>.NotFound("Project", command.Id);
             }
 
             project.Name = command.Name;

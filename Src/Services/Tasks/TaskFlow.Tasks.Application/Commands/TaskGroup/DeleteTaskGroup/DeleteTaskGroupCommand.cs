@@ -3,6 +3,6 @@ using TaskFlow.Tasks.Application.Results;
 
 namespace TaskFlow.Tasks.Application.Commands.TaskGroup.DeleteTaskGroup {
     public record DeleteTaskGroupCommand(
-        Guid GroupId
+        Guid Id
     ) : IRequest<RequestResult<Unit>>;
 }

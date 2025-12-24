@@ -13,8 +13,24 @@ namespace TaskFlow.Tasks.Infrastructure.SqlServer.Repositories {
 
         public async Task<Project?> GetByIdWithGroupsAsync(Guid id) {
             return await _dbContext.Projects
+                .AsNoTracking()
                 .Include(p => p.Groups)
                 .FirstOrDefaultAsync(p => p.Id == id);
+        }
+
+        public async Task<List<Project>> GetByProjectMemberAsync(Guid userId) {
+            return await _dbContext.Projects
+                .AsNoTracking()
+                .Where(p => p.Members.Any(m => m.UserId == userId)) 
+                .Where(p => p.OwnerId != userId) 
+                .ToListAsync();
+        }
+
+        public async Task<List<Project>> GetByOwnerAsync(Guid userId) {
+            return await _dbContext.Projects
+                .AsNoTracking()
+                .Where(p => p.OwnerId == userId)
+                .ToListAsync();
         }
 
         public async Task AddAsync(Project project) {

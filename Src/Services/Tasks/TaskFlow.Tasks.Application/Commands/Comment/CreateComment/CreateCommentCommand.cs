@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using TaskFlow.Tasks.Application.DTOs;
 using TaskFlow.Tasks.Application.Results;
 
 namespace TaskFlow.Tasks.Application.Commands.Comment.CreateComment {
@@ -6,5 +7,5 @@ namespace TaskFlow.Tasks.Application.Commands.Comment.CreateComment {
         Guid TaskId,
         string Content,
         Guid AuthorId
-    ) : IRequest<RequestResult<Unit>>;
+    ) : IRequest<RequestResult<CommentDto>>;
 }

@@ -18,14 +18,6 @@ namespace TaskFlow.Tasks.Infrastructure.SqlServer.Repositories {
                 .ToListAsync();
         }
 
-        public async Task<TaskGroup?> GetByIdWithTasksAsync(Guid id) {
-            return await _dbContext.Groups
-                .AsNoTracking()
-                .Include(g => g.TaskItems)
-                .Where(g => g.Id == id)
-                .FirstOrDefaultAsync();
-        }
-
         public async Task AddAsync(TaskGroup group) {
             await _dbContext.Groups
                 .AddAsync(group);

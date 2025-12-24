@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using TaskFlow.Tasks.Application.Results;
 
-namespace TaskFlow.Tasks.Application.Commands.TaskGroup.DeleteProject {
+namespace TaskFlow.Tasks.Application.Commands.Project.DeleteProject {
     public record DeleteProjectCommand(
         Guid Id
     ) : IRequest<RequestResult<Unit>>;
