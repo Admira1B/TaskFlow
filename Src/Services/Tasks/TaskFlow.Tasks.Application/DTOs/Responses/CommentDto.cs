@@ -1,4 +1,4 @@
-﻿namespace TaskFlow.Tasks.Application.DTOs {
+﻿namespace TaskFlow.Tasks.Application.DTOs.Responses {
     public record CommentDto(
         Guid Id,
         string Content,
