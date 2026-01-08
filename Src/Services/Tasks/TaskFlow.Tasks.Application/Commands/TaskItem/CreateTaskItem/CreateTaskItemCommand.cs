@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using TaskFlow.Tasks.Application.DTOs;
+using TaskFlow.Tasks.Application.DTOs.Responses;
 using TaskFlow.Tasks.Application.Results;
 using TaskFlow.Tasks.Domain.Enums;
 

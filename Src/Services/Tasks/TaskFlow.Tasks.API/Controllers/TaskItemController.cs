@@ -1,6 +1,9 @@
 ﻿using MediatR;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using TaskFlow.Tasks.API.Extensions;
+using TaskFlow.Tasks.Application.DTOs.Requests.TaskItem;
 using TaskFlow.Tasks.Application.Queries.TaskItem.GetById;
 using TaskFlow.Tasks.Application.Queries.TaskItem.GetByAssignee;
 using TaskFlow.Tasks.Application.Queries.TaskItem.GetByReporter;
@@ -13,11 +16,13 @@ using TaskFlow.Tasks.Application.Commands.TaskItem.DeleteTaskItem;
 namespace TaskFlow.Tasks.API.Controllers {
     [ApiController]
     [Route("api/tasks")]
-    public class TaskItemController(IMediator mediator) : ControllerBase {
+    [Authorize]
+    public class TaskItemController(IMediator mediator, IMapper mapper) : ControllerBase {
         private readonly IMediator _mediator = mediator;
+        private readonly IMapper _mapper = mapper;
 
         [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetById([FromRoute] Guid id) { 
+        public async Task<IActionResult> GetById([FromRoute] Guid id) {
             var query = new GetTaskItemByIdQuery(id);
 
             var result = await _mediator.Send(query);
@@ -25,7 +30,7 @@ namespace TaskFlow.Tasks.API.Controllers {
         }
 
         [HttpGet("by-assignee/{assigneeId:guid}")]
-        public async Task<IActionResult> GetByAssignee([FromRoute] Guid assigneeId) { 
+        public async Task<IActionResult> GetByAssignee([FromRoute] Guid assigneeId) {
             var query = new GetTaskItemsByAssigneeQuery(assigneeId);
 
             var result = await _mediator.Send(query);
@@ -43,7 +48,7 @@ namespace TaskFlow.Tasks.API.Controllers {
         [HttpGet("by-project/{projectId:guid}")]
         public async Task<IActionResult> GetByProject([FromRoute] Guid projectId) {
             var query = new GetTaskItemsByProjectQuery(projectId);
-            
+
             var result = await _mediator.Send(query);
             return result.ToActionResult();
         }
@@ -57,13 +62,31 @@ namespace TaskFlow.Tasks.API.Controllers {
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateTaskItemCommand command) {
+        public async Task<IActionResult> Create([FromBody] CreateTaskItemRequest request) {
+            var command = _mapper.Map<CreateTaskItemCommand>(
+                request,
+                opts => opts.Items["CurrentUserId"] = User.GetUserId()
+            );
+
             var result = await _mediator.Send(command);
+
+            if (result.Succeeded) {
+                return CreatedAtAction(
+                    nameof(GetById),
+                    new { id = result.Value!.Id },
+                    result.Value
+                );
+            }
+
             return result.ToActionResult();
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Update([FromBody] UpdateTaskItemCommand command) { 
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateTaskItemRequest request) {
+            var command = _mapper.Map<UpdateTaskItemCommand>(request,
+                opts => opts.Items[nameof(UpdateTaskItemCommand.Id)] = id
+            );
+
             var result = await _mediator.Send(command);
             return result.ToActionResult();
         }

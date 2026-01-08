@@ -1,6 +1,6 @@
 ﻿using TaskFlow.Tasks.Domain.Enums;
 
-namespace TaskFlow.Tasks.Application.DTOs {
+namespace TaskFlow.Tasks.Application.DTOs.Responses {
     public record ProjectMemberDto(
         Guid Id,
         Guid UserId,
