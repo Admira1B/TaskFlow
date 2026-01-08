@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using TaskFlow.Tasks.API.Extensions;
 using TaskFlow.Tasks.Application.DTOs.Requests.TaskItem;
 using TaskFlow.Tasks.Application.Queries.TaskItem.GetById;
@@ -15,6 +16,7 @@ using TaskFlow.Tasks.Application.Commands.TaskItem.DeleteTaskItem;
 namespace TaskFlow.Tasks.API.Controllers {
     [ApiController]
     [Route("api/tasks")]
+    [Authorize]
     public class TaskItemController(IMediator mediator, IMapper mapper) : ControllerBase {
         private readonly IMediator _mediator = mediator;
         private readonly IMapper _mapper = mapper;
@@ -82,7 +84,7 @@ namespace TaskFlow.Tasks.API.Controllers {
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateTaskItemRequest request) {
             var command = _mapper.Map<UpdateTaskItemCommand>(request,
-                opts => opts.Items["TaskItemId"] = id
+                opts => opts.Items[nameof(UpdateTaskItemCommand.Id)] = id
             );
 
             var result = await _mediator.Send(command);
