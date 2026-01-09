@@ -1,10 +1,10 @@
 ﻿using Microsoft.OpenApi;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using TaskFlow.Identity.Application.Commands.Auth.Login;
 using TaskFlow.Identity.Application.Mapping;
-using TaskFlow.Identity.Domain.Contracts.Repositories;
+using TaskFlow.Identity.Application.Commands.Auth.Login;
 using TaskFlow.Identity.Domain.Entities;
+using TaskFlow.Identity.Domain.Contracts.Repositories;
 using TaskFlow.Identity.Infrastructure.SqlServer;
 using TaskFlow.Identity.Infrastructure.SqlServer.Repositories;
 
@@ -48,7 +48,7 @@ namespace TaskFlow.Identity.API.Extensions {
                 options.Password.RequireLowercase = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequiredLength = 6;
+                options.Password.RequiredLength = 8;
                 
                 // User Options
                 options.User.RequireUniqueEmail = true;

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using TaskFlow.Identity.Application.DTOs;
+using TaskFlow.Identity.Application.DTOs.Responses;
 
 namespace TaskFlow.Identity.Application.Queries.User.GetByEmail {
     public class GetUserByEmailQueryHandler(IMapper mapper, UserManager<Domain.Entities.User> manager) : IRequestHandler<GetUserByEmailQuery, UserDto?> {

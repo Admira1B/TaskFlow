@@ -1,17 +1,22 @@
 ﻿using MediatR;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using TaskFlow.Identity.Application.Commands.User.UpdateUser;
-using TaskFlow.Identity.Application.Commands.User.DeleteUser;
+using Microsoft.AspNetCore.Authorization;
+using TaskFlow.Identity.Application.DTOs.Requests.User;
 using TaskFlow.Identity.Application.Queries.User.GetById;
 using TaskFlow.Identity.Application.Queries.User.GetByName;
 using TaskFlow.Identity.Application.Queries.User.GetByEmail;
 using TaskFlow.Identity.Application.Queries.User.GetPaginated;
+using TaskFlow.Identity.Application.Commands.User.DeleteUser;
+using TaskFlow.Identity.Application.Commands.User.UpdateUser;
 
 namespace TaskFlow.Identity.API.Controllers {
     [ApiController]
     [Route("api/users")]
-    public class UserController(IMediator mediator) : ControllerBase {
+    [Authorize]
+    public class UserController(IMediator mediator, IMapper mapper) : ControllerBase {
         private readonly IMediator _mediator = mediator;
+        private readonly IMapper _mapper = mapper;
 
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById([FromRoute] Guid id) {
@@ -53,14 +58,21 @@ namespace TaskFlow.Identity.API.Controllers {
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetPaginated([FromQuery] GetUsersPaginatedQuery query) {
+        public async Task<IActionResult> GetPaginated([FromQuery] GetUsersPaginatedRequest request) {
+            var query = _mapper.Map<GetUsersPaginatedQuery>(request);
+            
             var result = await _mediator.Send(query);
 
             return Ok(result);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Update([FromBody] UpdateUserCommand command) { 
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateUserRequest request) { 
+            var command = _mapper.Map<UpdateUserCommand>(
+                request,
+                opts => opts.Items[nameof(UpdateUserCommand.Id)] = id
+            );
+
             var result = await _mediator.Send(command);
 
             if (!result) {
