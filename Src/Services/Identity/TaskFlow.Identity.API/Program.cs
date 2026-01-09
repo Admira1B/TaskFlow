@@ -1,3 +1,5 @@
+using TaskFlow.Identity.API.Extensions;
+
 namespace TaskFlow.Identity.API {
     public class Program {
         public static void Main(string[] args) {

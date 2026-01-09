@@ -1,8 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi;
+﻿using Microsoft.OpenApi;
+using Microsoft.EntityFrameworkCore;
+using TaskFlow.Tasks.Application.Mapping;
+using TaskFlow.Tasks.Application.Commands.Comment.CreateComment;
+using TaskFlow.Tasks.Domain.Contracts;
 using TaskFlow.Tasks.Infrastructure.SqlServer;
+using TaskFlow.Tasks.Infrastructure.SqlServer.Repositories;
 
-namespace TaskFlow.Tasks.API {
+namespace TaskFlow.Tasks.API.Extensions {
     internal static class ServiceCollectionExtensions {
         public static IServiceCollection AddTaskServiceDependencies(this IServiceCollection services) {
             // Adding controllers
@@ -30,6 +34,21 @@ namespace TaskFlow.Tasks.API {
                     sqlOptions.EnableRetryOnFailure();
                 });
             });
+
+
+            // Data Access
+            services.AddScoped<ICommentRepository, CommentRepository>();
+            services.AddScoped<IProjectRepository, ProjectRepository>();
+            services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
+            services.AddScoped<ITaskGroupRepository, TaskGroupRepository>();
+            services.AddScoped<ITaskItemRepository, TaskItemRepository>();
+
+            // MediatoR
+            services.AddMediatR(cfg =>
+                cfg.RegisterServicesFromAssembly(typeof(CreateCommentCommandHandler).Assembly));
+
+            // AutoMapper
+            services.AddAutoMapper(typeof(TaskServiceMapperProfile).Assembly);
 
             return services;
         }

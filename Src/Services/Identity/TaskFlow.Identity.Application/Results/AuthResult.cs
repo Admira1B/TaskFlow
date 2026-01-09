@@ -1,4 +1,4 @@
-﻿using TaskFlow.Identity.Application.DTOs;
+﻿using TaskFlow.Identity.Application.DTOs.Responses;
 
 namespace TaskFlow.Identity.Application.Results {
     public class AuthResult {

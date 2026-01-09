@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using TaskFlow.Identity.Application.DTOs;
+using TaskFlow.Identity.Application.DTOs.Responses;
 
 namespace TaskFlow.Identity.Application.Commands.Role.CreateRole {
     public class CreateRoleCommandHandler(IMapper mapper, RoleManager<Domain.Entities.Role> manager) : IRequestHandler<CreateRoleCommand, RoleDto?> {

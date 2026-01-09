@@ -1,4 +1,4 @@
-﻿namespace TaskFlow.Identity.Application.DTOs {
+﻿namespace TaskFlow.Identity.Application.DTOs.Responses {
     public record RoleDto (
     Guid Id,
     string Name,

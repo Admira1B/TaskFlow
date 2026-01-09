@@ -1,3 +1,5 @@
+using TaskFlow.Tasks.API.Extensions;
+
 namespace TaskFlow.Tasks.API {
     public class Program {
         public static void Main(string[] args) {
