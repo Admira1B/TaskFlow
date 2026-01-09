@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using TaskFlow.Tasks.Application.Results;
 using TaskFlow.Tasks.Domain.Enums;
+using TaskFlow.Tasks.Application.Results;
 
 namespace TaskFlow.Tasks.API.Extensions {
     public static class RequestResultExtensions {

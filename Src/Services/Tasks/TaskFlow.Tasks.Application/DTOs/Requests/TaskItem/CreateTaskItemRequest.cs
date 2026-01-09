@@ -1,11 +1,12 @@
-﻿using TaskFlow.Tasks.Domain.Enums;
+﻿using System.ComponentModel.DataAnnotations;
+using TaskFlow.Tasks.Domain.Enums;
 
 namespace TaskFlow.Tasks.Application.DTOs.Requests.TaskItem {
     public record CreateTaskItemRequest(
-        string Title,
-        string? Description,
-        Guid GroupId,
+        [Required, MinLength(3), MaxLength(200)] string Title,
+        [MaxLength(1000)] string? Description,
+        [Required] Guid GroupId,
         Guid? AssignedId,
-        Priority Priority
+        Priority Priority = Priority.Medium
     );
 }

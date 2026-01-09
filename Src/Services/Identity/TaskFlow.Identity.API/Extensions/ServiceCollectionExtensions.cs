@@ -8,7 +8,7 @@ using TaskFlow.Identity.Domain.Entities;
 using TaskFlow.Identity.Infrastructure.SqlServer;
 using TaskFlow.Identity.Infrastructure.SqlServer.Repositories;
 
-namespace TaskFlow.Identity.API {
+namespace TaskFlow.Identity.API.Extensions {
     internal static class ServiceCollectionExtensions {
         public static IServiceCollection AddIdentityServiceDependencies(this IServiceCollection services) {
             // Adding controllers
@@ -61,7 +61,7 @@ namespace TaskFlow.Identity.API {
                 cfg.RegisterServicesFromAssembly(typeof(LoginCommandHandler).Assembly));
 
             // AutoMapper
-            services.AddAutoMapper(typeof(IdentityMapperProfile).Assembly);
+            services.AddAutoMapper(typeof(IdentityServiceMapperProfile).Assembly);
 
             return services;
         }
