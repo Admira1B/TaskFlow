@@ -1,14 +1,15 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
-using TaskFlow.Identity.Application.DTOs.Responses;
 using TaskFlow.Identity.Application.Results;
+using TaskFlow.Identity.Domain.Contracts.Services;
+using TaskFlow.Identity.Application.DTOs.Responses;
 
 namespace TaskFlow.Identity.Application.Commands.Auth.Register {
-    public class RegisterCommandHandler(IMapper mapper, UserManager<Domain.Entities.User> userManager, SignInManager<Domain.Entities.User> signInManager) : IRequestHandler<RegisterCommand, AuthResult> {
+    public class RegisterCommandHandler(IMapper mapper, UserManager<Domain.Entities.User> userManager, IJsonWebTokenService jwtService) : IRequestHandler<RegisterCommand, AuthResult> {
         private readonly IMapper _mapper = mapper;
         private readonly UserManager<Domain.Entities.User> _userManager = userManager;
-        private readonly SignInManager<Domain.Entities.User> _signInManager = signInManager;
+        private readonly IJsonWebTokenService _jwtService = jwtService;
 
         public async Task<AuthResult> Handle(RegisterCommand command, CancellationToken cancellationToken) {
             var existsByEmail = await _userManager.FindByEmailAsync(command.Email);
@@ -38,7 +39,15 @@ namespace TaskFlow.Identity.Application.Commands.Auth.Register {
                 return AuthResult.Failure(string.Join(",", errors));
             }
 
-            return AuthResult.Success(_mapper.Map<UserDto>(user));
+            string token;
+
+            try {
+                token = await _jwtService.GenerateWebTokenAsync(user);
+            } catch (Exception) {
+                return AuthResult.Failure("Json Web Token generation failed");
+            }
+
+            return AuthResult.Success(_mapper.Map<UserDto>(user), token);
         }
     }
 }

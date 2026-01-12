@@ -2,6 +2,6 @@
 
 namespace TaskFlow.Identity.Domain.Contracts.Services {
     public interface IJsonWebTokenService {
-        Task<string> GenerateWebToken(User user);
+        Task<string> GenerateWebTokenAsync(User user);
     }
 }
