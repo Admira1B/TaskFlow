@@ -6,12 +6,15 @@ namespace TaskFlow.Identity.API {
             var builder = WebApplication.CreateBuilder(args);
 
             // Adding Service dependencies
-            builder.Services.AddIdentityServiceDependencies();
+            builder.Services.AddIdentityServiceDependencies(builder.Configuration);
 
             var app = builder.Build();
 
             app.UseSwagger();
             app.UseSwaggerUI();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.MapControllers();
 

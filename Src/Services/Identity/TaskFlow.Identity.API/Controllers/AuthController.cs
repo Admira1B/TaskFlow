@@ -1,7 +1,8 @@
 ﻿using MediatR;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.Extensions.Options;
+using TaskFlow.Identity.Domain.Options;
 using TaskFlow.Identity.Application.Commands.Auth.Login;
 using TaskFlow.Identity.Application.Commands.Auth.Logout;
 using TaskFlow.Identity.Application.Commands.Auth.Register;
@@ -9,12 +10,13 @@ using TaskFlow.Identity.Application.Commands.Auth.Register;
 namespace TaskFlow.Identity.API.Controllers {
     [ApiController]
     [Route("api/auth")]
-    public class AuthController(IMediator mediator, IMapper mapper) : ControllerBase {
+    public class AuthController(IMediator mediator, IMapper mapper, IOptions<JsonWebTokenOptions> jwtOptions) : ControllerBase {
         private readonly IMediator _mediator = mediator;
         private readonly IMapper _mapper = mapper;
+        private readonly JsonWebTokenOptions _jwtOptions = jwtOptions.Value;
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterRequest request) {
+        public async Task<IActionResult> Register([FromBody] Application.DTOs.Requests.Auth.RegisterRequest request) {
             var command = _mapper.Map<RegisterCommand>(request);
 
             var result = await _mediator.Send(command);
@@ -23,11 +25,17 @@ namespace TaskFlow.Identity.API.Controllers {
                 return BadRequest(result.ErrorMessage);
             }
 
-            return Ok(result.User);
+            return Ok(
+                new {
+                    user = result.User,
+                    token = result.Token,
+                    expiresIn = _jwtOptions.ExpiresHours * 3600
+                }
+            );
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request) {
+        public async Task<IActionResult> Login([FromBody] Application.DTOs.Requests.Auth.LoginRequest request) {
             var command = _mapper.Map<LoginCommand>(request);
 
             var result = await _mediator.Send(command);
@@ -36,7 +44,13 @@ namespace TaskFlow.Identity.API.Controllers {
                 return Unauthorized(result.ErrorMessage);
             }
 
-            return Ok(result.User);
+            return Ok(
+                new {
+                    user = result.User,
+                    token = result.Token,
+                    expiresIn = _jwtOptions.ExpiresHours * 3600
+                }
+            );
         }
 
         [HttpPost("logout")]

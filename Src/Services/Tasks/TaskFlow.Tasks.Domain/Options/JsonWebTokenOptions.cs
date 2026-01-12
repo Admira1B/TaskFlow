@@ -1,8 +1,9 @@
-﻿namespace TaskFlow.Identity.Domain {
+﻿namespace TaskFlow.Tasks.Domain.Options {
     public class JsonWebTokenOptions {
         public string Issuer { get; set; } = null!;
-        public List<string> Audiences { get; set; } = [];
+        public string Audience { get; set; } = null!;
         public string SecretKey { get; set; } = null!;
+        public string CookieName { get; set; } = null!;
         public int ExpiresHours { get; set; }
     }
 }

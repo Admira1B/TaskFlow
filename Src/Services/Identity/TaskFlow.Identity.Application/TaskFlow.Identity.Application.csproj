@@ -4,8 +4,8 @@
     <ProjectReference Include="..\TaskFlow.Identity.Infrastructure.SqlServer\TaskFlow.Identity.Infrastructure.SqlServer.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AutoMapper" />
     <PackageReference Include="MediatR" />
+    <PackageReference Include="AutoMapper" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" />
   </ItemGroup>
 </Project>
