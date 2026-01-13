@@ -34,21 +34,15 @@ namespace TaskFlow.Identity.API.Extensions {
 
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme {
                     Type = SecuritySchemeType.Http,
-                    Scheme = "Bearer",
+                    Scheme = "bearer",
                     BearerFormat = "JWT",
                     Description = "JWT Authorization header using the Bearer scheme. Example: 'Bearer {token}'",
                     Name = "Authorization",
                     In = ParameterLocation.Header
                 });
 
-                options.AddSecurityRequirement(document => {
-                    var schemeReference = new OpenApiSecuritySchemeReference("Bearer");
-
-                    var requirement = new OpenApiSecurityRequirement {
-                        [schemeReference] = []
-                    };
-
-                    return requirement;
+                options.AddSecurityRequirement(document => new OpenApiSecurityRequirement {
+                    [new OpenApiSecuritySchemeReference("Bearer", document)] = []
                 });
             });
 

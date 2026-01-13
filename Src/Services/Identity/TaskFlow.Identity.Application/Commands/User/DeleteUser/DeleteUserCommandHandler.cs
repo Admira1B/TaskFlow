@@ -1,24 +1,27 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
+using TaskFlow.Identity.Application.Results;
 
 namespace TaskFlow.Identity.Application.Commands.User.DeleteUser {
-    public class DeleteUserCommandHandler(UserManager<Domain.Entities.User> manager) : IRequestHandler<DeleteUserCommand, bool> {
+    public class DeleteUserCommandHandler(UserManager<Domain.Entities.User> manager) : IRequestHandler<DeleteUserCommand, RequestResult<Unit>> {
         private readonly UserManager<Domain.Entities.User> _manager = manager;
 
-        public async Task<bool> Handle(DeleteUserCommand command, CancellationToken cancellationToken) {
+        public async Task<RequestResult<Unit>> Handle(DeleteUserCommand command, CancellationToken cancellationToken) {
             var user = await _manager.FindByIdAsync(command.Id.ToString());
 
             if (user is null) {
-                return false;
+                return RequestResult<Unit>.NotFound("User", command.Id);
             }
 
             var result = await _manager.DeleteAsync(user);
 
             if (!result.Succeeded) {
-                return false;
+                var errors = result.Errors.Select(e => e.Description);
+
+                return RequestResult<Unit>.Failure(string.Join(",", errors));
             }
 
-            return true;
+            return RequestResult<Unit>.Success();
         }
     }
 }

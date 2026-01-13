@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using TaskFlow.Tasks.Application.Results;
 using TaskFlow.Tasks.Domain.Contracts;
+using TaskFlow.Tasks.Application.Results;
 
 namespace TaskFlow.Tasks.Application.Commands.Project.UpdateProject {
     public class UpdateProjectCommandHandler(IProjectRepository repository) : IRequestHandler<UpdateProjectCommand, RequestResult<Unit>> {

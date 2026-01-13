@@ -1,4 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
@@ -6,4 +7,5 @@
 	<ItemGroup>
 		<ProjectReference Include="..\TaskFlow.Identity.Domain\TaskFlow.Identity.Domain.csproj" />
 	</ItemGroup>
+
 </Project>

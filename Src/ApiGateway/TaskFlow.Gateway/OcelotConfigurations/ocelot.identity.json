@@ -1,0 +1,50 @@
+{
+  "DownstreamScheme": "http",
+  "DownstreamHostAndPorts": [
+    {
+      "Host": "localhost",
+      "Port": 5001
+    }
+  ],
+  "Routes": [
+    {
+      "Key": "identity_service_auth_register",
+      "DownstreamPathTemplate": "/api/auth/register",
+      "UpstreamPathTemplate": "/identity/auth/register",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "Key": "identity_service_auth_login",
+      "DownstreamPathTemplate": "/api/auth/login",
+      "UpstreamPathTemplate": "/identity/auth/login",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "Key": "identity_service_auth_logout",
+      "DownstreamPathTemplate": "/api/auth/logout",
+      "UpstreamPathTemplate": "/identity/auth/logout",
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "Key": "identity_service_users",
+      "DownstreamPathTemplate": "/api/users/{everything}",
+      "UpstreamPathTemplate": "/identity/users/{everything}",
+      "UpstreamHttpMethod": [ "GET", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "Key": "identity_service_roles",
+      "DownstreamPathTemplate": "/api/roles/{everything}",
+      "UpstreamPathTemplate": "/identity/roles/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    }
+  ]
+}

@@ -2,13 +2,14 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using TaskFlow.Identity.API.Extensions;
 using TaskFlow.Identity.Application.DTOs.Requests.Role;
 using TaskFlow.Identity.Application.Queries.Role.GetById;
 using TaskFlow.Identity.Application.Queries.Role.GetByName;
 using TaskFlow.Identity.Application.Queries.Role.GetPaginated;
 using TaskFlow.Identity.Application.Commands.Role.CreateRole;
-using TaskFlow.Identity.Application.Commands.Role.DeleteRole;
 using TaskFlow.Identity.Application.Commands.Role.UpdateRole;
+using TaskFlow.Identity.Application.Commands.Role.DeleteRole;
 
 namespace TaskFlow.Identity.API.Controllers {
     [ApiController]
@@ -23,12 +24,7 @@ namespace TaskFlow.Identity.API.Controllers {
             var query = new GetRoleByIdQuery(id);
 
             var result = await _mediator.Send(query);
-
-            if (result is null) {
-                return NotFound();
-            }
-
-            return Ok(result);
+            return result.ToActionResult();
         }
 
         [HttpGet("by-name/{name}")]
@@ -36,12 +32,7 @@ namespace TaskFlow.Identity.API.Controllers {
             var query = new GetRoleByNameQuery(name);
 
             var result = await _mediator.Send(query);
-
-            if (result is null) {
-                return NotFound();
-            }
-
-            return Ok(result);
+            return result.ToActionResult();
         }
 
         [HttpGet]
@@ -49,8 +40,7 @@ namespace TaskFlow.Identity.API.Controllers {
             var query = _mapper.Map<GetRolesPaginatedQuery>(request);
             
             var result = await _mediator.Send(query);
-
-            return Ok(result);
+            return result.ToActionResult();
         }
 
         [HttpPost]
@@ -59,11 +49,11 @@ namespace TaskFlow.Identity.API.Controllers {
 
             var result = await _mediator.Send(command);
 
-            if (result is null) {
-                return BadRequest();
+            if (result.Succeeded) {
+                return CreatedAtAction(nameof(GetById), new { result.Value!.Id }, result.Value);  
             }
 
-            return CreatedAtAction(nameof(GetById), new { result.Id }, result);  
+            return result.ToActionResult();
         }
 
         [HttpPut("{id:guid}")]
@@ -74,12 +64,7 @@ namespace TaskFlow.Identity.API.Controllers {
             );
 
             var result = await _mediator.Send(command);
-
-            if (!result) {
-                return BadRequest();
-            }
-
-            return NoContent();
+            return result.ToActionResult();
         }
 
         [HttpDelete("{id:guid}")]
@@ -87,12 +72,7 @@ namespace TaskFlow.Identity.API.Controllers {
             var command = new DeleteRoleCommand(id);
 
             var result = await _mediator.Send(command);
-
-            if (!result) {
-                return BadRequest();
-            }
-
-            return NoContent();
+            return result.ToActionResult();
         }
     }
 }
