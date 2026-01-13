@@ -1,4 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
 	<ItemGroup>
 		<ProjectReference Include="..\TaskFlow.Tasks.Domain\TaskFlow.Tasks.Domain.csproj" />
 		<ProjectReference Include="..\TaskFlow.Tasks.Infrastructure.SqlServer\TaskFlow.Tasks.Infrastructure.SqlServer.csproj" />
@@ -7,4 +8,5 @@
 		<PackageReference Include="MediatR" />
 		<PackageReference Include="AutoMapper" />
 	</ItemGroup>
+
 </Project>

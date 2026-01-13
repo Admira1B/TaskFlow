@@ -1,5 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\Shared\TaskFlow.Shared.Core\TaskFlow.Shared.Core.csproj" />
 	</ItemGroup>
+
 </Project>
