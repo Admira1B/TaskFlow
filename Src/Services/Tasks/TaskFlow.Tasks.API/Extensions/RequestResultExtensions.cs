@@ -15,10 +15,10 @@ namespace TaskFlow.Tasks.API.Extensions {
             }
 
             return result.ErrorType switch {
-                ErrorEnum.EntityNotFound => new NotFoundObjectResult(result.ErrorMessage),
-                ErrorEnum.ValidationFailed => new BadRequestObjectResult(result.ErrorMessage),
-                ErrorEnum.AlreadyExists => new ConflictObjectResult(result.ErrorMessage),
-                ErrorEnum.InvalidOperation => new BadRequestObjectResult(result.ErrorMessage),
+                ErrorType.AlreadyExists => new ConflictObjectResult(result.ErrorMessage),
+                ErrorType.EntityNotFound => new NotFoundObjectResult(result.ErrorMessage),
+                ErrorType.ValidationFailed => new BadRequestObjectResult(result.ErrorMessage),
+                ErrorType.InvalidOperation => new BadRequestObjectResult(result.ErrorMessage),
                 _ => new BadRequestObjectResult("An unexpected error occurred")
             };
         }

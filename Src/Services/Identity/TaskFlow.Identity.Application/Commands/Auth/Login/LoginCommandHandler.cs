@@ -16,7 +16,7 @@ namespace TaskFlow.Identity.Application.Commands.Auth.Login {
             var user = await _userManager.FindByNameAsync(command.UserName);
 
             if (user == null) {
-                return AuthResult.Failure("Invalid credentials");
+                return AuthResult.NotFound("UserName", command.UserName);
             }
 
             var result = await _signInManager.PasswordSignInAsync(
@@ -27,16 +27,10 @@ namespace TaskFlow.Identity.Application.Commands.Auth.Login {
             );
 
             if (!result.Succeeded) {
-                return AuthResult.Failure("Invalid credentials");
+                return AuthResult.InvalidCredentials();
             }
 
-            string token;
-
-            try {
-                token = await _jwtService.GenerateWebTokenAsync(user);
-            } catch (Exception) {
-                return AuthResult.Failure("Json Web Token generation failed");
-            }
+            var token = await _jwtService.GenerateWebTokenAsync(user);
 
             return AuthResult.Success(_mapper.Map<UserDto>(user), token);
         }

@@ -2,13 +2,14 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using TaskFlow.Identity.API.Extensions;
 using TaskFlow.Identity.Application.DTOs.Requests.User;
 using TaskFlow.Identity.Application.Queries.User.GetById;
 using TaskFlow.Identity.Application.Queries.User.GetByName;
 using TaskFlow.Identity.Application.Queries.User.GetByEmail;
 using TaskFlow.Identity.Application.Queries.User.GetPaginated;
-using TaskFlow.Identity.Application.Commands.User.DeleteUser;
 using TaskFlow.Identity.Application.Commands.User.UpdateUser;
+using TaskFlow.Identity.Application.Commands.User.DeleteUser;
 
 namespace TaskFlow.Identity.API.Controllers {
     [ApiController]
@@ -23,12 +24,7 @@ namespace TaskFlow.Identity.API.Controllers {
             var query = new GetUserByIdQuery(id);
 
             var result = await _mediator.Send(query);
-
-            if (result is null) {
-                return NotFound();
-            }
-
-            return Ok(result);
+            return result.ToActionResult();
         }
 
         [HttpGet("by-email/{email}")]
@@ -36,12 +32,7 @@ namespace TaskFlow.Identity.API.Controllers {
             var query = new GetUserByEmailQuery(email);
 
             var result = await _mediator.Send(query);
-
-            if (result is null) {
-                return NotFound();
-            }
-
-            return Ok(result);
+            return result.ToActionResult();
         }
 
         [HttpGet("by-name/{name}")]
@@ -49,21 +40,15 @@ namespace TaskFlow.Identity.API.Controllers {
             var query = new GetUserByUserNameQuery(name);
 
             var result = await _mediator.Send(query);
-
-            if (result is null) {
-                return NotFound();
-            }
-
-            return Ok(result);
+            return result.ToActionResult();
         }
 
         [HttpGet]
         public async Task<IActionResult> GetPaginated([FromQuery] GetUsersPaginatedRequest request) {
             var query = _mapper.Map<GetUsersPaginatedQuery>(request);
-            
-            var result = await _mediator.Send(query);
 
-            return Ok(result);
+            var result = await _mediator.Send(query);
+            return result.ToActionResult();
         }
 
         [HttpPut("{id:guid}")]
@@ -74,12 +59,7 @@ namespace TaskFlow.Identity.API.Controllers {
             );
 
             var result = await _mediator.Send(command);
-
-            if (!result) {
-                return BadRequest();
-            }
-
-            return NoContent();
+            return result.ToActionResult();
         }
 
         [HttpDelete("{id:guid}")]
@@ -87,12 +67,7 @@ namespace TaskFlow.Identity.API.Controllers {
             var command = new DeleteUserCommand(id);
 
             var result = await _mediator.Send(command);
-
-            if (!result) {
-                return BadRequest();
-            }
-
-            return NoContent();
+            return result.ToActionResult();
         }
     }
 }

@@ -13,8 +13,6 @@ namespace TaskFlow.Identity.Application.Services {
         private readonly JsonWebTokenOptions _options = options.Value;
         private readonly UserManager<User> _userManager = userManager;
         public async Task<string> GenerateWebTokenAsync(User user) {
-            ArgumentNullException.ThrowIfNull(user);
-
             var roles = await _userManager.GetRolesAsync(user);
 
             var claims = new List<Claim> {

@@ -15,13 +15,13 @@ namespace TaskFlow.Identity.Application.Commands.Auth.Register {
             var existsByEmail = await _userManager.FindByEmailAsync(command.Email);
 
             if (existsByEmail is not null) {
-                return AuthResult.Failure($"User with Email {command.Email} already exists");
+                return AuthResult.AlreadyExists("Email", command.Email);
             }
 
             var existsByName = await _userManager.FindByNameAsync(command.UserName);
 
             if (existsByName is not null) {
-                return AuthResult.Failure($"User with UserName {command.UserName} already exists");
+                return AuthResult.AlreadyExists("UserName", command.UserName);
             }
 
             var user = new Domain.Entities.User {
@@ -39,13 +39,7 @@ namespace TaskFlow.Identity.Application.Commands.Auth.Register {
                 return AuthResult.Failure(string.Join(",", errors));
             }
 
-            string token;
-
-            try {
-                token = await _jwtService.GenerateWebTokenAsync(user);
-            } catch (Exception) {
-                return AuthResult.Failure("Json Web Token generation failed");
-            }
+            var token = await _jwtService.GenerateWebTokenAsync(user);
 
             return AuthResult.Success(_mapper.Map<UserDto>(user), token);
         }

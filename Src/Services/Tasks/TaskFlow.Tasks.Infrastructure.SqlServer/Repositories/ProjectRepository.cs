@@ -1,6 +1,6 @@
-﻿using TaskFlow.Tasks.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using TaskFlow.Tasks.Domain.Entities;
 using TaskFlow.Tasks.Domain.Contracts;
-using Microsoft.EntityFrameworkCore;
 
 namespace TaskFlow.Tasks.Infrastructure.SqlServer.Repositories {
     public class ProjectRepository(TaskServiceDbContext dbContext) : IProjectRepository {

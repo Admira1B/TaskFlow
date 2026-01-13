@@ -2,6 +2,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using TaskFlow.Identity.API.Extensions;
 using TaskFlow.Identity.Domain.Options;
 using TaskFlow.Identity.Application.Commands.Auth.Login;
 using TaskFlow.Identity.Application.Commands.Auth.Logout;
@@ -20,18 +21,7 @@ namespace TaskFlow.Identity.API.Controllers {
             var command = _mapper.Map<RegisterCommand>(request);
 
             var result = await _mediator.Send(command);
-
-            if (!result.Succeeded) {
-                return BadRequest(result.ErrorMessage);
-            }
-
-            return Ok(
-                new {
-                    user = result.User,
-                    token = result.Token,
-                    expiresIn = _jwtOptions.ExpiresHours * 3600
-                }
-            );
+            return result.ToActionResult(_jwtOptions);
         }
 
         [HttpPost("login")]
@@ -39,24 +29,12 @@ namespace TaskFlow.Identity.API.Controllers {
             var command = _mapper.Map<LoginCommand>(request);
 
             var result = await _mediator.Send(command);
-
-            if (!result.Succeeded) {
-                return Unauthorized(result.ErrorMessage);
-            }
-
-            return Ok(
-                new {
-                    user = result.User,
-                    token = result.Token,
-                    expiresIn = _jwtOptions.ExpiresHours * 3600
-                }
-            );
+            return result.ToActionResult(_jwtOptions);
         }
 
         [HttpPost("logout")]
         public async Task<IActionResult> Logout() {
             await _mediator.Send(new LogoutCommand());
-
             return Ok();
         }
     }

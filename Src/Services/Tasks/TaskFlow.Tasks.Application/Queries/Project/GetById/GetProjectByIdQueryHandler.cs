@@ -1,8 +1,8 @@
-﻿using AutoMapper;
-using MediatR;
-using TaskFlow.Tasks.Application.DTOs.Responses;
-using TaskFlow.Tasks.Application.Results;
+﻿using MediatR;
+using AutoMapper;
 using TaskFlow.Tasks.Domain.Contracts;
+using TaskFlow.Tasks.Application.Results;
+using TaskFlow.Tasks.Application.DTOs.Responses;
 
 namespace TaskFlow.Tasks.Application.Queries.Project.GetById {
     public class GetProjectByIdQueryHandler(IMapper mapper, IProjectRepository repository) : IRequestHandler<GetProjectByIdQuery, RequestResult<ProjectDto>> {

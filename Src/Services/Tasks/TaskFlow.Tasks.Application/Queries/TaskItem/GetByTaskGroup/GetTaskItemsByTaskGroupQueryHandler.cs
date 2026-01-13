@@ -1,8 +1,8 @@
-﻿using AutoMapper;
-using MediatR;
-using TaskFlow.Tasks.Application.DTOs.Responses;
-using TaskFlow.Tasks.Application.Results;
+﻿using MediatR;
+using AutoMapper;
 using TaskFlow.Tasks.Domain.Contracts;
+using TaskFlow.Tasks.Application.Results;
+using TaskFlow.Tasks.Application.DTOs.Responses;
 
 namespace TaskFlow.Tasks.Application.Queries.TaskItem.GetByTaskGroup {
     public class GetTaskItemsByTaskGroupQueryHandler(IMapper mapper, ITaskItemRepository repository, ITaskGroupRepository groupRepository) : IRequestHandler<GetTaskItemsByTaskGroupQuery, RequestResult<List<TaskItemDto>>> {

@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using TaskFlow.Tasks.Application.Results;
 using TaskFlow.Tasks.Domain.Contracts;
+using TaskFlow.Tasks.Application.Results;
 
 namespace TaskFlow.Tasks.Application.Commands.ProjectMember.DeleteProjectMember {
     public class DeleteProjectMemberCommandHandler(IProjectMemberRepository repository) : IRequestHandler<DeleteProjectMemberCommand, RequestResult<Unit>> {
