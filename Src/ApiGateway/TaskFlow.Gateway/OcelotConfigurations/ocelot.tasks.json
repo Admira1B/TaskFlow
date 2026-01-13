@@ -1,0 +1,56 @@
+{
+  "DownstreamScheme": "http",
+  "DownstreamHostAndPorts": [
+    {
+      "Host": "localhost",
+      "Port": 5002
+    }
+  ],
+  "Routes": [
+    {
+      "Key": "tasks_service_comments",
+      "DownstreamPathTemplate": "/api/comments/{everything}",
+      "UpstreamPathTemplate": "/flow/comments/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "Key": "tasks_service_projects",
+      "DownstreamPathTemplate": "/api/projects/{everything}",
+      "UpstreamPathTemplate": "/flow/projects/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "Key": "tasks_service_members",
+      "DownstreamPathTemplate": "/api/members/{everything}",
+      "UpstreamPathTemplate": "/flow/members/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "Key": "tasks_service_groups",
+      "DownstreamPathTemplate": "/api/groups/{everything}",
+      "UpstreamPathTemplate": "/flow/groups/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "Key": "tasks_service_tasks",
+      "DownstreamPathTemplate": "/api/tasks/{everything}",
+      "UpstreamPathTemplate": "/flow/tasks/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    }
+  ]
+}

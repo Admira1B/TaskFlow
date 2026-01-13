@@ -2,6 +2,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Authorization;
 using TaskFlow.Identity.API.Extensions;
 using TaskFlow.Identity.Domain.Options;
 using TaskFlow.Identity.Application.Commands.Auth.Login;
@@ -33,6 +34,7 @@ namespace TaskFlow.Identity.API.Controllers {
         }
 
         [HttpPost("logout")]
+        [Authorize]
         public async Task<IActionResult> Logout() {
             await _mediator.Send(new LogoutCommand());
             return Ok();
