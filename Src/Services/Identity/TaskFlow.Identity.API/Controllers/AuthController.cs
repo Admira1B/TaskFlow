@@ -12,10 +12,10 @@ using TaskFlow.Identity.Application.Commands.Auth.Register;
 namespace TaskFlow.Identity.API.Controllers {
     [ApiController]
     [Route("api/auth")]
-    public class AuthController(IMediator mediator, IMapper mapper, IOptions<JsonWebTokenOptions> jwtOptions) : ControllerBase {
+    public class AuthController(IMediator mediator, IMapper mapper, IOptions<JsonWebTokenGenerationOptions> jwtOptions) : ControllerBase {
         private readonly IMediator _mediator = mediator;
         private readonly IMapper _mapper = mapper;
-        private readonly JsonWebTokenOptions _jwtOptions = jwtOptions.Value;
+        private readonly JsonWebTokenGenerationOptions _jwtOptions = jwtOptions.Value;
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] Application.DTOs.Requests.Auth.RegisterRequest request) {

@@ -85,7 +85,7 @@ namespace TaskFlow.Identity.API.Composition {
 
             // JsonWebToken Authentication & Authorization
             builder.Services.AddScoped<IJsonWebTokenService, JsonWebTokenService>();
-            builder.Services.Configure<JsonWebTokenOptions>(builder.Configuration.GetSection(nameof(JsonWebTokenOptions)));
+            builder.Services.Configure<JsonWebTokenGenerationOptions>(builder.Configuration.GetSection(nameof(JsonWebTokenGenerationOptions)));
 
             var jwtOptions = builder.Configuration.GetSection(nameof(JsonWebTokenOptions)).Get<JsonWebTokenOptions>();
 
@@ -102,7 +102,13 @@ namespace TaskFlow.Identity.API.Composition {
                     ValidateIssuer = true,
                     ValidIssuer = jwtOptions!.Issuer,
                     ValidateAudience = true,
-                    ValidAudience = jwtOptions.Audience,
+                    AudienceValidator = (audiences, token, validationParams) => {
+                        if (audiences is null) {
+                            return false;
+                        }
+
+                        return audiences.Contains(jwtOptions.Audience);
+                    },
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                     ClockSkew = TimeSpan.Zero,

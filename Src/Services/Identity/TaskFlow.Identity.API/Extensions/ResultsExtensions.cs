@@ -26,7 +26,7 @@ namespace TaskFlow.Identity.API.Extensions {
             };
         }
 
-        public static IActionResult ToActionResult(this AuthResult result, JsonWebTokenOptions jwtOptions) {
+        public static IActionResult ToActionResult(this AuthResult result, JsonWebTokenGenerationOptions jwtOptions) {
             if (result.Succeeded) {
                 return new OkObjectResult(
                     new {

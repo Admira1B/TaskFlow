@@ -83,7 +83,13 @@ namespace TaskFlow.Tasks.API.Composition {
                     ValidateIssuer = true,
                     ValidIssuer = jwtOptions!.Issuer,
                     ValidateAudience = true,
-                    ValidAudience = jwtOptions.Audience,
+                    AudienceValidator = (audiences, token, validationParams) => {
+                        if (audiences is null) {
+                            return false;
+                        }
+
+                        return audiences.Contains(jwtOptions.Audience);
+                    },
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                     ClockSkew = TimeSpan.Zero,

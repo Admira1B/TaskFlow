@@ -23,7 +23,13 @@ namespace TaskFlow.Gateway.Composition {
                     ValidateIssuer = true,
                     ValidIssuer = jwtOptions!.Issuer,
                     ValidateAudience = true,
-                    ValidAudience = jwtOptions.Audience,
+                    AudienceValidator = (audiences, token, validationParams) => {
+                        if (audiences is null) {
+                            return false;
+                        }
+
+                        return audiences.Contains(jwtOptions.Audience);
+                    },
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                     ClockSkew = TimeSpan.Zero,
@@ -33,6 +39,7 @@ namespace TaskFlow.Gateway.Composition {
 
             builder.Services.AddAuthorization();
 
+            // Ocelot
             builder.Configuration
                 .SetBasePath(builder.Environment.ContentRootPath)
                 .AddOcelot("OcelotConfigurations", builder.Environment)
