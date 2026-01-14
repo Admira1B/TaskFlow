@@ -14,15 +14,15 @@ using TaskFlow.Identity.Domain.Entities;
 using TaskFlow.Identity.Infrastructure.SqlServer;
 using TaskFlow.Identity.Infrastructure.SqlServer.Repositories;
 
-namespace TaskFlow.Identity.API.Extensions {
-    internal static class ServiceCollectionExtensions {
-        public static IServiceCollection AddIdentityServiceDependencies(this IServiceCollection services, IConfiguration configuration) {
-            // Adding controllers
-            services.AddControllers();
+namespace TaskFlow.Identity.API.Composition {
+    internal static class IdentityServiceComposition {
+        public static IServiceCollection AddIdentityServiceComposition(this WebApplicationBuilder builder) {
+            // Controllers
+            builder.Services.AddControllers();
 
-            // Adding documentation
-            services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen(options => {
+            // Swagger Documentation
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen(options => {
                 options.SwaggerDoc("v1", new() {
                     Version = "v1",
                     Title = "TaskFlow Identity Service",
@@ -47,7 +47,7 @@ namespace TaskFlow.Identity.API.Extensions {
             });
 
             // DbContext
-            services.AddDbContext<IdentityServiceDbContext>((serviceProvider, options) => {
+            builder.Services.AddDbContext<IdentityServiceDbContext>((serviceProvider, options) => {
                 var configuration = serviceProvider.GetRequiredService<IConfiguration>();
                 var connectionString = configuration.GetConnectionString("SqlServerConnectionString");
 
@@ -58,18 +58,18 @@ namespace TaskFlow.Identity.API.Extensions {
             });
 
             // Data Access
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IRoleRepository, RoleRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 
             // MediatoR
-            services.AddMediatR(cfg =>
+            builder.Services.AddMediatR(cfg =>
                 cfg.RegisterServicesFromAssembly(typeof(LoginCommandHandler).Assembly));
 
             // AutoMapper
-            services.AddAutoMapper(typeof(IdentityServiceMapperProfile).Assembly);
+            builder.Services.AddAutoMapper(typeof(IdentityServiceMapperProfile).Assembly);
 
             // ASP Identity
-            services.AddIdentity<User, Role>(options => {
+            builder.Services.AddIdentity<User, Role>(options => {
                 // Password Options
                 options.Password.RequireDigit = false;
                 options.Password.RequireLowercase = false;
@@ -84,12 +84,12 @@ namespace TaskFlow.Identity.API.Extensions {
             .AddDefaultTokenProviders();
 
             // JsonWebToken Authentication & Authorization
-            services.AddScoped<IJsonWebTokenService, JsonWebTokenService>();
-            services.Configure<JsonWebTokenOptions>(configuration.GetSection(nameof(JsonWebTokenOptions)));
+            builder.Services.AddScoped<IJsonWebTokenService, JsonWebTokenService>();
+            builder.Services.Configure<JsonWebTokenOptions>(builder.Configuration.GetSection(nameof(JsonWebTokenOptions)));
 
-            var jwtOptions = configuration.GetSection(nameof(JsonWebTokenOptions)).Get<JsonWebTokenOptions>();
+            var jwtOptions = builder.Configuration.GetSection(nameof(JsonWebTokenOptions)).Get<JsonWebTokenOptions>();
 
-            services.AddAuthentication(options => {
+            builder.Services.AddAuthentication(options => {
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -120,9 +120,9 @@ namespace TaskFlow.Identity.API.Extensions {
                 };
             });
 
-            services.AddAuthorization();
+            builder.Services.AddAuthorization();
 
-            return services;
+            return builder.Services;
         }
     }
 }

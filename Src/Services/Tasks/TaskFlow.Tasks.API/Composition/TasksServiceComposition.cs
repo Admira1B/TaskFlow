@@ -10,14 +10,14 @@ using TaskFlow.Tasks.Domain.Contracts;
 using TaskFlow.Tasks.Infrastructure.SqlServer;
 using TaskFlow.Tasks.Infrastructure.SqlServer.Repositories;
 
-namespace TaskFlow.Tasks.API.Extensions {
-    internal static class ServiceCollectionExtensions {
-        public static IServiceCollection AddTaskServiceDependencies(this IServiceCollection services, IConfiguration configuration) {
-            // Adding controllers
-            services.AddControllers();
+namespace TaskFlow.Tasks.API.Composition {
+    internal static class TasksServiceComposition {
+        public static IServiceCollection AddTaskServiceComposition(this WebApplicationBuilder builder) {
+            // Controllers
+            builder.Services.AddControllers();
 
-            // Adding documentation
-            services.AddSwaggerGen(options => {
+            // Swagger Documentation
+            builder.Services.AddSwaggerGen(options => {
                 options.SwaggerDoc("v1", new() {
                     Version = "v1",
                     Title = "TaskFlow Tasks Service",
@@ -42,7 +42,7 @@ namespace TaskFlow.Tasks.API.Extensions {
             });
 
             // DbContext
-            services.AddDbContext<TaskServiceDbContext>((serviceProvider, options) => {
+            builder.Services.AddDbContext<TaskServiceDbContext>((serviceProvider, options) => {
                 var configuration = serviceProvider.GetRequiredService<IConfiguration>();
                 var connectionString = configuration.GetConnectionString("SqlServerConnectionString");
 
@@ -54,23 +54,23 @@ namespace TaskFlow.Tasks.API.Extensions {
 
 
             // Data Access
-            services.AddScoped<ICommentRepository, CommentRepository>();
-            services.AddScoped<IProjectRepository, ProjectRepository>();
-            services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
-            services.AddScoped<ITaskGroupRepository, TaskGroupRepository>();
-            services.AddScoped<ITaskItemRepository, TaskItemRepository>();
+            builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+            builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+            builder.Services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
+            builder.Services.AddScoped<ITaskGroupRepository, TaskGroupRepository>();
+            builder.Services.AddScoped<ITaskItemRepository, TaskItemRepository>();
 
             // MediatoR
-            services.AddMediatR(cfg =>
+            builder.Services.AddMediatR(cfg =>
                 cfg.RegisterServicesFromAssembly(typeof(CreateCommentCommandHandler).Assembly));
 
             // AutoMapper
-            services.AddAutoMapper(typeof(TaskServiceMapperProfile).Assembly);
+            builder.Services.AddAutoMapper(typeof(TaskServiceMapperProfile).Assembly);
 
             // JsonWebToken Authentication & Authorization
-            var jwtOptions = configuration.GetSection(nameof(JsonWebTokenOptions)).Get<JsonWebTokenOptions>();
+            var jwtOptions = builder.Configuration.GetSection(nameof(JsonWebTokenOptions)).Get<JsonWebTokenOptions>();
 
-            services.AddAuthentication(options => {
+            builder.Services.AddAuthentication(options => {
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -101,9 +101,9 @@ namespace TaskFlow.Tasks.API.Extensions {
                 };
             });
 
-            services.AddAuthorization();
+            builder.Services.AddAuthorization();
 
-            return services;
+            return builder.Services;
         }
     }
 }

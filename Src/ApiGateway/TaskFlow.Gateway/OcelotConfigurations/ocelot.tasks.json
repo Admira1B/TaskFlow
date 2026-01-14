@@ -1,14 +1,14 @@
 {
-  "DownstreamScheme": "http",
-  "DownstreamHostAndPorts": [
-    {
-      "Host": "localhost",
-      "Port": 5002
-    }
-  ],
   "Routes": [
     {
       "Key": "tasks_service_comments",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5002
+        }
+      ],
       "DownstreamPathTemplate": "/api/comments/{everything}",
       "UpstreamPathTemplate": "/flow/comments/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
@@ -18,6 +18,13 @@
     },
     {
       "Key": "tasks_service_projects",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5002
+        }
+      ],
       "DownstreamPathTemplate": "/api/projects/{everything}",
       "UpstreamPathTemplate": "/flow/projects/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
@@ -27,6 +34,13 @@
     },
     {
       "Key": "tasks_service_members",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5002
+        }
+      ],
       "DownstreamPathTemplate": "/api/members/{everything}",
       "UpstreamPathTemplate": "/flow/members/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
@@ -36,6 +50,13 @@
     },
     {
       "Key": "tasks_service_groups",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5002
+        }
+      ],
       "DownstreamPathTemplate": "/api/groups/{everything}",
       "UpstreamPathTemplate": "/flow/groups/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
@@ -45,6 +66,13 @@
     },
     {
       "Key": "tasks_service_tasks",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5002
+        }
+      ],
       "DownstreamPathTemplate": "/api/tasks/{everything}",
       "UpstreamPathTemplate": "/flow/tasks/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
