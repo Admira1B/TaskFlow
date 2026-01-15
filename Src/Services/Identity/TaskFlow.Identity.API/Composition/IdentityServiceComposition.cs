@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using TaskFlow.Identity.Application.Mapping;
 using TaskFlow.Identity.Application.Services;
 using TaskFlow.Identity.Application.Commands.Auth.Login;
-using TaskFlow.Identity.Domain.Contracts.Services;
 using TaskFlow.Identity.Domain.Contracts.Repositories;
 using TaskFlow.Identity.Domain.Options;
 using TaskFlow.Identity.Domain.Entities;
@@ -84,7 +83,7 @@ namespace TaskFlow.Identity.API.Composition {
             .AddDefaultTokenProviders();
 
             // JsonWebToken Authentication & Authorization
-            builder.Services.AddScoped<IJsonWebTokenService, JsonWebTokenService>();
+            builder.Services.AddScoped<JsonWebTokenService>();
             builder.Services.Configure<JsonWebTokenGenerationOptions>(builder.Configuration.GetSection(nameof(JsonWebTokenGenerationOptions)));
 
             var jwtOptions = builder.Configuration.GetSection(nameof(JsonWebTokenOptions)).Get<JsonWebTokenOptions>();

@@ -4,6 +4,7 @@
   <Project Path="Src/Services/Identity/TaskFlow.Identity.Application/TaskFlow.Identity.Application.csproj" Id="216d299e-b4bc-4767-a0a1-7fa990a0b41c" />
   <Project Path="Src/Services/Identity/TaskFlow.Identity.Contracts/TaskFlow.Identity.Contracts.csproj" Id="ef82ace1-3d53-4384-b26c-fb8a6b93a3c9" />
   <Project Path="Src/Services/Identity/TaskFlow.Identity.Domain/TaskFlow.Identity.Domain.csproj" Id="63af9e88-32e3-430e-901d-6341cee6bb6a" />
+  <Project Path="Src/Services/Identity/TaskFlow.Identity.Infrastructure.Messaging/TaskFlow.Identity.Infrastructure.Messaging.csproj" Id="e8bc408b-09d7-42e8-b65d-9d7ad1f0a66b" />
   <Project Path="Src/Services/Identity/TaskFlow.Identity.Infrastructure.SqlServer/TaskFlow.Identity.Infrastructure.SqlServer.csproj" Id="ade7e8ce-2896-453e-a75d-db4ff135c9aa" />
   <Project Path="Src/Services/Tasks/TaskFlow.Tasks.API/TaskFlow.Tasks.API.csproj" Id="8bff9054-9633-4197-b9aa-30c65fed3c2a" />
   <Project Path="Src/Services/Tasks/TaskFlow.Tasks.Application/TaskFlow.Tasks.Application.csproj" Id="cd93385a-65ef-4a73-b87d-c7600f741faa" />

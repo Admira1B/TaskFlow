@@ -6,10 +6,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using TaskFlow.Identity.Domain.Options;
 using TaskFlow.Identity.Domain.Entities;
-using TaskFlow.Identity.Domain.Contracts.Services;
 
 namespace TaskFlow.Identity.Application.Services {
-    public class JsonWebTokenService(IOptions<JsonWebTokenGenerationOptions> options, UserManager<User> userManager) : IJsonWebTokenService {
+    public class JsonWebTokenService(IOptions<JsonWebTokenGenerationOptions> options, UserManager<User> userManager) {
         private readonly JsonWebTokenGenerationOptions _options = options.Value;
         private readonly UserManager<User> _userManager = userManager;
         public async Task<string> GenerateWebTokenAsync(User user) {
