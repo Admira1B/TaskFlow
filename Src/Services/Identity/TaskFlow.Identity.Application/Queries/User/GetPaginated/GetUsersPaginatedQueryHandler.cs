@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using AutoMapper;
 using TaskFlow.Identity.Application.Results;
-using TaskFlow.Identity.Application.DTOs.Responses;
+using TaskFlow.Identity.Contracts.DTOs.Responses;
 using TaskFlow.Identity.Domain.Contracts.Repositories;
 
 namespace TaskFlow.Identity.Application.Queries.User.GetPaginated {

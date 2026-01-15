@@ -3,7 +3,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using TaskFlow.Tasks.API.Extensions;
-using TaskFlow.Tasks.Application.DTOs.Requests.TaskGroup;
+using TaskFlow.Tasks.Contracts.DTOs.Requests.TaskGroup;
 using TaskFlow.Tasks.Application.Queries.TaskGroup.GetById;
 using TaskFlow.Tasks.Application.Queries.TaskGroup.GetByProject;
 using TaskFlow.Tasks.Application.Commands.TaskGroup.CreateTaskGroup;

@@ -3,7 +3,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using TaskFlow.Identity.Application.Results;
 using TaskFlow.Identity.Domain.Contracts.Services;
-using TaskFlow.Identity.Application.DTOs.Responses;
+using TaskFlow.Identity.Contracts.DTOs.Responses;
 
 namespace TaskFlow.Identity.Application.Commands.Auth.Register {
     public class RegisterCommandHandler(IMapper mapper, UserManager<Domain.Entities.User> userManager, IJsonWebTokenService jwtService) : IRequestHandler<RegisterCommand, AuthResult> {

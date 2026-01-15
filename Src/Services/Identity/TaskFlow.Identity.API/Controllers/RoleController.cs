@@ -3,7 +3,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using TaskFlow.Identity.API.Extensions;
-using TaskFlow.Identity.Application.DTOs.Requests.Role;
+using TaskFlow.Identity.Contracts.DTOs.Requests.Role;
 using TaskFlow.Identity.Application.Queries.Role.GetById;
 using TaskFlow.Identity.Application.Queries.Role.GetByName;
 using TaskFlow.Identity.Application.Queries.Role.GetPaginated;

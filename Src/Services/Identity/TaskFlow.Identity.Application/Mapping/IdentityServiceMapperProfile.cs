@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using TaskFlow.Identity.Domain.Entities;
-using TaskFlow.Identity.Application.DTOs.Responses;
-using TaskFlow.Identity.Application.DTOs.Requests.Auth;
-using TaskFlow.Identity.Application.DTOs.Requests.Role;
-using TaskFlow.Identity.Application.DTOs.Requests.User;
+using TaskFlow.Identity.Contracts.DTOs.Responses;
+using TaskFlow.Identity.Contracts.DTOs.Requests.Auth;
+using TaskFlow.Identity.Contracts.DTOs.Requests.Role;
+using TaskFlow.Identity.Contracts.DTOs.Requests.User;
 using TaskFlow.Identity.Application.Commands.Auth.Login;
 using TaskFlow.Identity.Application.Commands.Auth.Register;
 using TaskFlow.Identity.Application.Commands.Role.CreateRole;

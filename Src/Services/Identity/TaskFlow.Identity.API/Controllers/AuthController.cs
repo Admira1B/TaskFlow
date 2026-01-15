@@ -18,7 +18,7 @@ namespace TaskFlow.Identity.API.Controllers {
         private readonly JsonWebTokenGenerationOptions _jwtOptions = jwtOptions.Value;
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] Application.DTOs.Requests.Auth.RegisterRequest request) {
+        public async Task<IActionResult> Register([FromBody] Contracts.DTOs.Requests.Auth.RegisterRequest request) {
             var command = _mapper.Map<RegisterCommand>(request);
 
             var result = await _mediator.Send(command);
@@ -26,7 +26,7 @@ namespace TaskFlow.Identity.API.Controllers {
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] Application.DTOs.Requests.Auth.LoginRequest request) {
+        public async Task<IActionResult> Login([FromBody] Contracts.DTOs.Requests.Auth.LoginRequest request) {
             var command = _mapper.Map<LoginCommand>(request);
 
             var result = await _mediator.Send(command);

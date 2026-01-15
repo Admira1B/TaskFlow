@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using TaskFlow.Tasks.Domain.Enums;
 using TaskFlow.Tasks.Application.Results;
-using TaskFlow.Tasks.Application.DTOs.Responses;
+using TaskFlow.Tasks.Contracts.DTOs.Responses;
 
 namespace TaskFlow.Tasks.Application.Commands.TaskItem.CreateTaskItem {
     public record CreateTaskItemCommand(

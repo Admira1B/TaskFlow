@@ -2,7 +2,7 @@
 using AutoMapper;
 using TaskFlow.Tasks.Domain.Contracts;
 using TaskFlow.Tasks.Application.Results;
-using TaskFlow.Tasks.Application.DTOs.Responses;
+using TaskFlow.Tasks.Contracts.DTOs.Responses;
 
 namespace TaskFlow.Tasks.Application.Commands.TaskGroup.CreateTaskGroup {
     public class CreateTaskGroupCommandHandler(IMapper mapper, ITaskGroupRepository repository) : IRequestHandler<CreateTaskGroupCommand, RequestResult<TaskGroupDto>> {

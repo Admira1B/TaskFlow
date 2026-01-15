@@ -2,7 +2,7 @@
 using AutoMapper;
 using TaskFlow.Tasks.Domain.Contracts;
 using TaskFlow.Tasks.Application.Results;
-using TaskFlow.Tasks.Application.DTOs.Responses;
+using TaskFlow.Tasks.Contracts.DTOs.Responses;
 
 namespace TaskFlow.Tasks.Application.Queries.ProjectMember.GetByUser {
     public class GetProjectsMembersByUserQueryHandler(IMapper mapper, IProjectMemberRepository repository) : IRequestHandler<GetProjectsMembersByUserQuery, RequestResult<List<ProjectMemberDto>>> {

@@ -3,7 +3,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using TaskFlow.Tasks.API.Extensions;
-using TaskFlow.Tasks.Application.DTOs.Requests.TaskItem;
+using TaskFlow.Tasks.Contracts.DTOs.Requests.TaskItem;
 using TaskFlow.Tasks.Application.Queries.TaskItem.GetById;
 using TaskFlow.Tasks.Application.Queries.TaskItem.GetByAssignee;
 using TaskFlow.Tasks.Application.Queries.TaskItem.GetByReporter;

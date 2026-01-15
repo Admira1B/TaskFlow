@@ -2,7 +2,7 @@
 using AutoMapper;
 using TaskFlow.Tasks.Domain.Contracts;
 using TaskFlow.Tasks.Application.Results;
-using TaskFlow.Tasks.Application.DTOs.Responses;
+using TaskFlow.Tasks.Contracts.DTOs.Responses;
 
 namespace TaskFlow.Tasks.Application.Queries.TaskItem.GetByProject {
     public class GetTaskItemsByProjectQueryHandler(IMapper mapper, ITaskItemRepository repository, IProjectRepository projectRepository) : IRequestHandler<GetTaskItemsByProjectQuery, RequestResult<List<TaskItemDto>>> {

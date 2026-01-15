@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using TaskFlow.Tasks.Domain.Entities;
-using TaskFlow.Tasks.Application.DTOs.Responses;
-using TaskFlow.Tasks.Application.DTOs.Requests.Comment;
-using TaskFlow.Tasks.Application.DTOs.Requests.Project;
-using TaskFlow.Tasks.Application.DTOs.Requests.ProjectMember;
-using TaskFlow.Tasks.Application.DTOs.Requests.TaskGroup;
-using TaskFlow.Tasks.Application.DTOs.Requests.TaskItem;
+using TaskFlow.Tasks.Contracts.DTOs.Responses;
+using TaskFlow.Tasks.Contracts.DTOs.Requests.Comment;
+using TaskFlow.Tasks.Contracts.DTOs.Requests.Project;
+using TaskFlow.Tasks.Contracts.DTOs.Requests.ProjectMember;
+using TaskFlow.Tasks.Contracts.DTOs.Requests.TaskGroup;
+using TaskFlow.Tasks.Contracts.DTOs.Requests.TaskItem;
 using TaskFlow.Tasks.Application.Commands.Comment.CreateComment;
 using TaskFlow.Tasks.Application.Commands.Comment.UpdateComment;
 using TaskFlow.Tasks.Application.Commands.Project.CreateProject;
