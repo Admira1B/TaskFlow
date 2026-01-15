@@ -1,12 +1,11 @@
-using TaskFlow.Identity.API.Extensions;
+using TaskFlow.Identity.API.Composition;
 
 namespace TaskFlow.Identity.API {
     public class Program {
         public static void Main(string[] args) {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Adding Service dependencies
-            builder.Services.AddIdentityServiceDependencies(builder.Configuration);
+            builder.AddIdentityServiceComposition();
 
             var app = builder.Build();
 

@@ -1,12 +1,11 @@
-using TaskFlow.Tasks.API.Extensions;
+using TaskFlow.Tasks.API.Composition;
 
 namespace TaskFlow.Tasks.API {
     public class Program {
         public static void Main(string[] args) {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Adding Service dependencies
-            builder.Services.AddTaskServiceDependencies(builder.Configuration);
+            builder.AddTaskServiceComposition();
 
             var app = builder.Build();
 

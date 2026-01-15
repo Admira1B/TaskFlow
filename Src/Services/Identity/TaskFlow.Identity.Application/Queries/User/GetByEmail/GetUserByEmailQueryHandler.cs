@@ -2,7 +2,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using TaskFlow.Identity.Application.Results;
-using TaskFlow.Identity.Application.DTOs.Responses;
+using TaskFlow.Identity.Contracts.DTOs.Responses;
 
 namespace TaskFlow.Identity.Application.Queries.User.GetByEmail {
     public class GetUserByEmailQueryHandler(IMapper mapper, UserManager<Domain.Entities.User> manager) : IRequestHandler<GetUserByEmailQuery, RequestResult<UserDto>> {

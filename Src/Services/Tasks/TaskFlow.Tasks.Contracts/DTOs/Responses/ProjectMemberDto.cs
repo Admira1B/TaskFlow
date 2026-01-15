@@ -1,0 +1,11 @@
+﻿using TaskFlow.Tasks.Domain.Enums;
+
+namespace TaskFlow.Tasks.Contracts.DTOs.Responses {
+    public record ProjectMemberDto(
+        Guid Id,
+        Guid UserId,
+        Guid ProjectId,
+        ProjectRole Role,
+        DateTime CreatedAt,
+        DateTime? UpdatedAt);
+}

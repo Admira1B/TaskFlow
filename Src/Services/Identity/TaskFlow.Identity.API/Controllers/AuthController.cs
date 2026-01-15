@@ -12,13 +12,13 @@ using TaskFlow.Identity.Application.Commands.Auth.Register;
 namespace TaskFlow.Identity.API.Controllers {
     [ApiController]
     [Route("api/auth")]
-    public class AuthController(IMediator mediator, IMapper mapper, IOptions<JsonWebTokenOptions> jwtOptions) : ControllerBase {
+    public class AuthController(IMediator mediator, IMapper mapper, IOptions<JsonWebTokenGenerationOptions> jwtOptions) : ControllerBase {
         private readonly IMediator _mediator = mediator;
         private readonly IMapper _mapper = mapper;
-        private readonly JsonWebTokenOptions _jwtOptions = jwtOptions.Value;
+        private readonly JsonWebTokenGenerationOptions _jwtOptions = jwtOptions.Value;
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] Application.DTOs.Requests.Auth.RegisterRequest request) {
+        public async Task<IActionResult> Register([FromBody] Contracts.DTOs.Requests.Auth.RegisterRequest request) {
             var command = _mapper.Map<RegisterCommand>(request);
 
             var result = await _mediator.Send(command);
@@ -26,7 +26,7 @@ namespace TaskFlow.Identity.API.Controllers {
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] Application.DTOs.Requests.Auth.LoginRequest request) {
+        public async Task<IActionResult> Login([FromBody] Contracts.DTOs.Requests.Auth.LoginRequest request) {
             var command = _mapper.Map<LoginCommand>(request);
 
             var result = await _mediator.Send(command);

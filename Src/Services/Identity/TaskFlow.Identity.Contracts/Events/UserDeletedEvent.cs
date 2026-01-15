@@ -1,0 +1,10 @@
+﻿using TaskFlow.Shared.Messaging.Events;
+
+namespace TaskFlow.Identity.Contracts.Events {
+    public class UserDeletedEvent : BaseEvent {
+        public Guid UserId { get; set; }
+        public string UserName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string SourceService { get; set; } = string.Empty;
+    }
+}

@@ -3,7 +3,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using TaskFlow.Identity.API.Extensions;
-using TaskFlow.Identity.Application.DTOs.Requests.User;
+using TaskFlow.Identity.Contracts.DTOs.Requests.User;
 using TaskFlow.Identity.Application.Queries.User.GetById;
 using TaskFlow.Identity.Application.Queries.User.GetByName;
 using TaskFlow.Identity.Application.Queries.User.GetByEmail;

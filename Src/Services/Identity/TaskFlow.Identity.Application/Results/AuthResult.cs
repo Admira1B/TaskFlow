@@ -1,5 +1,5 @@
 ﻿using TaskFlow.Identity.Domain.Enums;
-using TaskFlow.Identity.Application.DTOs.Responses;
+using TaskFlow.Identity.Contracts.DTOs.Responses;
 
 namespace TaskFlow.Identity.Application.Results {
     public class AuthResult {

@@ -2,14 +2,14 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using TaskFlow.Identity.Application.Results;
-using TaskFlow.Identity.Domain.Contracts.Services;
-using TaskFlow.Identity.Application.DTOs.Responses;
+using TaskFlow.Identity.Application.Services;
+using TaskFlow.Identity.Contracts.DTOs.Responses;
 
 namespace TaskFlow.Identity.Application.Commands.Auth.Register {
-    public class RegisterCommandHandler(IMapper mapper, UserManager<Domain.Entities.User> userManager, IJsonWebTokenService jwtService) : IRequestHandler<RegisterCommand, AuthResult> {
+    public class RegisterCommandHandler(IMapper mapper, UserManager<Domain.Entities.User> userManager, JsonWebTokenService jwtService) : IRequestHandler<RegisterCommand, AuthResult> {
         private readonly IMapper _mapper = mapper;
         private readonly UserManager<Domain.Entities.User> _userManager = userManager;
-        private readonly IJsonWebTokenService _jwtService = jwtService;
+        private readonly JsonWebTokenService _jwtService = jwtService;
 
         public async Task<AuthResult> Handle(RegisterCommand command, CancellationToken cancellationToken) {
             var existsByEmail = await _userManager.FindByEmailAsync(command.Email);
