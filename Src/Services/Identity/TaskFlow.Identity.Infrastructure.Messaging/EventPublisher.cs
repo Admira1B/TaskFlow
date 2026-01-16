@@ -8,14 +8,14 @@ using TaskFlow.Identity.Application.Publishers;
 using TaskFlow.Shared.Messaging.Options;
 using TaskFlow.Shared.Messaging.Constants;
 
-namespace TaskFlow.Identity.Infrastructure.Messaging.RabbitMQEvents {
-    public class UserEventPublisher : IUserEventPublisher, IDisposable {
+namespace TaskFlow.Identity.Infrastructure.Messaging {
+    public class EventPublisher : IEventPublisher, IDisposable {
         private readonly IConnection _connection;
         private readonly IChannel _channel;
-        private readonly RabbitMQOptions _options;
+        private readonly RabbitMqOptions _options;
         private bool _disposed = false;
 
-        public UserEventPublisher(IOptions<RabbitMQOptions> options) {
+        public EventPublisher(IOptions<RabbitMqOptions> options) {
             _options = options.Value;
 
             var factory = new ConnectionFactory {
@@ -61,7 +61,7 @@ namespace TaskFlow.Identity.Infrastructure.Messaging.RabbitMQEvents {
             DisposeAsync().AsTask().GetAwaiter().GetResult();
         }
 
-        ~UserEventPublisher() {
+        ~EventPublisher() {
             DisposeAsync().AsTask().GetAwaiter().GetResult();
         }
 

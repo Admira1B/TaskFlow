@@ -14,7 +14,7 @@ using TaskFlow.Identity.Domain.Entities;
 using TaskFlow.Identity.Infrastructure.SqlServer;
 using TaskFlow.Identity.Infrastructure.SqlServer.Repositories;
 using TaskFlow.Identity.Application.Publishers;
-using TaskFlow.Identity.Infrastructure.Messaging.RabbitMQEvents;
+using TaskFlow.Identity.Infrastructure.Messaging;
 
 namespace TaskFlow.Identity.API.Composition {
     internal static class IdentityServiceComposition {
@@ -64,7 +64,7 @@ namespace TaskFlow.Identity.API.Composition {
             builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 
             // RabbitMQ
-            builder.Services.AddSingleton<IUserEventPublisher, UserEventPublisher>();
+            builder.Services.AddSingleton<IEventPublisher, EventPublisher>();
             builder.Services.Configure<RabbitMQTracingOptions>(builder.Configuration.GetSection(nameof(RabbitMQTracingOptions)));
 
             // MediatoR

@@ -5,9 +5,9 @@ using TaskFlow.Identity.Application.Results;
 using TaskFlow.Identity.Application.Publishers;
 
 namespace TaskFlow.Identity.Application.Commands.User.DeleteUser {
-    public class DeleteUserCommandHandler(UserManager<Domain.Entities.User> manager, IUserEventPublisher publisher) : IRequestHandler<DeleteUserCommand, RequestResult<Unit>> {
+    public class DeleteUserCommandHandler(UserManager<Domain.Entities.User> manager, IEventPublisher publisher) : IRequestHandler<DeleteUserCommand, RequestResult<Unit>> {
         private readonly UserManager<Domain.Entities.User> _manager = manager;
-        private readonly IUserEventPublisher _publisher = publisher;
+        private readonly IEventPublisher _publisher = publisher;
 
         public async Task<RequestResult<Unit>> Handle(DeleteUserCommand command, CancellationToken cancellationToken) {
             var user = await _manager.FindByIdAsync(command.Id.ToString());
