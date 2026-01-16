@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using RabbitMQ.Client;
 using Microsoft.OpenApi;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -12,6 +13,8 @@ using TaskFlow.Identity.Domain.Options;
 using TaskFlow.Identity.Domain.Entities;
 using TaskFlow.Identity.Infrastructure.SqlServer;
 using TaskFlow.Identity.Infrastructure.SqlServer.Repositories;
+using TaskFlow.Identity.Application.Publishers;
+using TaskFlow.Identity.Infrastructure.Messaging.RabbitMQEvents;
 
 namespace TaskFlow.Identity.API.Composition {
     internal static class IdentityServiceComposition {
@@ -59,6 +62,10 @@ namespace TaskFlow.Identity.API.Composition {
             // Data Access
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+
+            // RabbitMQ
+            builder.Services.AddSingleton<IUserEventPublisher, UserEventPublisher>();
+            builder.Services.Configure<RabbitMQTracingOptions>(builder.Configuration.GetSection(nameof(RabbitMQTracingOptions)));
 
             // MediatoR
             builder.Services.AddMediatR(cfg =>

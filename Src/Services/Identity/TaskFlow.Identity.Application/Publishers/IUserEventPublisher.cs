@@ -2,6 +2,6 @@
 
 namespace TaskFlow.Identity.Application.Publishers {
     public interface IUserEventPublisher {
-        Task<bool> PublishUserDeletedEvent(UserDeletedEvent @event, CancellationToken ct);
+        Task<bool> PublishUserDeletedEvent(UserDeletedEvent @event, CancellationToken ct = default);
     }
 }
