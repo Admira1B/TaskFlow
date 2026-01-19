@@ -32,8 +32,8 @@ namespace TaskFlow.Identity.Infrastructure.Messaging {
             _channel = _connection.CreateChannelAsync().GetAwaiter().GetResult();
 
             _channel.ExchangeDeclareAsync(
-                exchange: RabbitMQConstants.IdentityService.ExchangeName,
-                type: RabbitMQConstants.TopicExchangeType,
+                exchange: RabbitMqConstants.IdentityService.ExchangeName,
+                type: RabbitMqConstants.TopicExchangeType,
                 durable: true,
                 autoDelete: false,
                 arguments: null
@@ -85,8 +85,8 @@ namespace TaskFlow.Identity.Infrastructure.Messaging {
                 };
 
                 await _channel.BasicPublishAsync(
-                    exchange: RabbitMQConstants.IdentityService.ExchangeName,
-                    routingKey: RabbitMQConstants.IdentityService.RoutingKeys.UserDeleted,
+                    exchange: RabbitMqConstants.IdentityService.ExchangeName,
+                    routingKey: RabbitMqConstants.IdentityService.RoutingKeys.UserDeleted,
                     mandatory: true,
                     basicProperties: props,
                     body: new ReadOnlyMemory<byte>(Encoding.UTF8.GetBytes(jsonEvent)),
