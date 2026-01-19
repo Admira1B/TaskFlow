@@ -6,5 +6,6 @@
         EntityNotFound = 3,
         AlreadyExists = 4,
         InvalidCredentials = 5,
+        FailedToPublishEvent = 6,
     }
 }

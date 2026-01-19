@@ -47,6 +47,10 @@ namespace TaskFlow.Identity.Application.Results {
             return Failure(message, ErrorType.InvalidOperation);
         }
 
+        public static RequestResult<T> FailedToPublishEvent(string message) {
+            return Failure(message, ErrorType.FailedToPublishEvent);
+        }
+
         public void Deconstruct(out bool succeeded, out T? value, out string? errorMessage, out ErrorType errorType) {
             succeeded = Succeeded;
             value = Value;

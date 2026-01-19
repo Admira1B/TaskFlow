@@ -9,5 +9,8 @@
 		<PackageReference Include="MediatR" />
 		<PackageReference Include="AutoMapper" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="EventHandlers\" />
+	</ItemGroup>
 
 </Project>

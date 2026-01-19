@@ -22,6 +22,9 @@ namespace TaskFlow.Identity.API.Extensions {
                 ErrorType.EntityNotFound => new NotFoundObjectResult(result.ErrorMessage),
                 ErrorType.ValidationFailed => new BadRequestObjectResult(result.ErrorMessage),
                 ErrorType.InvalidOperation => new BadRequestObjectResult(result.ErrorMessage),
+                ErrorType.FailedToPublishEvent => new ObjectResult(result.ErrorMessage) {
+                    StatusCode = StatusCodes.Status503ServiceUnavailable
+                },
                 _ => new BadRequestObjectResult("An unexpected error occurred")
             };
         }
