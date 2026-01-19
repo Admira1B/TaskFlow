@@ -1,12 +1,14 @@
-﻿using System.Text;
-using Microsoft.OpenApi;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using TaskFlow.Tasks.Application.Mapping;
+using Microsoft.OpenApi;
+using System.Text;
+using TaskFlow.Shared.Messaging.Options;
 using TaskFlow.Tasks.Application.Commands.Comment.CreateComment;
-using TaskFlow.Tasks.Domain.Options;
+using TaskFlow.Tasks.Application.Mapping;
 using TaskFlow.Tasks.Domain.Contracts;
+using TaskFlow.Tasks.Domain.Options;
+using TaskFlow.Tasks.Infrastructure.Messaging;
 using TaskFlow.Tasks.Infrastructure.SqlServer;
 using TaskFlow.Tasks.Infrastructure.SqlServer.Repositories;
 
@@ -52,13 +54,16 @@ namespace TaskFlow.Tasks.API.Composition {
                 });
             });
 
-
             // Data Access
             builder.Services.AddScoped<ICommentRepository, CommentRepository>();
             builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
             builder.Services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
             builder.Services.AddScoped<ITaskGroupRepository, TaskGroupRepository>();
             builder.Services.AddScoped<ITaskItemRepository, TaskItemRepository>();
+
+            // RabbitMQ
+            builder.Services.AddHostedService<EventConsumer>();
+            builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection(nameof(RabbitMqOptions)));
 
             // MediatoR
             builder.Services.AddMediatR(cfg =>
