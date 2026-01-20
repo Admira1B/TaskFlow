@@ -5,15 +5,12 @@
         public const string DirectExchangeType = "direct";
 
         public static class IdentityService {
-            public const string ExchangeName = "identity.events";
-            public const string RoutingPattern = "identity.*";
+            public const string ServiceName = "identity-service";
+            public const string ExchangeName = $"{ServiceName}.events";
+            public const string RoutingPattern = $"{ServiceName}.#";
             
             public static class RoutingKeys {
-                public const string UserDeleted = "identity.user.deleted";
-            }
-            
-            public static class Queues {
-                public const string TasksServiceUserDeleted = "tasks-service.user.deleted";
+                public const string UserDeleted = "identity-service.user.deleted";
             }
         }
     }

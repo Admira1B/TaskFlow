@@ -31,7 +31,7 @@ namespace TaskFlow.Tasks.Infrastructure.Messaging {
         }
 
         protected override async Task ExecuteAsync(CancellationToken ct) {
-            //Console.WriteLine("EventConsumer starting...");
+            Console.WriteLine("EventConsumer starting...");
 
             try {
                 await ConnectAsync(ct);
@@ -72,7 +72,7 @@ namespace TaskFlow.Tasks.Infrastructure.Messaging {
                 cancellationToken: ct
             );
 
-            //Console.WriteLine("Connected to RabbitMQ");
+            Console.WriteLine("Connected to RabbitMQ");
         }
 
         private async Task SetupSubscriptionsAsync(CancellationToken ct) {
@@ -117,7 +117,7 @@ namespace TaskFlow.Tasks.Infrastructure.Messaging {
 
             await StartConsumingQueueAsync(queueName, ct);
 
-            //Console.WriteLine($"Subscribed to {exchangeName} -> {queueName} ({routingPattern})");
+            Console.WriteLine($"Subscribed to {exchangeName} -> {queueName} ({routingPattern})");
         }
 
         private async Task StartConsumingQueueAsync(string queueName, CancellationToken ct) {
@@ -156,7 +156,7 @@ namespace TaskFlow.Tasks.Infrastructure.Messaging {
                 throw new NullReferenceException("Message have no event type");
             }
 
-            //Console.WriteLine($"Received: {eventTypeName} -> {ea.RoutingKey}");
+            Console.WriteLine($"Received: {eventTypeName} -> {ea.RoutingKey}");
 
             var eventType = FindEventType(eventTypeName);
             if (eventType == null) {
@@ -173,7 +173,7 @@ namespace TaskFlow.Tasks.Infrastructure.Messaging {
 
             await mediator.Publish(integrationEvent, ct);
 
-            //Console.WriteLine($"Processed: {eventTypeName}");
+            Console.WriteLine($"Processed: {eventTypeName}");
         }
 
         private Type? FindEventType(string eventTypeName) {

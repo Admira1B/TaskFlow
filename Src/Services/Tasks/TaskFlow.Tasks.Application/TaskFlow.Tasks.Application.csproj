@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\Identity\TaskFlow.Identity.Contracts\TaskFlow.Identity.Contracts.csproj" />
 		<ProjectReference Include="..\TaskFlow.Tasks.Contracts\TaskFlow.Tasks.Contracts.csproj" />
 		<ProjectReference Include="..\TaskFlow.Tasks.Domain\TaskFlow.Tasks.Domain.csproj" />
 		<ProjectReference Include="..\TaskFlow.Tasks.Infrastructure.SqlServer\TaskFlow.Tasks.Infrastructure.SqlServer.csproj" />
@@ -8,9 +9,6 @@
 	<ItemGroup>
 		<PackageReference Include="MediatR" />
 		<PackageReference Include="AutoMapper" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="EventHandlers\" />
 	</ItemGroup>
 
 </Project>
