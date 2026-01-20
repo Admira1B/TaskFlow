@@ -1,8 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <ItemGroup>
-    <PackageReference Include="MediatR.Contracts" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Shared\TaskFlow.Shared.Messaging\TaskFlow.Shared.Messaging.csproj" />
-  </ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="MediatR.Contracts" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\TaskFlow.Identity.Domain\TaskFlow.Identity.Domain.csproj" />
+		<ProjectReference Include="..\..\..\Shared\TaskFlow.Shared.Messaging\TaskFlow.Shared.Messaging.csproj" />
+	</ItemGroup>
+
 </Project>

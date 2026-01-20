@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using TaskFlow.Shared.Messaging.Events;
+using TaskFlow.Shared.Messaging;
 
 namespace TaskFlow.Identity.Contracts.Events {
     public class UserDeletedEvent : BaseEvent, INotification {

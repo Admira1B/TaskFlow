@@ -1,4 +1,4 @@
-﻿namespace TaskFlow.Shared.Messaging.Events {
+﻿namespace TaskFlow.Shared.Messaging {
     public abstract class BaseEvent {
         public Guid EventId { get; set; } = Guid.NewGuid();
         public DateTime OccurredOn { get; set; } = DateTime.UtcNow;

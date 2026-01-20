@@ -12,7 +12,6 @@
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
 		<PackageReference Include="Swashbuckle.AspNetCore" />
 	</ItemGroup>
-
 	<ItemGroup>
 		<ProjectReference Include="..\TaskFlow.Tasks.Application\TaskFlow.Tasks.Application.csproj" />
 		<ProjectReference Include="..\TaskFlow.Tasks.Infrastructure.Messaging\TaskFlow.Tasks.Infrastructure.Messaging.csproj" />

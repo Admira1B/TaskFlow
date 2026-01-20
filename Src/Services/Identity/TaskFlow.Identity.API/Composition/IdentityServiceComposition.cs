@@ -64,7 +64,7 @@ namespace TaskFlow.Identity.API.Composition {
             builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 
             // RabbitMQ
-            builder.Services.AddSingleton<IEventPublisher, EventPublisher>();
+            builder.Services.AddSingleton<IEventPublisher, IdentityServiceEventPublisher>();
             builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection(nameof(RabbitMqOptions)));
 
             // MediatoR

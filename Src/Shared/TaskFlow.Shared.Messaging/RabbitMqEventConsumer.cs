@@ -5,24 +5,24 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.DependencyInjection;
-using TaskFlow.Shared.Messaging.Events;
 using TaskFlow.Shared.Messaging.Options;
-using TaskFlow.Shared.Messaging.Constants;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace TaskFlow.Tasks.Infrastructure.Messaging {
-    public class EventConsumer : BackgroundService {
+namespace TaskFlow.Shared.Messaging {
+    public abstract class RabbitMqEventConsumer : BackgroundService {
         private readonly RabbitMqOptions _options;
         private readonly IServiceProvider _services;
         private readonly JsonSerializerOptions _jsonOptions;
+        private readonly Dictionary<string, string> _subscriptions;
 
         private bool _disposed = false;
         private IChannel? _channel;
         private IConnection? _connection;
 
-        public EventConsumer(IOptions<RabbitMqOptions> options, IServiceProvider services) {
+        public RabbitMqEventConsumer(IOptions<RabbitMqOptions> options, IServiceProvider services, Dictionary<string, string> subscriptions) {
             _options = options.Value;
             _services = services;
+            _subscriptions = subscriptions;
 
             _jsonOptions = new JsonSerializerOptions {
                 PropertyNameCaseInsensitive = true,
@@ -76,12 +76,7 @@ namespace TaskFlow.Tasks.Infrastructure.Messaging {
         }
 
         private async Task SetupSubscriptionsAsync(CancellationToken ct) {
-            var subscriptions = new Dictionary<string, string> {
-                // Subscriptions adding
-                [RabbitMqConstants.IdentityService.ExchangeName] = RabbitMqConstants.IdentityService.RoutingPattern,
-            };
-
-            foreach (var (exchangeName, routingPattern) in subscriptions) {
+            foreach (var (exchangeName, routingPattern) in _subscriptions) {
                 await SetupSubscriptionAsync(exchangeName, routingPattern, ct);
             }
         }

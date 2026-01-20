@@ -2,13 +2,10 @@
 using System.Text.Json;
 using RabbitMQ.Client;
 using Microsoft.Extensions.Options;
-using TaskFlow.Shared.Messaging.Events;
 using TaskFlow.Shared.Messaging.Options;
-using TaskFlow.Identity.Application.Contracts;
-using static TaskFlow.Shared.Messaging.Constants.RabbitMqConstants;
 
-namespace TaskFlow.Identity.Infrastructure.Messaging {
-    public class EventPublisher : IDisposable, IEventPublisher {
+namespace TaskFlow.Shared.Messaging {
+    public abstract class RabbitMqEventPublisher : IDisposable {
         private readonly IChannel _channel;
         private readonly IConnection _connection;
         private readonly RabbitMqOptions _options;
@@ -17,7 +14,7 @@ namespace TaskFlow.Identity.Infrastructure.Messaging {
 
         private bool _disposed = false;
 
-        public EventPublisher(IOptions<RabbitMqOptions> options) {
+        protected RabbitMqEventPublisher(IOptions<RabbitMqOptions> options) {
             _declaredExchanges = [];
             _options = options.Value;
             _jsonOptions = new JsonSerializerOptions {
@@ -39,14 +36,13 @@ namespace TaskFlow.Identity.Infrastructure.Messaging {
             _channel = _connection.CreateChannelAsync().GetAwaiter().GetResult();
         }
 
-        public async Task<bool> PublishEventAsync<T>(T @event, string routingKey, CancellationToken ct = default) where T : BaseEvent {
+        protected async Task<bool> PublishEventAsync<T>(T @event, string exchange, string routingKey, string serviceName, CancellationToken ct = default) where T : BaseEvent {
             ArgumentNullException.ThrowIfNull(@event);
 
             try {
-                var exchange = IdentityService.ExchangeName;
                 await EnsureExchangeExistsAsync(exchange, ct);
 
-                @event.SourceService = IdentityService.ServiceName;
+                @event.SourceService = serviceName;
                 var jsonEvent = JsonSerializer.Serialize(@event, _jsonOptions);
                 var props = new BasicProperties() {
                     Persistent = true,
@@ -112,7 +108,7 @@ namespace TaskFlow.Identity.Infrastructure.Messaging {
             DisposeAsync().AsTask().GetAwaiter().GetResult();
         }
 
-        ~EventPublisher() {
+        ~RabbitMqEventPublisher() {
             DisposeAsync().AsTask().GetAwaiter().GetResult();
         }
     }
