@@ -62,7 +62,7 @@ namespace TaskFlow.Tasks.API.Composition {
             builder.Services.AddScoped<ITaskItemRepository, TaskItemRepository>();
 
             // RabbitMQ
-            builder.Services.AddHostedService<EventConsumer>();
+            builder.Services.AddHostedService<TasksServiceEventConsumer>();
             builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection(nameof(RabbitMqOptions)));
 
             // MediatoR

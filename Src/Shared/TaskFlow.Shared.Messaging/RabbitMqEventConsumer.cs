@@ -5,24 +5,24 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.DependencyInjection;
-using TaskFlow.Shared.Messaging.Events;
 using TaskFlow.Shared.Messaging.Options;
-using TaskFlow.Shared.Messaging.Constants;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace TaskFlow.Tasks.Infrastructure.Messaging {
-    public class EventConsumer : BackgroundService {
+namespace TaskFlow.Shared.Messaging {
+    public abstract class RabbitMqEventConsumer : BackgroundService {
         private readonly RabbitMqOptions _options;
         private readonly IServiceProvider _services;
         private readonly JsonSerializerOptions _jsonOptions;
+        private readonly Dictionary<string, string> _subscriptions;
 
         private bool _disposed = false;
         private IChannel? _channel;
         private IConnection? _connection;
 
-        public EventConsumer(IOptions<RabbitMqOptions> options, IServiceProvider services) {
+        public RabbitMqEventConsumer(IOptions<RabbitMqOptions> options, IServiceProvider services, Dictionary<string, string> subscriptions) {
             _options = options.Value;
             _services = services;
+            _subscriptions = subscriptions;
 
             _jsonOptions = new JsonSerializerOptions {
                 PropertyNameCaseInsensitive = true,
@@ -31,7 +31,7 @@ namespace TaskFlow.Tasks.Infrastructure.Messaging {
         }
 
         protected override async Task ExecuteAsync(CancellationToken ct) {
-            //Console.WriteLine("EventConsumer starting...");
+            Console.WriteLine("EventConsumer starting...");
 
             try {
                 await ConnectAsync(ct);
@@ -72,16 +72,11 @@ namespace TaskFlow.Tasks.Infrastructure.Messaging {
                 cancellationToken: ct
             );
 
-            //Console.WriteLine("Connected to RabbitMQ");
+            Console.WriteLine("Connected to RabbitMQ");
         }
 
         private async Task SetupSubscriptionsAsync(CancellationToken ct) {
-            var subscriptions = new Dictionary<string, string> {
-                // Subscriptions adding
-                [RabbitMqConstants.IdentityService.ExchangeName] = RabbitMqConstants.IdentityService.RoutingPattern,
-            };
-
-            foreach (var (exchangeName, routingPattern) in subscriptions) {
+            foreach (var (exchangeName, routingPattern) in _subscriptions) {
                 await SetupSubscriptionAsync(exchangeName, routingPattern, ct);
             }
         }
@@ -117,7 +112,7 @@ namespace TaskFlow.Tasks.Infrastructure.Messaging {
 
             await StartConsumingQueueAsync(queueName, ct);
 
-            //Console.WriteLine($"Subscribed to {exchangeName} -> {queueName} ({routingPattern})");
+            Console.WriteLine($"Subscribed to {exchangeName} -> {queueName} ({routingPattern})");
         }
 
         private async Task StartConsumingQueueAsync(string queueName, CancellationToken ct) {
@@ -156,7 +151,7 @@ namespace TaskFlow.Tasks.Infrastructure.Messaging {
                 throw new NullReferenceException("Message have no event type");
             }
 
-            //Console.WriteLine($"Received: {eventTypeName} -> {ea.RoutingKey}");
+            Console.WriteLine($"Received: {eventTypeName} -> {ea.RoutingKey}");
 
             var eventType = FindEventType(eventTypeName);
             if (eventType == null) {
@@ -173,7 +168,7 @@ namespace TaskFlow.Tasks.Infrastructure.Messaging {
 
             await mediator.Publish(integrationEvent, ct);
 
-            //Console.WriteLine($"Processed: {eventTypeName}");
+            Console.WriteLine($"Processed: {eventTypeName}");
         }
 
         private Type? FindEventType(string eventTypeName) {

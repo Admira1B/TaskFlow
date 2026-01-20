@@ -1,4 +1,4 @@
-﻿using TaskFlow.Shared.Messaging.Events;
+﻿using TaskFlow.Shared.Messaging;
 
 namespace TaskFlow.Tasks.Contracts.Events {
     public class TaskAssignedEvent : BaseEvent {

@@ -1,21 +1,20 @@
 ﻿using System.Text;
-using RabbitMQ.Client;
 using Microsoft.OpenApi;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using TaskFlow.Shared.Messaging.Options;
 using TaskFlow.Identity.Application.Mapping;
 using TaskFlow.Identity.Application.Services;
+using TaskFlow.Identity.Application.Contracts;
 using TaskFlow.Identity.Application.Commands.Auth.Login;
 using TaskFlow.Identity.Domain.Contracts.Repositories;
 using TaskFlow.Identity.Domain.Options;
 using TaskFlow.Identity.Domain.Entities;
 using TaskFlow.Identity.Infrastructure.SqlServer;
 using TaskFlow.Identity.Infrastructure.SqlServer.Repositories;
-using TaskFlow.Identity.Application.Publishers;
 using TaskFlow.Identity.Infrastructure.Messaging;
-using TaskFlow.Shared.Messaging.Options;
 
 namespace TaskFlow.Identity.API.Composition {
     internal static class IdentityServiceComposition {
@@ -65,7 +64,7 @@ namespace TaskFlow.Identity.API.Composition {
             builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 
             // RabbitMQ
-            builder.Services.AddSingleton<IEventPublisher, EventPublisher>();
+            builder.Services.AddSingleton<IEventPublisher, IdentityServiceEventPublisher>();
             builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection(nameof(RabbitMqOptions)));
 
             // MediatoR

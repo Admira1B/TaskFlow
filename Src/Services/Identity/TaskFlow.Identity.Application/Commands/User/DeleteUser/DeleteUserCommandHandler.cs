@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using TaskFlow.Identity.Contracts.Events;
 using TaskFlow.Identity.Application.Results;
-using TaskFlow.Identity.Application.Publishers;
+using TaskFlow.Identity.Application.Contracts;
+using static TaskFlow.Shared.Messaging.Constants.RabbitMqConstants.IdentityService;
 
 namespace TaskFlow.Identity.Application.Commands.User.DeleteUser {
     public class DeleteUserCommandHandler(UserManager<Domain.Entities.User> manager, IEventPublisher publisher) : IRequestHandler<DeleteUserCommand, RequestResult<Unit>> {
@@ -16,12 +17,14 @@ namespace TaskFlow.Identity.Application.Commands.User.DeleteUser {
                 return RequestResult<Unit>.NotFound("User", command.Id);
             }
 
-            var isPublished = await _publisher.PublishUserDeletedEvent(
+            var isPublished = await _publisher.PublishEventAsync(
                 new UserDeletedEvent {
                     UserId = user.Id,
                     Email = user.Email!,
                     UserName = user.UserName!,
-                }
+                },
+                routingKey: RoutingKeys.UserDeleted,
+                cancellationToken
             );
 
             if (!isPublished) {
