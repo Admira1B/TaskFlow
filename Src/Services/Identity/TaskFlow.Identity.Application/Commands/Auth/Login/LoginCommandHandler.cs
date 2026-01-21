@@ -20,7 +20,7 @@ namespace TaskFlow.Identity.Application.Commands.Auth.Login {
             }
 
             var result = await _signInManager.PasswordSignInAsync(
-                user.UserName,
+                user.UserName!,
                 command.Password,
                 isPersistent: false,
                 lockoutOnFailure: false

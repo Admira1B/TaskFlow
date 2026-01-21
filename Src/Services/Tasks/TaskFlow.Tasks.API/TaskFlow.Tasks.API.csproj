@@ -16,5 +16,10 @@
 		<ProjectReference Include="..\TaskFlow.Tasks.Application\TaskFlow.Tasks.Application.csproj" />
 		<ProjectReference Include="..\TaskFlow.Tasks.Infrastructure.Messaging\TaskFlow.Tasks.Infrastructure.Messaging.csproj" />
 	</ItemGroup>
-
+	<ItemGroup>
+		<None Update="nlog.config">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+	
 </Project>

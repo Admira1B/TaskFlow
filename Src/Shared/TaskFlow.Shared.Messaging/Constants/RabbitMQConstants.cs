@@ -10,7 +10,16 @@
             public const string RoutingPattern = $"{ServiceName}.#";
             
             public static class RoutingKeys {
-                public const string UserDeleted = "identity-service.user.deleted";
+                public const string UserDeleted = $"{ServiceName}.user.deleted";
+            }
+        }
+
+        public static class TasksService {
+            public const string ServiceName = "tasks-service";
+            public const string ExchangeName = $"{ServiceName}.events";
+            public const string RoutingPattern = $"{ServiceName}.#";
+
+            public static class RoutingKeys {
             }
         }
     }
