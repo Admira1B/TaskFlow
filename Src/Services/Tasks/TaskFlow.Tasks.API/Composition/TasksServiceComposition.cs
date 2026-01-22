@@ -1,13 +1,15 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using System.Text;
+using NLog;
+using NLog.Web;
+using Microsoft.OpenApi;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
-using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using TaskFlow.Shared.Messaging.Options;
-using TaskFlow.Tasks.Application.Commands.Comment.CreateComment;
-using TaskFlow.Tasks.Application.Mapping;
-using TaskFlow.Tasks.Domain.Contracts;
 using TaskFlow.Tasks.Domain.Options;
+using TaskFlow.Tasks.Domain.Contracts;
+using TaskFlow.Tasks.Application.Mapping;
+using TaskFlow.Tasks.Application.Commands.Comment.CreateComment;
 using TaskFlow.Tasks.Infrastructure.Messaging;
 using TaskFlow.Tasks.Infrastructure.SqlServer;
 using TaskFlow.Tasks.Infrastructure.SqlServer.Repositories;
@@ -60,6 +62,21 @@ namespace TaskFlow.Tasks.API.Composition {
             builder.Services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
             builder.Services.AddScoped<ITaskGroupRepository, TaskGroupRepository>();
             builder.Services.AddScoped<ITaskItemRepository, TaskItemRepository>();
+
+            // Nlog logger
+            builder.Logging.ClearProviders();
+
+            builder.Host.UseNLog();
+
+            builder.Services.AddHttpContextAccessor();
+
+            builder.Services.AddSingleton(provider => {
+                var contextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+
+                var nlogLogger = LogManager.GetLogger("TaskFlow.TasksService");
+
+                return new Shared.Logging.Logger(nlogLogger, contextAccessor);
+            });
 
             // RabbitMQ
             builder.Services.AddHostedService<TasksServiceEventConsumer>();

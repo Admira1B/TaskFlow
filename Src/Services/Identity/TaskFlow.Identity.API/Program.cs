@@ -1,3 +1,4 @@
+using TaskFlow.Shared.Logging;
 using TaskFlow.Identity.API.Composition;
 
 namespace TaskFlow.Identity.API {
@@ -5,19 +6,27 @@ namespace TaskFlow.Identity.API {
         public static void Main(string[] args) {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.AddIdentityServiceComposition();
+            builder.AddServices();
 
             var app = builder.Build();
 
-            app.UseSwagger();
-            app.UseSwaggerUI();
+            using var scope = app.Services.CreateScope();
+            var logger = scope.ServiceProvider.GetRequiredService<Logger>();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
+            try {
+                logger.Info("Starting Identity Service...");
+                logger.Info($"Environment: {app.Environment.EnvironmentName}");
+                logger.Info($"Application Name: {builder.Environment.ApplicationName}");
 
-            app.MapControllers();
+                app.ConfigurePipeline();
 
-            app.Run();
+                logger.Info("Identity Service started successfully");
+
+                app.Run();
+            } catch (Exception ex) {
+                logger.Error("Identity Service failed to start", ex);
+                throw;
+            }
         }
     }
 }
