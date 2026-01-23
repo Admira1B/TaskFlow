@@ -22,6 +22,8 @@ namespace TaskFlow.Identity.API {
                 logger.Info("Identity Service started successfully");
 
                 app.Run();
+
+                logger.Info("Identity Service is shutting down...");
             } catch (Exception ex) {
                 logger.Error("Identity Service failed to start", ex);
                 throw;

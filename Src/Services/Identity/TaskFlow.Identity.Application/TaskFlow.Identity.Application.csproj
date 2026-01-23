@@ -9,7 +9,6 @@
 		<ProjectReference Include="..\TaskFlow.Identity.Domain\TaskFlow.Identity.Domain.csproj" />
 		<ProjectReference Include="..\TaskFlow.Identity.Contracts\TaskFlow.Identity.Contracts.csproj" />
 		<ProjectReference Include="..\TaskFlow.Identity.Infrastructure.SqlServer\TaskFlow.Identity.Infrastructure.SqlServer.csproj" />
-		<ProjectReference Include="..\..\..\Shared\TaskFlow.Shared.Logging\TaskFlow.Shared.Logging.csproj" />
 	</ItemGroup>
 
 

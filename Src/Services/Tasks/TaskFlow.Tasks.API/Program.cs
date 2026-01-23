@@ -22,6 +22,8 @@ namespace TaskFlow.Tasks.API {
                 logger.Info("Tasks Service started successfully");
 
                 app.Run();
+
+                logger.Info("Tasks Service is shutting down...");
             } catch (Exception ex) {
                 logger.Error("Tasks Service failed to start", ex);
                 throw;
