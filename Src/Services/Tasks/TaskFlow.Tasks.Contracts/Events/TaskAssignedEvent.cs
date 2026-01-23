@@ -1,6 +1,6 @@
-﻿using TaskFlow.Shared.Messaging;
+﻿using TaskFlow.Shared.Core.Entities;
 
 namespace TaskFlow.Tasks.Contracts.Events {
-    public class TaskAssignedEvent : BaseEvent {
+    public class TaskAssignedEvent : EventBase {
     }
 }

@@ -2,12 +2,13 @@
 using System.Text.Json;
 using RabbitMQ.Client;
 using Microsoft.Extensions.Options;
-using TaskFlow.Shared.Logging;
+using TaskFlow.Shared.Core.Interfaces;
 using TaskFlow.Shared.Messaging.Options;
+using TaskFlow.Shared.Core.Entities;
 
 namespace TaskFlow.Shared.Messaging {
     public abstract class RabbitMqEventPublisher : IDisposable {
-        private readonly Logger _logger;
+        private readonly ILogger _logger;
         private readonly IChannel _channel;
         private readonly IConnection _connection;
         private readonly RabbitMqOptions _options;
@@ -16,7 +17,7 @@ namespace TaskFlow.Shared.Messaging {
 
         private bool _disposed = false;
 
-        protected RabbitMqEventPublisher(Logger logger, IOptions<RabbitMqOptions> options) {
+        protected RabbitMqEventPublisher(ILogger logger, IOptions<RabbitMqOptions> options) {
             _logger = logger;
             _options = options.Value;
             _jsonOptions = new JsonSerializerOptions {
@@ -39,7 +40,7 @@ namespace TaskFlow.Shared.Messaging {
             _channel = _connection.CreateChannelAsync().GetAwaiter().GetResult();
         }
 
-        protected async Task<bool> PublishEventAsync<T>(T @event, string exchange, string routingKey, string serviceName, CancellationToken ct = default) where T : BaseEvent {
+        protected async Task<bool> PublishEventAsync<T>(T @event, string exchange, string routingKey, string serviceName, CancellationToken ct = default) where T : EventBase {
             ArgumentNullException.ThrowIfNull(@event);
 
             try {

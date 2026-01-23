@@ -3,7 +3,7 @@ using NLog;
 using Microsoft.AspNetCore.Http;
 
 namespace TaskFlow.Shared.Logging {
-    public class Logger(ILogger logger, IHttpContextAccessor? contextAccessor = null) {
+    public class Logger(ILogger logger, IHttpContextAccessor? contextAccessor = null) : Core.Interfaces.ILogger {
         private readonly ILogger _logger = logger;
         private readonly IHttpContextAccessor? _contextAccessor = contextAccessor;
 

@@ -1,14 +1,13 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
-using TaskFlow.Shared.Logging;
+using TaskFlow.Shared.Core.Interfaces;
 using TaskFlow.Identity.Contracts.Events;
 using TaskFlow.Identity.Application.Results;
-using TaskFlow.Identity.Application.Contracts;
 using static TaskFlow.Shared.Messaging.Constants.RabbitMqConstants.IdentityService;
 
 namespace TaskFlow.Identity.Application.Commands.User.DeleteUser {
-    public class DeleteUserCommandHandler(Logger logger, UserManager<Domain.Entities.User> manager, IEventPublisher publisher) : IRequestHandler<DeleteUserCommand, RequestResult<Unit>> {
-        private readonly Logger _logger = logger;
+    public class DeleteUserCommandHandler(ILogger logger, UserManager<Domain.Entities.User> manager, IEventPublisher publisher) : IRequestHandler<DeleteUserCommand, RequestResult<Unit>> {
+        private readonly ILogger _logger = logger;
         private readonly UserManager<Domain.Entities.User> _manager = manager;
         private readonly IEventPublisher _publisher = publisher;
 

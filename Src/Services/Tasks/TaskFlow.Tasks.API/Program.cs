@@ -5,19 +5,27 @@ namespace TaskFlow.Tasks.API {
         public static void Main(string[] args) {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.AddTaskServiceComposition();
+            builder.ConfigureServices();
 
             var app = builder.Build();
 
-            app.UseSwagger();
-            app.UseSwaggerUI();
+            using var scope = app.Services.CreateScope();
+            var logger = scope.ServiceProvider.GetRequiredService<Shared.Core.Interfaces.ILogger>();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
+            try {
+                logger.Info("Starting Tasks Service...");
+                logger.Info($"Environment: {app.Environment.EnvironmentName}");
+                logger.Info($"Application Name: {builder.Environment.ApplicationName}");
 
-            app.MapControllers();
+                app.ConfigurePipeline();
 
-            app.Run();
+                logger.Info("Tasks Service started successfully");
+
+                app.Run();
+            } catch (Exception ex) {
+                logger.Error("Tasks Service failed to start", ex);
+                throw;
+            }
         }
     }
 }

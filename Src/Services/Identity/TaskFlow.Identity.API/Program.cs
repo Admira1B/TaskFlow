@@ -1,4 +1,3 @@
-using TaskFlow.Shared.Logging;
 using TaskFlow.Identity.API.Composition;
 
 namespace TaskFlow.Identity.API {
@@ -6,12 +5,12 @@ namespace TaskFlow.Identity.API {
         public static void Main(string[] args) {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.AddServices();
+            builder.ConfigureServices();
 
             var app = builder.Build();
 
             using var scope = app.Services.CreateScope();
-            var logger = scope.ServiceProvider.GetRequiredService<Logger>();
+            var logger = scope.ServiceProvider.GetRequiredService<Shared.Core.Interfaces.ILogger>();
 
             try {
                 logger.Info("Starting Identity Service...");

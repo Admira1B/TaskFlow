@@ -7,10 +7,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using TaskFlow.Shared.Core.Options;
+using TaskFlow.Shared.Core.Interfaces;
+using TaskFlow.Shared.Core.Middlewares;
 using TaskFlow.Shared.Messaging.Options;
 using TaskFlow.Identity.Application.Mapping;
 using TaskFlow.Identity.Application.Services;
-using TaskFlow.Identity.Application.Contracts;
 using TaskFlow.Identity.Application.Commands.Auth.Login;
 using TaskFlow.Identity.Domain.Options;
 using TaskFlow.Identity.Domain.Entities;
@@ -22,6 +24,8 @@ using TaskFlow.Identity.Infrastructure.SqlServer.Repositories;
 namespace TaskFlow.Identity.API.Composition {
     internal static class IdentityServiceComposition {
         public static WebApplication ConfigurePipeline(this WebApplication app) {
+            app.UseMiddleware<RequestLoggingMiddleware>();
+
             app.UseSwagger();
             app.UseSwaggerUI();
 
@@ -33,7 +37,7 @@ namespace TaskFlow.Identity.API.Composition {
             return app;
         }
 
-        public static IServiceCollection AddServices(this WebApplicationBuilder builder) {
+        public static IServiceCollection ConfigureServices(this WebApplicationBuilder builder) {
             // Controllers
             builder.Services.AddControllers();
 
@@ -85,7 +89,7 @@ namespace TaskFlow.Identity.API.Composition {
 
             builder.Services.AddHttpContextAccessor();
 
-            builder.Services.AddSingleton(provider => {
+            builder.Services.AddSingleton<Shared.Core.Interfaces.ILogger>(provider => {
                 var contextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
 
                 var nlogLogger = LogManager.GetLogger("identity-service");
@@ -95,11 +99,7 @@ namespace TaskFlow.Identity.API.Composition {
 
             // RabbitMQ
             builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection(nameof(RabbitMqOptions)));
-            builder.Services.AddSingleton<IEventPublisher, IdentityServiceEventPublisher>(provider => {
-                var options = provider.GetRequiredService<IOptions<RabbitMqOptions>>();
-                var logger = provider.GetRequiredService<Shared.Logging.Logger>();
-                return new IdentityServiceEventPublisher(logger, options);
-            });
+            builder.Services.AddSingleton<IEventPublisher, IdentityServiceEventPublisher>();
 
             // MediatoR
             builder.Services.AddMediatR(cfg =>

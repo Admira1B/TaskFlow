@@ -6,4 +6,8 @@
     <PackageReference Include="NLog.Web.AspNetCore" />
   </ItemGroup>
 	
+  <ItemGroup>
+    <ProjectReference Include="..\TaskFlow.Shared.Core\TaskFlow.Shared.Core.csproj" />
+  </ItemGroup>
+	
 </Project>

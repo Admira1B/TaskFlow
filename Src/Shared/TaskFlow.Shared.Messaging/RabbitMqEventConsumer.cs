@@ -6,12 +6,13 @@ using RabbitMQ.Client.Events;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.DependencyInjection;
-using TaskFlow.Shared.Logging;
+using TaskFlow.Shared.Core.Interfaces;
 using TaskFlow.Shared.Messaging.Options;
+using TaskFlow.Shared.Core.Entities;
 
 namespace TaskFlow.Shared.Messaging {
     public abstract class RabbitMqEventConsumer : BackgroundService {
-        private readonly Logger _logger;
+        private readonly ILogger _logger;
         private readonly RabbitMqOptions _options;
         private readonly IServiceProvider _services;
         private readonly JsonSerializerOptions _jsonOptions;
@@ -21,7 +22,7 @@ namespace TaskFlow.Shared.Messaging {
         private IChannel? _channel;
         private IConnection? _connection;
 
-        public RabbitMqEventConsumer(Logger logger, IOptions<RabbitMqOptions> options, IServiceProvider services, Dictionary<string, string> subscriptions) {
+        public RabbitMqEventConsumer(ILogger logger, IOptions<RabbitMqOptions> options, IServiceProvider services, Dictionary<string, string> subscriptions) {
             _logger = logger;
             _options = options.Value;
             _services = services;
@@ -192,7 +193,7 @@ namespace TaskFlow.Shared.Messaging {
                 .SelectMany(a => a.GetTypes())
                 .FirstOrDefault(t =>
                     t.Name == eventTypeName &&
-                    typeof(BaseEvent).IsAssignableFrom(t)
+                    typeof(EventBase).IsAssignableFrom(t)
                 );
         }
 

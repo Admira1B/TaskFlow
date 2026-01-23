@@ -5,9 +5,10 @@ using Microsoft.OpenApi;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using TaskFlow.Shared.Messaging.Options;
-using TaskFlow.Tasks.Domain.Options;
 using TaskFlow.Tasks.Domain.Contracts;
+using TaskFlow.Shared.Core.Options;
+using TaskFlow.Shared.Core.Middlewares;
+using TaskFlow.Shared.Messaging.Options;
 using TaskFlow.Tasks.Application.Mapping;
 using TaskFlow.Tasks.Application.Commands.Comment.CreateComment;
 using TaskFlow.Tasks.Infrastructure.Messaging;
@@ -16,7 +17,21 @@ using TaskFlow.Tasks.Infrastructure.SqlServer.Repositories;
 
 namespace TaskFlow.Tasks.API.Composition {
     internal static class TasksServiceComposition {
-        public static IServiceCollection AddTaskServiceComposition(this WebApplicationBuilder builder) {
+            public static WebApplication ConfigurePipeline(this WebApplication app) {
+                app.UseMiddleware<RequestLoggingMiddleware>();
+
+                app.UseSwagger();
+                app.UseSwaggerUI();
+
+                app.UseAuthentication();
+                app.UseAuthorization();
+
+                app.MapControllers();
+
+                return app;
+            }
+
+            public static IServiceCollection ConfigureServices(this WebApplicationBuilder builder) {
             // Controllers
             builder.Services.AddControllers();
 
@@ -70,17 +85,17 @@ namespace TaskFlow.Tasks.API.Composition {
 
             builder.Services.AddHttpContextAccessor();
 
-            builder.Services.AddSingleton(provider => {
+            builder.Services.AddSingleton<Shared.Core.Interfaces.ILogger>(provider => {
                 var contextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
 
-                var nlogLogger = LogManager.GetLogger("TaskFlow.TasksService");
+                var nlogLogger = LogManager.GetLogger("tasks-service");
 
                 return new Shared.Logging.Logger(nlogLogger, contextAccessor);
             });
 
             // RabbitMQ
-            builder.Services.AddHostedService<TasksServiceEventConsumer>();
             builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection(nameof(RabbitMqOptions)));
+            builder.Services.AddHostedService<TasksServiceEventConsumer>();
 
             // MediatoR
             builder.Services.AddMediatR(cfg =>
