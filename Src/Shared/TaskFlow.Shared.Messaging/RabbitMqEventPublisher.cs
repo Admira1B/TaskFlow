@@ -2,10 +2,13 @@
 using System.Text.Json;
 using RabbitMQ.Client;
 using Microsoft.Extensions.Options;
+using TaskFlow.Shared.Core.Interfaces;
 using TaskFlow.Shared.Messaging.Options;
+using TaskFlow.Shared.Core.Entities;
 
 namespace TaskFlow.Shared.Messaging {
     public abstract class RabbitMqEventPublisher : IDisposable {
+        private readonly ILogger _logger;
         private readonly IChannel _channel;
         private readonly IConnection _connection;
         private readonly RabbitMqOptions _options;
@@ -14,13 +17,14 @@ namespace TaskFlow.Shared.Messaging {
 
         private bool _disposed = false;
 
-        protected RabbitMqEventPublisher(IOptions<RabbitMqOptions> options) {
-            _declaredExchanges = [];
+        protected RabbitMqEventPublisher(ILogger logger, IOptions<RabbitMqOptions> options) {
+            _logger = logger;
             _options = options.Value;
             _jsonOptions = new JsonSerializerOptions {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 WriteIndented = false
             };
+            _declaredExchanges = [];
 
             var factory = new ConnectionFactory {
                 UserName = _options.UserName,
@@ -36,7 +40,7 @@ namespace TaskFlow.Shared.Messaging {
             _channel = _connection.CreateChannelAsync().GetAwaiter().GetResult();
         }
 
-        protected async Task<bool> PublishEventAsync<T>(T @event, string exchange, string routingKey, string serviceName, CancellationToken ct = default) where T : BaseEvent {
+        protected async Task<bool> PublishEventAsync<T>(T @event, string exchange, string routingKey, string serviceName, CancellationToken ct = default) where T : EventBase {
             ArgumentNullException.ThrowIfNull(@event);
 
             try {
@@ -68,7 +72,7 @@ namespace TaskFlow.Shared.Messaging {
                 return true;
 
             } catch (Exception ex) {
-                Console.WriteLine($"Failed to publish event {typeof(T).Name}: {ex.Message}");
+                _logger.Error($"Failed to publish {typeof(T).Name} event to {exchange}/{routingKey}", ex);
                 return false;
             }
         }

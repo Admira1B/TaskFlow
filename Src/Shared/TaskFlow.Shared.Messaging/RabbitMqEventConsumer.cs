@@ -5,11 +5,14 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using TaskFlow.Shared.Messaging.Options;
 using Microsoft.Extensions.DependencyInjection;
+using TaskFlow.Shared.Core.Interfaces;
+using TaskFlow.Shared.Messaging.Options;
+using TaskFlow.Shared.Core.Entities;
 
 namespace TaskFlow.Shared.Messaging {
     public abstract class RabbitMqEventConsumer : BackgroundService {
+        private readonly ILogger _logger;
         private readonly RabbitMqOptions _options;
         private readonly IServiceProvider _services;
         private readonly JsonSerializerOptions _jsonOptions;
@@ -19,7 +22,8 @@ namespace TaskFlow.Shared.Messaging {
         private IChannel? _channel;
         private IConnection? _connection;
 
-        public RabbitMqEventConsumer(IOptions<RabbitMqOptions> options, IServiceProvider services, Dictionary<string, string> subscriptions) {
+        public RabbitMqEventConsumer(ILogger logger, IOptions<RabbitMqOptions> options, IServiceProvider services, Dictionary<string, string> subscriptions) {
+            _logger = logger;
             _options = options.Value;
             _services = services;
             _subscriptions = subscriptions;
@@ -31,20 +35,24 @@ namespace TaskFlow.Shared.Messaging {
         }
 
         protected override async Task ExecuteAsync(CancellationToken ct) {
-            Console.WriteLine("EventConsumer starting...");
+            _logger.Info($"{GetType().Name} starting...");
 
             try {
                 await ConnectAsync(ct);
 
                 await SetupSubscriptionsAsync(ct);
 
+                _logger.Info($"Subscribed to {_subscriptions.Count} exchange(s)");
+
+                _logger.Info($"{GetType().Name} started successfully");
+
                 while (!ct.IsCancellationRequested) {
                     await Task.Delay(1000, ct);
                 }
             } catch (OperationCanceledException) {
-                Console.WriteLine("EventConsumer stopped gracefully");
+                _logger.Info($"{GetType().Name} stopped gracefully");
             } catch (Exception ex) {
-                Console.WriteLine($"Critical error in EventConsumer: {ex.Message}");
+                _logger.Fatal($"{this.GetType().Name} stopped with critical failure", ex);
                 throw;
             } finally {
                 await CleanupAsync();
@@ -52,27 +60,36 @@ namespace TaskFlow.Shared.Messaging {
         }
 
         private async Task ConnectAsync(CancellationToken ct) {
-            var factory = new ConnectionFactory {
-                UserName = _options.UserName,
-                Password = _options.Password,
-                Port = _options.Port,
-                HostName = _options.HostName,
-                VirtualHost = _options.VirtualHost,
-                AutomaticRecoveryEnabled = true
+            try {
+                var factory = new ConnectionFactory {
+                    UserName = _options.UserName,
+                    Password = _options.Password,
+                    Port = _options.Port,
+                    HostName = _options.HostName,
+                    VirtualHost = _options.VirtualHost,
+                    AutomaticRecoveryEnabled = true
 
-            };
+                };
 
-            _connection = await factory.CreateConnectionAsync(cancellationToken: ct);
-            _channel = await _connection.CreateChannelAsync(cancellationToken: ct);
+                _connection = await factory.CreateConnectionAsync(cancellationToken: ct);
+                _channel = await _connection.CreateChannelAsync(cancellationToken: ct);
 
-            await _channel.BasicQosAsync(
-                prefetchSize: 0,
-                prefetchCount: 10,
-                global: false,
-                cancellationToken: ct
-            );
+                await _channel.BasicQosAsync(
+                    prefetchSize: 0,
+                    prefetchCount: 10,
+                    global: false,
+                    cancellationToken: ct
+                );
 
-            Console.WriteLine("Connected to RabbitMQ");
+                _logger.Debug($"RabbitMQ channel created");
+            } catch (OperationCanceledException) {
+                _logger.Warn("RabbitMQ connection cancelled");
+                throw;
+            } catch (Exception ex) {
+                _logger.Fatal($"Failed to connect to RabbitMQ at {_options.HostName}:{_options.Port}", ex);
+                throw;
+            }
+
         }
 
         private async Task SetupSubscriptionsAsync(CancellationToken ct) {
@@ -111,8 +128,6 @@ namespace TaskFlow.Shared.Messaging {
             );
 
             await StartConsumingQueueAsync(queueName, ct);
-
-            Console.WriteLine($"Subscribed to {exchangeName} -> {queueName} ({routingPattern})");
         }
 
         private async Task StartConsumingQueueAsync(string queueName, CancellationToken ct) {
@@ -122,14 +137,16 @@ namespace TaskFlow.Shared.Messaging {
                 try {
                     await ProcessMessageAsync(ea, ct);
                     await _channel!.BasicAckAsync(ea.DeliveryTag, false, ct);
+
+                    _logger.Debug($"Message {ea.DeliveryTag} successfully processed.");
                 } catch (JsonException jsonEx) {
-                    Console.WriteLine($"JSON error: {jsonEx.Message}");
+                    _logger.Error($"Invalid message format in queue '{queueName}' - delivery tag {ea.DeliveryTag}", jsonEx);
                     await _channel!.BasicNackAsync(ea.DeliveryTag, false, false, ct);
-                } catch (InvalidOperationException) {
+                } catch (InvalidOperationException invalidOpEx) {
+                    _logger.Error($"Business logic violation while processing message {ea.DeliveryTag} from '{queueName}'", invalidOpEx);
                     await _channel!.BasicNackAsync(ea.DeliveryTag, false, false, ct);
                 } catch (Exception ex) {
-                    Console.WriteLine($"Error processing message: {ex.Message}");
-
+                    _logger.Error($"Failed to process message {ea.DeliveryTag} from queue '{queueName}'", ex);
                     await _channel!.BasicNackAsync(ea.DeliveryTag, false, true, ct);
                 }
             };
@@ -147,20 +164,20 @@ namespace TaskFlow.Shared.Messaging {
             var messageJson = Encoding.UTF8.GetString(body);
             var eventTypeName = ea.BasicProperties.Type;
 
-            if (eventTypeName is null) {
-                throw new NullReferenceException("Message have no event type");
-            }
+            _logger.Debug($"Processing message: {ea.BasicProperties.Type} -> {ea.RoutingKey} (delivery tag: {ea.DeliveryTag})");
 
-            Console.WriteLine($"Received: {eventTypeName} -> {ea.RoutingKey}");
+            if (eventTypeName is null) {
+                throw new InvalidOperationException($"Message missing event type - delivery tag {ea.DeliveryTag}, routing key '{ea.RoutingKey}'");
+            }
 
             var eventType = FindEventType(eventTypeName);
             if (eventType == null) {
-                throw new InvalidOperationException($"Unknown event type: {eventTypeName}");
+                throw new InvalidOperationException($"Unsupported event type '{eventTypeName}' - delivery tag {ea.DeliveryTag}");
             }
 
             var integrationEvent = JsonSerializer.Deserialize(messageJson, eventType, _jsonOptions);
             if (integrationEvent == null) {
-                throw new InvalidOperationException($"Failed to deserialize {eventTypeName}");
+                throw new InvalidOperationException($"Failed to deserialize event '{eventTypeName}' - delivery tag {ea.DeliveryTag}");
             }
 
             using var scope = _services.CreateScope();
@@ -168,7 +185,7 @@ namespace TaskFlow.Shared.Messaging {
 
             await mediator.Publish(integrationEvent, ct);
 
-            Console.WriteLine($"Processed: {eventTypeName}");
+            _logger.Debug($"Event {eventTypeName} published to mediator");
         }
 
         private Type? FindEventType(string eventTypeName) {
@@ -176,7 +193,7 @@ namespace TaskFlow.Shared.Messaging {
                 .SelectMany(a => a.GetTypes())
                 .FirstOrDefault(t =>
                     t.Name == eventTypeName &&
-                    typeof(BaseEvent).IsAssignableFrom(t)
+                    typeof(EventBase).IsAssignableFrom(t)
                 );
         }
 
@@ -191,12 +208,9 @@ namespace TaskFlow.Shared.Messaging {
 
             _channel?.Dispose();
             _connection?.Dispose();
-
-            //Console.WriteLine("EventConsumer cleaned up");
         }
 
         public override async Task StopAsync(CancellationToken ct) {
-            //Console.WriteLine("EventConsumer stopping...");
             await CleanupAsync();
             await base.StopAsync(ct);
         }

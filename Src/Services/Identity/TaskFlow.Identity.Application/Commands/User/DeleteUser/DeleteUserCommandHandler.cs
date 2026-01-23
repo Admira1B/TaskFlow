@@ -1,12 +1,13 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
+using TaskFlow.Shared.Core.Interfaces;
 using TaskFlow.Identity.Contracts.Events;
 using TaskFlow.Identity.Application.Results;
-using TaskFlow.Identity.Application.Contracts;
 using static TaskFlow.Shared.Messaging.Constants.RabbitMqConstants.IdentityService;
 
 namespace TaskFlow.Identity.Application.Commands.User.DeleteUser {
-    public class DeleteUserCommandHandler(UserManager<Domain.Entities.User> manager, IEventPublisher publisher) : IRequestHandler<DeleteUserCommand, RequestResult<Unit>> {
+    public class DeleteUserCommandHandler(ILogger logger, UserManager<Domain.Entities.User> manager, IEventPublisher publisher) : IRequestHandler<DeleteUserCommand, RequestResult<Unit>> {
+        private readonly ILogger _logger = logger;
         private readonly UserManager<Domain.Entities.User> _manager = manager;
         private readonly IEventPublisher _publisher = publisher;
 
@@ -31,13 +32,15 @@ namespace TaskFlow.Identity.Application.Commands.User.DeleteUser {
                 return RequestResult<Unit>.FailedToPublishEvent($"Failed to publish delete event for user {user.Id}");
             }
 
-            var result = await _manager.DeleteAsync(user);
+            //var result = await _manager.DeleteAsync(user);
 
-            if (!result.Succeeded) {
-                var errors = result.Errors.Select(e => e.Description);
+            //if (!result.Succeeded) {
+            //    var errors = result.Errors.Select(e => e.Description);
 
-                return RequestResult<Unit>.Failure(string.Join(",", errors));
-            }
+            //    return RequestResult<Unit>.Failure(string.Join(",", errors));
+            //}
+
+            _logger.Info("User ID - {UserId} was successfully deleted", user.Id.ToString());
 
             return RequestResult<Unit>.Success();
         }

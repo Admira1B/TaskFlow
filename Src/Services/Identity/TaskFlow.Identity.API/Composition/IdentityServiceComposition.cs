@@ -1,24 +1,43 @@
 ﻿using System.Text;
+using NLog;
+using NLog.Web;
 using Microsoft.OpenApi;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using TaskFlow.Shared.Core.Options;
+using TaskFlow.Shared.Core.Interfaces;
+using TaskFlow.Shared.Core.Middlewares;
 using TaskFlow.Shared.Messaging.Options;
 using TaskFlow.Identity.Application.Mapping;
 using TaskFlow.Identity.Application.Services;
-using TaskFlow.Identity.Application.Contracts;
 using TaskFlow.Identity.Application.Commands.Auth.Login;
-using TaskFlow.Identity.Domain.Contracts.Repositories;
 using TaskFlow.Identity.Domain.Options;
 using TaskFlow.Identity.Domain.Entities;
+using TaskFlow.Identity.Domain.Contracts.Repositories;
+using TaskFlow.Identity.Infrastructure.Messaging;
 using TaskFlow.Identity.Infrastructure.SqlServer;
 using TaskFlow.Identity.Infrastructure.SqlServer.Repositories;
-using TaskFlow.Identity.Infrastructure.Messaging;
 
 namespace TaskFlow.Identity.API.Composition {
     internal static class IdentityServiceComposition {
-        public static IServiceCollection AddIdentityServiceComposition(this WebApplicationBuilder builder) {
+        public static WebApplication ConfigurePipeline(this WebApplication app) {
+            app.UseMiddleware<RequestLoggingMiddleware>();
+
+            app.UseSwagger();
+            app.UseSwaggerUI();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.MapControllers();
+
+            return app;
+        }
+
+        public static IServiceCollection ConfigureServices(this WebApplicationBuilder builder) {
             // Controllers
             builder.Services.AddControllers();
 
@@ -63,9 +82,24 @@ namespace TaskFlow.Identity.API.Composition {
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 
+            // Nlog logger
+            builder.Logging.ClearProviders();
+
+            builder.Host.UseNLog();
+
+            builder.Services.AddHttpContextAccessor();
+
+            builder.Services.AddSingleton<Shared.Core.Interfaces.ILogger>(provider => {
+                var contextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+
+                var nlogLogger = LogManager.GetLogger("identity-service");
+
+                return new Shared.Logging.Logger(nlogLogger, contextAccessor);
+            });
+
             // RabbitMQ
-            builder.Services.AddSingleton<IEventPublisher, IdentityServiceEventPublisher>();
             builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection(nameof(RabbitMqOptions)));
+            builder.Services.AddSingleton<IEventPublisher, IdentityServiceEventPublisher>();
 
             // MediatoR
             builder.Services.AddMediatR(cfg =>
