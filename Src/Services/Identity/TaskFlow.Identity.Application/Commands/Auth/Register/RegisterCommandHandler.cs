@@ -14,18 +14,18 @@ namespace TaskFlow.Identity.Application.Commands.Auth.Register {
         private readonly JsonWebTokenService _jwtService = jwtService;
 
         public async Task<AuthResult> Handle(RegisterCommand command, CancellationToken cancellationToken) {
-            _logger.Debug($"Registration attempt. Email: {command.Email}, Username: {command.UserName}");
+            _logger.Debug("Registration attempt. Email: {Email}, Username: {UserName}", command.Email, command.UserName);
             var existsByEmail = await _userManager.FindByEmailAsync(command.Email);
 
             if (existsByEmail is not null) {
-                _logger.Debug($"Registration failed - email already exists: {command.Email}");
+                _logger.Debug("Registration failed. Email already exists: {Email}", command.Email);
                 return AuthResult.AlreadyExists("Email", command.Email);
             }
 
             var existsByName = await _userManager.FindByNameAsync(command.UserName);
 
             if (existsByName is not null) {
-                _logger.Debug($"Registration failed - username already exists: {command.UserName}");
+                _logger.Debug("Registration failed. Username already exists: {UserName}", command.UserName);
                 return AuthResult.AlreadyExists("UserName", command.UserName);
             }
 
@@ -42,14 +42,13 @@ namespace TaskFlow.Identity.Application.Commands.Auth.Register {
                 var errors = result.Errors.Select(e => e.Description);
                 var message = string.Join(",", errors);
 
-                _logger.Warn($"User creation failed. Email: {command.Email}, Errors: {message}");
+                _logger.Debug("User creation failed. Email: {Email}, Errors: {Message}", command.Email, message);
                 return AuthResult.Failure(message);
             }
 
             var token = await _jwtService.GenerateWebTokenAsync(user);
 
-            _logger.Info($"User registered successfully. UserId: {user.Id}, Email: {user.Email}");
-            _logger.Debug($"Registration details - UserId: {user.Id}, Name: {user.FirstName} {user.LastName}");
+            _logger.Debug("User registered successfully. UserId: {UserId}, Email: {Email}", user.Id.ToString(), user.Email);
 
             return AuthResult.Success(_mapper.Map<UserDto>(user), token);
         }

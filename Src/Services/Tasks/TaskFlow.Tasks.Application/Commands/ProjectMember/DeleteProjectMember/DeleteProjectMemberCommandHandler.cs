@@ -1,23 +1,35 @@
 ﻿using MediatR;
+using TaskFlow.Shared.Core.Interfaces;
 using TaskFlow.Tasks.Domain.Contracts;
 using TaskFlow.Tasks.Application.Results;
 
 namespace TaskFlow.Tasks.Application.Commands.ProjectMember.DeleteProjectMember {
-    public class DeleteProjectMemberCommandHandler(IProjectMemberRepository repository) : IRequestHandler<DeleteProjectMemberCommand, RequestResult<Unit>> {
+    public class DeleteProjectMemberCommandHandler(ILogger logger, IProjectMemberRepository repository) : IRequestHandler<DeleteProjectMemberCommand, RequestResult<Unit>> {
+        private readonly ILogger _logger = logger;
         private readonly IProjectMemberRepository _repository = repository;
-        
+
         public async Task<RequestResult<Unit>> Handle(DeleteProjectMemberCommand command, CancellationToken cancellationToken) {
+            _logger.Debug("Project member deletion attempt. MemberId: {MemberId}", command.Id.ToString());
+
             var member = await _repository.GetByIdAsync(command.Id);
 
             if (member is null) {
+                _logger.Debug("Failed to delete project member. Project {MemberId} member not found", command.Id.ToString());
                 return RequestResult<Unit>.NotFound("Project Member", command.Id);
             }
 
             try {
                 await _repository.DeleteAsync(command.Id);
-            } catch (Exception) {
+            } catch (Exception ex) {
+                _logger.Debug("Failed to delete project member. MemberId: {MemberId}, Exception: {Message}",
+                    command.Id.ToString(),
+                    ex.Message
+                );
+
                 return RequestResult<Unit>.Failure("Failed to delete project member.");
             }
+
+            _logger.Debug("Project member successfully deleted. MemberId: {MemberId}", command.Id.ToString());
 
             return RequestResult<Unit>.Success();
         }

@@ -15,11 +15,11 @@ namespace TaskFlow.Identity.Application.Commands.Auth.Login {
         private readonly JsonWebTokenService _jwtService = jwtService;
 
         public async Task<AuthResult> Handle(LoginCommand command, CancellationToken cancellationToken) {
-            _logger.Debug($"Login attempt for username: {command.UserName}");
+            _logger.Debug("Login attempt for Username: {UserName}", command.UserName);
             var user = await _userManager.FindByNameAsync(command.UserName);
 
             if (user == null) {
-                _logger.Debug($"User not found: {command.UserName}");
+                _logger.Debug("Login failed. User not found: {UserName}", command.UserName);
                 return AuthResult.NotFound("UserName", command.UserName);
             }
 
@@ -31,13 +31,13 @@ namespace TaskFlow.Identity.Application.Commands.Auth.Login {
             );
 
             if (!result.Succeeded) {
-                _logger.Debug($"Login failed for user: {command.UserName}");
+                _logger.Debug("Login failed for User: {UserName}", command.UserName);
                 return AuthResult.InvalidCredentials();
             }
 
             var token = await _jwtService.GenerateWebTokenAsync(user);
 
-            _logger.Debug($"User logged in successfully");
+            _logger.Debug("User {UserId} logged in successfully", user.Id.ToString());
             return AuthResult.Success(_mapper.Map<UserDto>(user), token);
         }
     }
