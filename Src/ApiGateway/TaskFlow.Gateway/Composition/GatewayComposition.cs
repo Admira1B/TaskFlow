@@ -1,15 +1,30 @@
-﻿using System.Text;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.IdentityModel.Tokens;
 using NLog;
 using NLog.Web;
-using Ocelot.Middleware;
 using Ocelot.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Ocelot.Middleware;
+using System.Text;
+using TaskFlow.Gateway.HealthChecks;
 using TaskFlow.Gateway.Options;
 
 namespace TaskFlow.Gateway.Composition {
     internal static class GatewayComposition {
         public async static Task<WebApplication> ConfigurePipelineAsync(this WebApplication app) {
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHealthChecks("/health");
+                endpoints.MapHealthChecks("/health/ready", new HealthCheckOptions {
+                    Predicate = check => check.Tags.Contains("ready")
+                });
+                endpoints.MapHealthChecks("/health/live", new HealthCheckOptions {
+                    Predicate = check => check.Tags.Contains("live")
+                });
+            });
 
             app.UseAuthentication();
             app.UseAuthorization();
@@ -27,9 +42,34 @@ namespace TaskFlow.Gateway.Composition {
         }
 
         public static IServiceCollection ConfigureServices(this WebApplicationBuilder builder) {
-            // Logging
+            // Nlog logger
             builder.Logging.ClearProviders();
+
             builder.Host.UseNLog();
+
+            builder.Services.AddHttpContextAccessor();
+
+            builder.Services.AddSingleton<Shared.Core.Interfaces.ILogger>(provider => {
+                var contextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+
+                var nlogLogger = LogManager.GetLogger("TaskFlow.Gateway.*");
+
+                return new Shared.Logging.Logger(nlogLogger, contextAccessor);
+            });
+
+            // Health Checks
+            builder.Services.AddHealthChecks()
+                .AddCheck<GatewayHealthCheck>("gateway_health_check",
+                    HealthStatus.Unhealthy,
+                    new[] { "ready", "live" });
+
+            // Ocelot
+            builder.Configuration
+                .SetBasePath(builder.Environment.ContentRootPath)
+                .AddOcelot("OcelotConfigurations", builder.Environment)
+                .AddEnvironmentVariables();
+
+            builder.Services.AddOcelot(builder.Configuration);
 
             // JsonWebToken Authentication & Authorization
             var jwtOptions = builder.Configuration.GetSection(nameof(JsonWebTokenOptions)).Get<JsonWebTokenOptions>();
@@ -62,14 +102,6 @@ namespace TaskFlow.Gateway.Composition {
             });
 
             builder.Services.AddAuthorization();
-
-            // Ocelot
-            builder.Configuration
-                .SetBasePath(builder.Environment.ContentRootPath)
-                .AddOcelot("OcelotConfigurations", builder.Environment)
-                .AddEnvironmentVariables();
-
-            builder.Services.AddOcelot(builder.Configuration);
 
             return builder.Services;
         }

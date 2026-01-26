@@ -10,5 +10,15 @@
 	<ItemGroup>
 		<Content Remove="ocelot.global.json" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="OcelotConfigurations\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Shared\TaskFlow.Shared.Logging\TaskFlow.Shared.Logging.csproj" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<NoWarn>ASP0014</NoWarn>
+	</PropertyGroup>
 
 </Project>
