@@ -1,32 +1,36 @@
+using NLog;
+using NLog.Web;
 using TaskFlow.Identity.API.Composition;
 
 namespace TaskFlow.Identity.API {
     public class Program {
         public static void Main(string[] args) {
-            var builder = WebApplication.CreateBuilder(args);
-
-            builder.ConfigureServices();
-
-            var app = builder.Build();
-
-            using var scope = app.Services.CreateScope();
-            var logger = scope.ServiceProvider.GetRequiredService<Shared.Core.Interfaces.ILogger>();
+            var logger = LogManager.Setup()
+                .LoadConfigurationFromAppSettings()
+                .GetCurrentClassLogger();
 
             try {
                 logger.Info("Starting Identity Service...");
-                logger.Info($"Environment: {app.Environment.EnvironmentName}");
-                logger.Info($"Application Name: {builder.Environment.ApplicationName}");
+                var builder = WebApplication.CreateBuilder(args);
+
+                builder.ConfigureServices();
+
+                var app = builder.Build();
 
                 app.ConfigurePipeline();
 
-                logger.Info("Identity Service started successfully");
+                logger.Info($"Environment: {app.Environment.EnvironmentName}");
+                logger.Info($"Application Name: {builder.Environment.ApplicationName}");
+                logger.Info("Identity Service started successfully. Press Ctrl+C to shut down.");
 
                 app.Run();
 
                 logger.Info("Identity Service is shutting down...");
             } catch (Exception ex) {
-                logger.Error("Identity Service failed to start", ex);
+                logger.Fatal("Stopped Identity Service because of exception", ex);
                 throw;
+            } finally {
+                LogManager.Shutdown();
             }
         }
     }

@@ -1,12 +1,36 @@
 ﻿using System.Text;
+using NLog;
+using NLog.Web;
+using Ocelot.Middleware;
 using Ocelot.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using TaskFlow.Gateway.Options;
 
 namespace TaskFlow.Gateway.Composition {
-    public static class GatewayComposition {
-        public static IServiceCollection AddGatewayComposition(this WebApplicationBuilder builder) {
+    internal static class GatewayComposition {
+        public async static Task<WebApplication> ConfigurePipelineAsync(this WebApplication app) {
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.Use(async (context, next) => {
+                var logger = LogManager.GetCurrentClassLogger();
+                logger.Info($"Request: {context.Request.Method} {context.Request.Path}");
+                await next();
+                logger.Info($"Response: {context.Response.StatusCode}");
+            });
+
+            await app.UseOcelot();
+
+            return app;
+        }
+
+        public static IServiceCollection ConfigureServices(this WebApplicationBuilder builder) {
+            // Logging
+            builder.Logging.ClearProviders();
+            builder.Host.UseNLog();
+
             // JsonWebToken Authentication & Authorization
             var jwtOptions = builder.Configuration.GetSection(nameof(JsonWebTokenOptions)).Get<JsonWebTokenOptions>();
 
