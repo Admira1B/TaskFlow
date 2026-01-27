@@ -12,9 +12,11 @@ namespace TaskFlow.Identity.Application.Commands.User.DeleteUser {
         private readonly IEventPublisher _publisher = publisher;
 
         public async Task<RequestResult<Unit>> Handle(DeleteUserCommand command, CancellationToken cancellationToken) {
+            _logger.Debug("User {UserId} deletion attempt", command.Id.ToString());
             var user = await _manager.FindByIdAsync(command.Id.ToString());
 
             if (user is null) {
+                _logger.Debug("User deletion failed. User {UserId} not found", command.Id.ToString());
                 return RequestResult<Unit>.NotFound("User", command.Id);
             }
 
@@ -29,18 +31,22 @@ namespace TaskFlow.Identity.Application.Commands.User.DeleteUser {
             );
 
             if (!isPublished) {
+                _logger.Error("User deletion failed. Failed to publish delete event for user {UserId}", null, command.Id.ToString());
                 return RequestResult<Unit>.FailedToPublishEvent($"Failed to publish delete event for user {user.Id}");
             }
 
-            //var result = await _manager.DeleteAsync(user);
+            var result = await _manager.DeleteAsync(user);
 
-            //if (!result.Succeeded) {
-            //    var errors = result.Errors.Select(e => e.Description);
+            if (!result.Succeeded) {
+                var errors = result.Errors.Select(e => e.Description);
+                var message = string.Join(",", errors);
 
-            //    return RequestResult<Unit>.Failure(string.Join(",", errors));
-            //}
+                _logger.Debug("User deletion failed. UserId: {UserId}, Error: {Message}", command.Id.ToString(), message);
 
-            _logger.Info("User ID - {UserId} was successfully deleted", user.Id.ToString());
+                return RequestResult<Unit>.Failure(message);
+            }
+
+            _logger.Debug("User {UserId} was successfully deleted", user.Id.ToString());
 
             return RequestResult<Unit>.Success();
         }

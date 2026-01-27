@@ -1,15 +1,27 @@
 ﻿using MediatR;
+using TaskFlow.Shared.Core.Interfaces;
 using TaskFlow.Tasks.Domain.Contracts;
 using TaskFlow.Tasks.Application.Results;
 
 namespace TaskFlow.Tasks.Application.Commands.TaskItem.UpdateTaskItem {
-    public class UpdateTaskItemCommandHandler(ITaskItemRepository repository) : IRequestHandler<UpdateTaskItemCommand, RequestResult<Unit>> {
+    public class UpdateTaskItemCommandHandler(ILogger logger, ITaskItemRepository repository) : IRequestHandler<UpdateTaskItemCommand, RequestResult<Unit>> {
+        private readonly ILogger _logger = logger;
         private readonly ITaskItemRepository _repository = repository;
 
         public async Task<RequestResult<Unit>> Handle(UpdateTaskItemCommand command, CancellationToken cancellationToken) {
+            _logger.Debug("Task item update attempt. TaskId: {TaskId}, Title: {Title}, GroupId: {GroupId}, AssignedId: {AssignedId}, Priority: {Priority}, DescriptionLength: {DescriptionLength}",
+                command.Id.ToString(),
+                command.Title,
+                command.GroupId.ToString(),
+                command.AssignedId?.ToString() ?? "null",
+                command.Priority.ToString(),
+                command.Description?.Length.ToString() ?? "0"
+            );
+
             var task = await _repository.GetByIdAsync(command.Id);
 
             if (task is null) {
+                _logger.Debug("Failed to update task item. Task item {TaskId} not found", command.Id.ToString());
                 return RequestResult<Unit>.NotFound("Task", command.Id);
             }
 
@@ -21,9 +33,15 @@ namespace TaskFlow.Tasks.Application.Commands.TaskItem.UpdateTaskItem {
 
             try {
                 await _repository.UpdateAsync(task);
-            } catch (Exception) {
+            } catch (Exception ex) {
+                _logger.Debug("Failed to update task item. TaskId: {TaskId}, Exception: {Message}",
+                    command.Id.ToString(),
+                    ex.Message
+                );
                 return RequestResult<Unit>.Failure("Failed to update task.");
             }
+
+            _logger.Info("Task item successfully updated. TaskId: {TaskId}", command.Id.ToString());
 
             return RequestResult<Unit>.Success();
         }
