@@ -1,13 +1,13 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.IdentityModel.Tokens;
+﻿using System.Text;
 using NLog;
 using NLog.Web;
-using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
-using System.Text;
-using TaskFlow.Gateway.HealthChecks;
+using Ocelot.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using TaskFlow.Gateway.Health;
 using TaskFlow.Gateway.Options;
 
 namespace TaskFlow.Gateway.Composition {
@@ -52,7 +52,7 @@ namespace TaskFlow.Gateway.Composition {
             builder.Services.AddSingleton<Shared.Core.Interfaces.ILogger>(provider => {
                 var contextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
 
-                var nlogLogger = LogManager.GetLogger("TaskFlow.Gateway.*");
+                var nlogLogger = LogManager.GetLogger("gateway");
 
                 return new Shared.Logging.Logger(nlogLogger, contextAccessor);
             });
