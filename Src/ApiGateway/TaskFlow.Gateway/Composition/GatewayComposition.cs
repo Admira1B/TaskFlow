@@ -5,7 +5,6 @@ using Ocelot.Middleware;
 using Ocelot.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using TaskFlow.Gateway.Health;
 using TaskFlow.Gateway.Options;
@@ -15,15 +14,8 @@ namespace TaskFlow.Gateway.Composition {
         public async static Task<WebApplication> ConfigurePipelineAsync(this WebApplication app) {
             app.UseRouting();
 
-            app.UseEndpoints(endpoints =>
-            {
+            app.UseEndpoints(endpoints => {
                 endpoints.MapHealthChecks("/health");
-                endpoints.MapHealthChecks("/health/ready", new HealthCheckOptions {
-                    Predicate = check => check.Tags.Contains("ready")
-                });
-                endpoints.MapHealthChecks("/health/live", new HealthCheckOptions {
-                    Predicate = check => check.Tags.Contains("live")
-                });
             });
 
             app.UseAuthentication();
@@ -42,6 +34,10 @@ namespace TaskFlow.Gateway.Composition {
         }
 
         public static IServiceCollection ConfigureServices(this WebApplicationBuilder builder) {
+            // Health Checks
+            builder.Services.AddHealthChecks()
+                .AddCheck<GatewayHealthCheck>("gateway_health_check", HealthStatus.Unhealthy);
+            
             // Nlog logger
             builder.Logging.ClearProviders();
 
@@ -56,12 +52,6 @@ namespace TaskFlow.Gateway.Composition {
 
                 return new Shared.Logging.Logger(nlogLogger, contextAccessor);
             });
-
-            // Health Checks
-            builder.Services.AddHealthChecks()
-                .AddCheck<GatewayHealthCheck>("gateway_health_check",
-                    HealthStatus.Unhealthy,
-                    new[] { "ready", "live" });
 
             // Ocelot
             builder.Configuration

@@ -20,7 +20,7 @@ namespace TaskFlow.Shared.Core.Health {
                     return serviceCheckResult;
                 }
 
-                var dependenciesCheckResult = await CheckDependenciesHealthAsync(ct);
+                var dependenciesCheckResult = await CheckDependenciesHealthAsync(context, ct);
                 if (dependenciesCheckResult.Status != HealthStatus.Healthy) {
                     return dependenciesCheckResult;
                 }
@@ -50,7 +50,7 @@ namespace TaskFlow.Shared.Core.Health {
             return Task.FromResult(HealthCheckResult.Healthy());
         }
 
-        protected virtual Task<HealthCheckResult> CheckDependenciesHealthAsync(CancellationToken ct) {
+        protected virtual Task<HealthCheckResult> CheckDependenciesHealthAsync(HealthCheckContext context, CancellationToken ct) {
             // This method can be override with added Dependencies
 
             return Task.FromResult(HealthCheckResult.Healthy());

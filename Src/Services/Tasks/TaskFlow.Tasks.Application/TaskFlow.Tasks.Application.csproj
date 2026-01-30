@@ -4,6 +4,7 @@
 		<PackageReference Include="MediatR" />
 		<PackageReference Include="AutoMapper" />
 	</ItemGroup>
+	
 	<ItemGroup>
 		<ProjectReference Include="..\TaskFlow.Tasks.Domain\TaskFlow.Tasks.Domain.csproj" />
 		<ProjectReference Include="..\TaskFlow.Tasks.Contracts\TaskFlow.Tasks.Contracts.csproj" />

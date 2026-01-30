@@ -4,38 +4,75 @@ using NLog.Web;
 using Microsoft.OpenApi;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using TaskFlow.Tasks.Domain.Contracts;
-using TaskFlow.Shared.Core.Options;
 using TaskFlow.Shared.Core.Middlewares;
+using TaskFlow.Shared.Core.Options;
 using TaskFlow.Shared.Messaging.Options;
+using TaskFlow.Tasks.API.Health;
 using TaskFlow.Tasks.Application.Mapping;
 using TaskFlow.Tasks.Application.Commands.Comment.CreateComment;
+using TaskFlow.Tasks.Domain.Contracts;
 using TaskFlow.Tasks.Infrastructure.Messaging;
 using TaskFlow.Tasks.Infrastructure.SqlServer;
 using TaskFlow.Tasks.Infrastructure.SqlServer.Repositories;
 
 namespace TaskFlow.Tasks.API.Composition {
     internal static class TasksServiceComposition {
-            public static WebApplication ConfigurePipeline(this WebApplication app) {
-                app.UseMiddleware<RequestLoggingMiddleware>();
+        public static WebApplication ConfigurePipeline(this WebApplication app) {
+            app.UseMiddleware<RequestLoggingMiddleware>();
 
-                app.UseSwagger();
-                app.UseSwaggerUI();
+            app.MapHealthChecks("/health");
 
-                app.UseAuthentication();
-                app.UseAuthorization();
+            app.UseSwagger();
+            app.UseSwaggerUI();
 
-                app.MapControllers();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
-                return app;
-            }
+            app.MapControllers();
 
-            public static IServiceCollection ConfigureServices(this WebApplicationBuilder builder) {
+            return app;
+        }
+
+        public static IServiceCollection ConfigureServices(this WebApplicationBuilder builder) {
             // Controllers
             builder.Services.AddControllers();
 
+            // Health Checks
+            builder.Services.AddHealthChecks()
+                .AddCheck<ServiceHealthCheck>("tasks_service_health_check", HealthStatus.Unhealthy);
+
+            // Nlog logger
+            builder.Logging.ClearProviders();
+            builder.Host.UseNLog();
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddSingleton<Shared.Core.Interfaces.ILogger>(provider => {
+                var contextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+                var nlogLogger = LogManager.GetLogger("tasks-service");
+                return new Shared.Logging.Logger(nlogLogger, contextAccessor);
+            });
+
+            // DbContext
+            builder.Services.AddDbContext<TaskServiceDbContext>((serviceProvider, options) => {
+                var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+                var connectionString = configuration.GetConnectionString("SqlServerConnectionString");
+
+                options.UseSqlServer(connectionString, sqlOptions => {
+                    sqlOptions.MigrationsAssembly(typeof(TaskServiceDbContext).Assembly.FullName);
+                    sqlOptions.EnableRetryOnFailure();
+                });
+            });
+
+            // Data Access
+            builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+            builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+            builder.Services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
+            builder.Services.AddScoped<ITaskGroupRepository, TaskGroupRepository>();
+            builder.Services.AddScoped<ITaskItemRepository, TaskItemRepository>();
+
             // Swagger Documentation
+            builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(options => {
                 options.SwaggerDoc("v1", new() {
                     Version = "v1",
@@ -58,39 +95,6 @@ namespace TaskFlow.Tasks.API.Composition {
                 options.AddSecurityRequirement(document => new OpenApiSecurityRequirement {
                     [new OpenApiSecuritySchemeReference("Bearer", document)] = []
                 });
-            });
-
-            // DbContext
-            builder.Services.AddDbContext<TaskServiceDbContext>((serviceProvider, options) => {
-                var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-                var connectionString = configuration.GetConnectionString("SqlServerConnectionString");
-
-                options.UseSqlServer(connectionString, sqlOptions => {
-                    sqlOptions.MigrationsAssembly(typeof(TaskServiceDbContext).Assembly.FullName);
-                    sqlOptions.EnableRetryOnFailure();
-                });
-            });
-
-            // Data Access
-            builder.Services.AddScoped<ICommentRepository, CommentRepository>();
-            builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
-            builder.Services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
-            builder.Services.AddScoped<ITaskGroupRepository, TaskGroupRepository>();
-            builder.Services.AddScoped<ITaskItemRepository, TaskItemRepository>();
-
-            // Nlog logger
-            builder.Logging.ClearProviders();
-
-            builder.Host.UseNLog();
-
-            builder.Services.AddHttpContextAccessor();
-
-            builder.Services.AddSingleton<Shared.Core.Interfaces.ILogger>(provider => {
-                var contextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
-
-                var nlogLogger = LogManager.GetLogger("tasks-service");
-
-                return new Shared.Logging.Logger(nlogLogger, contextAccessor);
             });
 
             // RabbitMQ
