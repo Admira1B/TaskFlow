@@ -1,0 +1,84 @@
+{
+  "Routes": [
+    {
+      "Key": "tasks_service_comments",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "tasks-service.api",
+          "Port": 8080
+        }
+      ],
+      "DownstreamPathTemplate": "/api/comments/{everything}",
+      "UpstreamPathTemplate": "/flow/comments/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "Key": "tasks_service_projects",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "tasks-service.api",
+          "Port": 8080
+        }
+      ],
+      "DownstreamPathTemplate": "/api/projects/{everything}",
+      "UpstreamPathTemplate": "/flow/projects/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "Key": "tasks_service_members",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "tasks-service.api",
+          "Port": 8080
+        }
+      ],
+      "DownstreamPathTemplate": "/api/members/{everything}",
+      "UpstreamPathTemplate": "/flow/members/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "Key": "tasks_service_groups",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "tasks-service.api",
+          "Port": 8080
+        }
+      ],
+      "DownstreamPathTemplate": "/api/groups/{everything}",
+      "UpstreamPathTemplate": "/flow/groups/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "Key": "tasks_service_tasks",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "tasks-service.api",
+          "Port": 8080
+        }
+      ],
+      "DownstreamPathTemplate": "/api/tasks/{everything}",
+      "UpstreamPathTemplate": "/flow/tasks/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    }
+  ]
+}

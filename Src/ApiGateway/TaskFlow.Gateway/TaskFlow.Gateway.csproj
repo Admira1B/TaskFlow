@@ -13,14 +13,6 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-	  <Compile Include="Dockerfile" />
-	</ItemGroup>
-	
-	<ItemGroup>
-	  <Folder Include="OcelotConfigurations\" />
-	</ItemGroup>
-	
-	<ItemGroup>
 	  <ProjectReference Include="..\..\Shared\TaskFlow.Shared.Logging\TaskFlow.Shared.Logging.csproj" />
 	</ItemGroup>
 
