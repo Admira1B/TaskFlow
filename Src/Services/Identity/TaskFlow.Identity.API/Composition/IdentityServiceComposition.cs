@@ -5,17 +5,19 @@ using Microsoft.OpenApi;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using TaskFlow.Shared.Core.Options;
 using TaskFlow.Shared.Core.Interfaces;
 using TaskFlow.Shared.Core.Middlewares;
 using TaskFlow.Shared.Messaging.Options;
-using TaskFlow.Identity.Domain.Options;
-using TaskFlow.Identity.Domain.Entities;
-using TaskFlow.Identity.Domain.Contracts.Repositories;
+using TaskFlow.Identity.API.Health;
 using TaskFlow.Identity.Application.Mapping;
 using TaskFlow.Identity.Application.Services;
 using TaskFlow.Identity.Application.Commands.Auth.Login;
+using TaskFlow.Identity.Domain.Options;
+using TaskFlow.Identity.Domain.Entities;
+using TaskFlow.Identity.Domain.Contracts.Repositories;
 using TaskFlow.Identity.Infrastructure.Messaging;
 using TaskFlow.Identity.Infrastructure.SqlServer;
 using TaskFlow.Identity.Infrastructure.SqlServer.Repositories;
@@ -24,6 +26,8 @@ namespace TaskFlow.Identity.API.Composition {
     internal static class IdentityServiceComposition {
         public static WebApplication ConfigurePipeline(this WebApplication app) {
             app.UseMiddleware<RequestLoggingMiddleware>();
+
+            app.MapHealthChecks("/health");
 
             app.UseSwagger();
             app.UseSwaggerUI();
@@ -39,6 +43,35 @@ namespace TaskFlow.Identity.API.Composition {
         public static IServiceCollection ConfigureServices(this WebApplicationBuilder builder) {
             // Controllers
             builder.Services.AddControllers();
+
+            // Health Checks
+            builder.Services.AddHealthChecks()
+                .AddCheck<ServiceHealthCheck>("identity_service_health_check", HealthStatus.Unhealthy);
+
+            // Nlog logger
+            builder.Logging.ClearProviders();
+            builder.Host.UseNLog();
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddSingleton<Shared.Core.Interfaces.ILogger>(provider => {
+                var contextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+                var nlogLogger = LogManager.GetLogger("identity-service");
+                return new Shared.Logging.Logger(nlogLogger, contextAccessor);
+            });
+
+            // DbContext
+            builder.Services.AddDbContext<IdentityServiceDbContext>((serviceProvider, options) => {
+                var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+                var connectionString = configuration.GetConnectionString("SqlServerConnectionString");
+
+                options.UseSqlServer(connectionString, sqlOptions => {
+                    sqlOptions.MigrationsAssembly(typeof(IdentityServiceDbContext).Assembly.FullName);
+                    sqlOptions.EnableRetryOnFailure();
+                });
+            });
+
+            // Data Access
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 
             // Swagger Documentation
             builder.Services.AddEndpointsApiExplorer();
@@ -64,36 +97,6 @@ namespace TaskFlow.Identity.API.Composition {
                 options.AddSecurityRequirement(document => new OpenApiSecurityRequirement {
                     [new OpenApiSecuritySchemeReference("Bearer", document)] = []
                 });
-            });
-
-            // DbContext
-            builder.Services.AddDbContext<IdentityServiceDbContext>((serviceProvider, options) => {
-                var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-                var connectionString = configuration.GetConnectionString("SqlServerConnectionString");
-
-                options.UseSqlServer(connectionString, sqlOptions => {
-                    sqlOptions.MigrationsAssembly(typeof(IdentityServiceDbContext).Assembly.FullName);
-                    sqlOptions.EnableRetryOnFailure();
-                });
-            });
-
-            // Data Access
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-
-            // Nlog logger
-            builder.Logging.ClearProviders();
-
-            builder.Host.UseNLog();
-
-            builder.Services.AddHttpContextAccessor();
-
-            builder.Services.AddSingleton<Shared.Core.Interfaces.ILogger>(provider => {
-                var contextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
-
-                var nlogLogger = LogManager.GetLogger("identity-service");
-
-                return new Shared.Logging.Logger(nlogLogger, contextAccessor);
             });
 
             // RabbitMQ
