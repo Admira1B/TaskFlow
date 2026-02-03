@@ -64,7 +64,7 @@ namespace TaskFlow.Shared.Messaging {
                 var factory = new ConnectionFactory {
                     UserName = _options.UserName,
                     Password = _options.Password,
-                    Port = _options.Port,
+                    Port = _options.PortParsed,
                     HostName = _options.HostName,
                     VirtualHost = _options.VirtualHost,
                     AutomaticRecoveryEnabled = true

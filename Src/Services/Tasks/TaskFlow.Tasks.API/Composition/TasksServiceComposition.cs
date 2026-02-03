@@ -1,20 +1,22 @@
-﻿using System.Text;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using NLog;
 using NLog.Web;
-using Microsoft.OpenApi;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
 using TaskFlow.Shared.Core.Middlewares;
 using TaskFlow.Shared.Core.Options;
+using TaskFlow.Shared.Messaging.Health;
 using TaskFlow.Shared.Messaging.Options;
 using TaskFlow.Tasks.API.Health;
-using TaskFlow.Tasks.Application.Mapping;
 using TaskFlow.Tasks.Application.Commands.Comment.CreateComment;
+using TaskFlow.Tasks.Application.Mapping;
 using TaskFlow.Tasks.Domain.Contracts;
 using TaskFlow.Tasks.Infrastructure.Messaging;
 using TaskFlow.Tasks.Infrastructure.SqlServer;
+using TaskFlow.Tasks.Infrastructure.SqlServer.Health;
 using TaskFlow.Tasks.Infrastructure.SqlServer.Repositories;
 
 namespace TaskFlow.Tasks.API.Composition {
@@ -38,10 +40,6 @@ namespace TaskFlow.Tasks.API.Composition {
         public static IServiceCollection ConfigureServices(this WebApplicationBuilder builder) {
             // Controllers
             builder.Services.AddControllers();
-
-            // Health Checks
-            builder.Services.AddHealthChecks()
-                .AddCheck<ServiceHealthCheck>("tasks_service_health_check", HealthStatus.Unhealthy);
 
             // Nlog logger
             builder.Logging.ClearProviders();
@@ -70,6 +68,13 @@ namespace TaskFlow.Tasks.API.Composition {
             builder.Services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
             builder.Services.AddScoped<ITaskGroupRepository, TaskGroupRepository>();
             builder.Services.AddScoped<ITaskItemRepository, TaskItemRepository>();
+            
+            // Health Checks
+            builder.Services.AddScoped<DataBaseHealthCheck>();
+            builder.Services.AddScoped<RabbitMqHealthCheck>();
+            builder.Services.AddHealthChecks()
+                .AddCheck<ServiceHealthCheck>("tasks_service_health_check", HealthStatus.Unhealthy);
+
 
             // Swagger Documentation
             builder.Services.AddEndpointsApiExplorer();
@@ -98,8 +103,8 @@ namespace TaskFlow.Tasks.API.Composition {
             });
 
             // RabbitMQ
-            builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection(nameof(RabbitMqOptions)));
             builder.Services.AddHostedService<TasksServiceEventConsumer>();
+            builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection(nameof(RabbitMqOptions)));
 
             // MediatoR
             builder.Services.AddMediatR(cfg =>

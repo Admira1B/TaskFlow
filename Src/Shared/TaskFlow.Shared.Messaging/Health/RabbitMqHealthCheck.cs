@@ -11,7 +11,7 @@ namespace TaskFlow.Shared.Messaging.Health {
             try {
                 var factory = new ConnectionFactory {
                     HostName = _options.HostName,
-                    Port = _options.Port,
+                    Port = _options.PortParsed,
                     UserName = _options.UserName,
                     Password = _options.Password,
                     VirtualHost = _options.VirtualHost,

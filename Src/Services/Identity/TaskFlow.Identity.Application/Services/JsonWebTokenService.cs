@@ -33,7 +33,7 @@ namespace TaskFlow.Identity.Application.Services {
             var tokenDescriptor = new SecurityTokenDescriptor { 
                 Issuer = _options.Issuer,
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddHours(_options.ExpiresHours),
+                Expires = DateTime.UtcNow.AddHours(_options.ExpiresHoursParsed),
                 SigningCredentials = credentials
             };
 

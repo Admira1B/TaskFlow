@@ -1,26 +1,29 @@
-﻿using System.Text;
-using NLog;
-using NLog.Web;
-using Microsoft.OpenApi;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using TaskFlow.Shared.Core.Options;
-using TaskFlow.Shared.Core.Interfaces;
-using TaskFlow.Shared.Core.Middlewares;
-using TaskFlow.Shared.Messaging.Options;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
+using NLog;
+using NLog.Web;
+using System.Text;
 using TaskFlow.Identity.API.Health;
+using TaskFlow.Identity.Application.Commands.Auth.Login;
+using TaskFlow.Identity.Application.Health;
 using TaskFlow.Identity.Application.Mapping;
 using TaskFlow.Identity.Application.Services;
-using TaskFlow.Identity.Application.Commands.Auth.Login;
-using TaskFlow.Identity.Domain.Options;
-using TaskFlow.Identity.Domain.Entities;
 using TaskFlow.Identity.Domain.Contracts.Repositories;
+using TaskFlow.Identity.Domain.Entities;
+using TaskFlow.Identity.Domain.Options;
 using TaskFlow.Identity.Infrastructure.Messaging;
 using TaskFlow.Identity.Infrastructure.SqlServer;
+using TaskFlow.Identity.Infrastructure.SqlServer.Health;
 using TaskFlow.Identity.Infrastructure.SqlServer.Repositories;
+using TaskFlow.Shared.Core.Interfaces;
+using TaskFlow.Shared.Core.Middlewares;
+using TaskFlow.Shared.Core.Options;
+using TaskFlow.Shared.Messaging.Health;
+using TaskFlow.Shared.Messaging.Options;
 
 namespace TaskFlow.Identity.API.Composition {
     internal static class IdentityServiceComposition {
@@ -43,10 +46,6 @@ namespace TaskFlow.Identity.API.Composition {
         public static IServiceCollection ConfigureServices(this WebApplicationBuilder builder) {
             // Controllers
             builder.Services.AddControllers();
-
-            // Health Checks
-            builder.Services.AddHealthChecks()
-                .AddCheck<ServiceHealthCheck>("identity_service_health_check", HealthStatus.Unhealthy);
 
             // Nlog logger
             builder.Logging.ClearProviders();
@@ -72,6 +71,13 @@ namespace TaskFlow.Identity.API.Composition {
             // Data Access
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+
+            // Health Checks
+            builder.Services.AddScoped<IdentityHealthCheck>();
+            builder.Services.AddScoped<DataBaseHealthCheck>();
+            builder.Services.AddScoped<RabbitMqHealthCheck>();
+            builder.Services.AddHealthChecks()
+                .AddCheck<ServiceHealthCheck>("identity_service_health_check", HealthStatus.Unhealthy);
 
             // Swagger Documentation
             builder.Services.AddEndpointsApiExplorer();
@@ -100,8 +106,8 @@ namespace TaskFlow.Identity.API.Composition {
             });
 
             // RabbitMQ
-            builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection(nameof(RabbitMqOptions)));
             builder.Services.AddSingleton<IEventPublisher, IdentityServiceEventPublisher>();
+            builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection(nameof(RabbitMqOptions)));
 
             // MediatoR
             builder.Services.AddMediatR(cfg =>
