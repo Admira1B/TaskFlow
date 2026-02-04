@@ -12,13 +12,11 @@ namespace TaskFlow.Identity.API.Health {
         private readonly RabbitMqHealthCheck _rabbitMqHealth = rabbitMqHealth;
 
         protected override async Task<HealthCheckResult> CheckDependenciesHealthAsync(HealthCheckContext context, CancellationToken ct) {
-            var checks = new List<Task<HealthCheckResult>> {
-                _identityHealth.CheckHealthAsync(context, ct),
-                _dataBaseHealth.CheckHealthAsync(context, ct),
-                _rabbitMqHealth.CheckHealthAsync(context, ct),
-            };
+            List<HealthCheckResult> results = [];
 
-            var results = await Task.WhenAll(checks);
+            results.Add(await _identityHealth.CheckHealthAsync(context, ct));
+            results.Add(await _rabbitMqHealth.CheckHealthAsync(context, ct));
+            results.Add(await _dataBaseHealth.CheckHealthAsync(context, ct));
 
             var unhealthyResults = results.Where(r => r.Status != HealthStatus.Healthy).ToList();
 

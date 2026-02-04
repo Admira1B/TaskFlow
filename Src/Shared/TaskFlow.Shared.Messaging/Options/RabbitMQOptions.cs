@@ -1,9 +1,14 @@
-﻿namespace TaskFlow.Shared.Messaging.Options {
+﻿using System.Text.Json.Serialization;
+
+namespace TaskFlow.Shared.Messaging.Options {
     public class RabbitMqOptions {
-        public string UserName { get; set; } = "guest";
-        public string Password { get; set; } = "guest";
-        public int Port { get; set; } = 5672;
-        public string VirtualHost { get; set; } = "/";
-        public string HostName { get; set; } = "localhost";
+        public string UserName { get; set; } = null!;
+        public string Password { get; set; } = null!;
+        public string Port { get; set; } = null!;
+        public string VirtualHost { get; set; } = null!;
+        public string HostName { get; set; } = null!;
+
+        [JsonIgnore]
+        public int PortParsed => int.Parse(Port);
     }
 }

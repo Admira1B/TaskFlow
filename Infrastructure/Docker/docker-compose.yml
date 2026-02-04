@@ -1,4 +1,5 @@
 version: '3.8'
+name: TaskFlow
 
 networks:
   taskflow-internal-network:
@@ -70,7 +71,13 @@ services:
       - .env.identity-service
     
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - RabbitMqOptions__Port=5672
+      - RabbitMqOptions__VirtualHost=/
+      - RabbitMqOptions__HostName=rabbitmq
+      - RabbitMqOptions__UserName=${RABBITMQ_USERNAME}
+      - RabbitMqOptions__Password=${RABBITMQ_PASSWORD}
+      - ConnectionStrings__SqlServerConnectionString=Server=${SQL_SERVER_HOST};Database=${SQL_SERVER_DB_NAME};User Id=${SQL_SERVER_USER};Password=${SQL_SERVER_PASSWORD};TrustServerCertificate=True;
     
     networks:
       - taskflow-internal-network
@@ -96,7 +103,13 @@ services:
       - .env.tasks-service
     
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - RabbitMqOptions__Port=5672
+      - RabbitMqOptions__VirtualHost=/
+      - RabbitMqOptions__HostName=rabbitmq
+      - RabbitMqOptions__UserName=${RABBITMQ_USERNAME}
+      - RabbitMqOptions__Password=${RABBITMQ_PASSWORD}
+      - ConnectionStrings__SqlServerConnectionString=Server=${SQL_SERVER_HOST};Database=${SQL_SERVER_DB_NAME};User Id=${SQL_SERVER_USER};Password=${SQL_SERVER_PASSWORD};TrustServerCertificate=True;
     
     networks:
       - taskflow-internal-network

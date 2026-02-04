@@ -1,6 +1,19 @@
 {
   "Routes": [
     {
+      "Key": "tasks_service_health_check",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5002
+        }
+      ],
+      "DownstreamPathTemplate": "/health",
+      "UpstreamPathTemplate": "/flow/tasks-service/health",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
       "Key": "tasks_service_comments",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

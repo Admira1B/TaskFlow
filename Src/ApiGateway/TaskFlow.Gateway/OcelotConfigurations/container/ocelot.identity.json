@@ -1,6 +1,19 @@
 {
   "Routes": [
     {
+      "Key": "identity_service_health_check",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "identity-service.api",
+          "Port": 8080
+        }
+      ],
+      "DownstreamPathTemplate": "/health",
+      "UpstreamPathTemplate": "/flow/identity-service/health",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
       "Key": "identity_service_auth_register",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

@@ -54,9 +54,14 @@ namespace TaskFlow.Gateway.Composition {
             });
 
             // Ocelot
+            var ocelotConfigFolder = builder.Environment.EnvironmentName.ToLower() switch {
+                "docker" => "OcelotConfigurations/Container",   
+                _ => "OcelotConfigurations/Local"           
+            };
+
             builder.Configuration
                 .SetBasePath(builder.Environment.ContentRootPath)
-                .AddOcelot("OcelotConfigurations", builder.Environment)
+                .AddOcelot(ocelotConfigFolder, builder.Environment)         
                 .AddEnvironmentVariables();
 
             builder.Services.AddOcelot(builder.Configuration);

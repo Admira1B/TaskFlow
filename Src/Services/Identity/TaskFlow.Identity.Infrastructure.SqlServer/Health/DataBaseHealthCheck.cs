@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace TaskFlow.Identity.Infrastructure.SqlServer.Health {
-    public class DataBaseHealthCheck(IdentityDbContext dbContext) : IHealthCheck {
-        private readonly IdentityDbContext _dbContext = dbContext;
+    public class DataBaseHealthCheck(IdentityServiceDbContext dbContext) : IHealthCheck {
+        private readonly IdentityServiceDbContext _dbContext = dbContext;
 
         public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken ct = default) {
             try {
