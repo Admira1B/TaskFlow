@@ -1,29 +1,29 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
+﻿using System.Text;
 using NLog;
 using NLog.Web;
-using System.Text;
+using Microsoft.OpenApi;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using TaskFlow.Shared.Core.Options;
+using TaskFlow.Shared.Core.Interfaces;
+using TaskFlow.Shared.Core.Middlewares;
+using TaskFlow.Shared.Messaging.Health;
+using TaskFlow.Shared.Messaging.Options;
 using TaskFlow.Identity.API.Health;
-using TaskFlow.Identity.Application.Commands.Auth.Login;
+using TaskFlow.Identity.Domain.Options;
+using TaskFlow.Identity.Domain.Entities;
+using TaskFlow.Identity.Domain.Contracts.Repositories;
 using TaskFlow.Identity.Application.Health;
 using TaskFlow.Identity.Application.Mapping;
 using TaskFlow.Identity.Application.Services;
-using TaskFlow.Identity.Domain.Contracts.Repositories;
-using TaskFlow.Identity.Domain.Entities;
-using TaskFlow.Identity.Domain.Options;
+using TaskFlow.Identity.Application.Commands.Auth.Login;
 using TaskFlow.Identity.Infrastructure.Messaging;
 using TaskFlow.Identity.Infrastructure.SqlServer;
 using TaskFlow.Identity.Infrastructure.SqlServer.Health;
 using TaskFlow.Identity.Infrastructure.SqlServer.Repositories;
-using TaskFlow.Shared.Core.Interfaces;
-using TaskFlow.Shared.Core.Middlewares;
-using TaskFlow.Shared.Core.Options;
-using TaskFlow.Shared.Messaging.Health;
-using TaskFlow.Shared.Messaging.Options;
 
 namespace TaskFlow.Identity.API.Composition {
     internal static class IdentityServiceComposition {

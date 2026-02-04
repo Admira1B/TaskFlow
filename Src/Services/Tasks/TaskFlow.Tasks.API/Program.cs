@@ -1,10 +1,12 @@
 using NLog;
 using NLog.Web;
+using TaskFlow.Tasks.API.Extensions;
 using TaskFlow.Tasks.API.Composition;
+using TaskFlow.Tasks.Infrastructure.SqlServer;
 
 namespace TaskFlow.Tasks.API {
     public class Program {
-        public static void Main(string[] args) {
+        public static async Task Main(string[] args) {
             var logger = LogManager.Setup()
                 .LoadConfigurationFromAppSettings()
                 .GetCurrentClassLogger();
@@ -16,6 +18,8 @@ namespace TaskFlow.Tasks.API {
                 builder.ConfigureServices();
 
                 var app = builder.Build();
+
+                await app.AddDataBaseMigration<TaskServiceDbContext>(logger);
 
                 app.ConfigurePipeline();
 

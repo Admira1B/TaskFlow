@@ -1,19 +1,19 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
+﻿using System.Text;
 using NLog;
 using NLog.Web;
-using System.Text;
-using TaskFlow.Shared.Core.Middlewares;
+using Microsoft.OpenApi;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using TaskFlow.Shared.Core.Options;
+using TaskFlow.Shared.Core.Middlewares;
 using TaskFlow.Shared.Messaging.Health;
 using TaskFlow.Shared.Messaging.Options;
 using TaskFlow.Tasks.API.Health;
-using TaskFlow.Tasks.Application.Commands.Comment.CreateComment;
-using TaskFlow.Tasks.Application.Mapping;
 using TaskFlow.Tasks.Domain.Contracts;
+using TaskFlow.Tasks.Application.Mapping;
+using TaskFlow.Tasks.Application.Commands.Comment.CreateComment;
 using TaskFlow.Tasks.Infrastructure.Messaging;
 using TaskFlow.Tasks.Infrastructure.SqlServer;
 using TaskFlow.Tasks.Infrastructure.SqlServer.Health;
@@ -23,7 +23,6 @@ namespace TaskFlow.Tasks.API.Composition {
     internal static class TasksServiceComposition {
         public static WebApplication ConfigurePipeline(this WebApplication app) {
             app.UseMiddleware<RequestLoggingMiddleware>();
-
             app.MapHealthChecks("/health");
 
             app.UseSwagger();

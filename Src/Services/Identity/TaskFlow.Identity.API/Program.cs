@@ -1,10 +1,12 @@
 using NLog;
 using NLog.Web;
+using TaskFlow.Identity.API.Extensions;
 using TaskFlow.Identity.API.Composition;
+using TaskFlow.Identity.Infrastructure.SqlServer;
 
 namespace TaskFlow.Identity.API {
     public class Program {
-        public static void Main(string[] args) {
+        public static async Task Main(string[] args) {
             var logger = LogManager.Setup()
                 .LoadConfigurationFromAppSettings()
                 .GetCurrentClassLogger();
@@ -16,6 +18,8 @@ namespace TaskFlow.Identity.API {
                 builder.ConfigureServices();
 
                 var app = builder.Build();
+
+                await app.AddDataBaseMigration<IdentityServiceDbContext>(logger);
 
                 app.ConfigurePipeline();
 
