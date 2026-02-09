@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using TaskFlow.Shared.Core.Interfaces;
-using TaskFlow.Tasks.Domain.Contracts;
 using TaskFlow.Tasks.Application.Results;
+using TaskFlow.Tasks.Domain.Contracts;
 
 namespace TaskFlow.Tasks.Application.Commands.TaskGroup.DeleteTaskGroup {
     public class DeleteTaskGroupCommandHandler(ILogger logger, ITaskGroupRepository repository) : IRequestHandler<DeleteTaskGroupCommand, RequestResult<Unit>> {

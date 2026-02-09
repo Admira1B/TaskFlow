@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using TaskFlow.Shared.Core.Interfaces;
-using TaskFlow.Tasks.Domain.Contracts;
 using TaskFlow.Tasks.Application.Results;
+using TaskFlow.Tasks.Domain.Contracts;
 
 namespace TaskFlow.Tasks.Application.Commands.Comment.UpdateComment {
     public class UpdateCommentCommandHandler(ILogger logger, ICommentRepository repository) : IRequestHandler<UpdateCommentCommand, RequestResult<Unit>> {

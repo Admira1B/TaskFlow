@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TaskFlow.Identity.Domain.Entities;
-using TaskFlow.Identity.Domain.Contracts.Repositories;
+using TaskFlow.Identity.Domain.Contracts;
 
 namespace TaskFlow.Identity.Infrastructure.SqlServer.Repositories {
     public class UserRepository(IdentityServiceDbContext dbContext) : IUserRepository {

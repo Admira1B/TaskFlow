@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TaskFlow.Identity.Domain.Enums;
-using TaskFlow.Identity.Domain.Options;
 using TaskFlow.Identity.Application.Results;
+using TaskFlow.Identity.Application.Options;
 
 namespace TaskFlow.Identity.API.Extensions {
     public static class ResultsExtensions {

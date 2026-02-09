@@ -1,6 +1,6 @@
 ﻿using TaskFlow.Tasks.Domain.Entities;
-using TaskFlow.Tasks.Domain.Contracts;
 using Microsoft.EntityFrameworkCore;
+using TaskFlow.Tasks.Domain.Contracts;
 
 namespace TaskFlow.Tasks.Infrastructure.SqlServer.Repositories {
     public class TaskItemRepository(TaskServiceDbContext dbContext) : ITaskItemRepository {

@@ -19,6 +19,14 @@ namespace TaskFlow.Identity.API.Controllers {
         private readonly IMediator _mediator = mediator;
         private readonly IMapper _mapper = mapper;
 
+        //[HttpGet("exists/{id:guid}")]
+        //public async Task<IActionResult> CheckForExistence([FromRoute] Guid id) {
+        //    var query = new CheckForExistenceByIdQuery(id);
+
+        //    var result = await _mediator.Send(query);
+        //    return result.ToActionResult();
+        //}
+
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById([FromRoute] Guid id) {
             var query = new GetUserByIdQuery(id);

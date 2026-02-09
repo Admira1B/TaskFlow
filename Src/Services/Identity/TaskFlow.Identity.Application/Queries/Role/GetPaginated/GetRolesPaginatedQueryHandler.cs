@@ -2,7 +2,7 @@
 using AutoMapper;
 using TaskFlow.Identity.Application.Results;
 using TaskFlow.Identity.Contracts.DTOs.Responses;
-using TaskFlow.Identity.Domain.Contracts.Repositories;
+using TaskFlow.Identity.Domain.Contracts;
 
 namespace TaskFlow.Identity.Application.Queries.Role.GetPaginated {
     public class GetRolesPaginatedQueryHandler(IMapper mapper, IRoleRepository repository) : IRequestHandler<GetRolesPaginatedQuery, RequestResult<IEnumerable<RoleDto>>> {

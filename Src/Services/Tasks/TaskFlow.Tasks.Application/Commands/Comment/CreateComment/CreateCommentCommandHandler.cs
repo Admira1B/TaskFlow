@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using AutoMapper;
-using TaskFlow.Tasks.Domain.Contracts;
 using TaskFlow.Shared.Core.Interfaces;
 using TaskFlow.Tasks.Application.Results;
 using TaskFlow.Tasks.Contracts.DTOs.Responses;
+using TaskFlow.Tasks.Domain.Contracts;
 
 namespace TaskFlow.Tasks.Application.Commands.Comment.CreateComment {
     public class CreateCommentCommandHandler(ILogger logger, IMapper mapper, ICommentRepository repository) : IRequestHandler<CreateCommentCommand, RequestResult<CommentDto>> {

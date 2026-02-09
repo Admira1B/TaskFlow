@@ -14,6 +14,7 @@
 	</ItemGroup>
 	
 	<ItemGroup>
+		<ProjectReference Include="..\..\..\Shared\TaskFlow.Shared.ApiClients\TaskFlow.Shared.ApiClients.csproj" />
 		<ProjectReference Include="..\TaskFlow.Tasks.Application\TaskFlow.Tasks.Application.csproj" />
 		<ProjectReference Include="..\TaskFlow.Tasks.Infrastructure.Messaging\TaskFlow.Tasks.Infrastructure.Messaging.csproj" />
 		

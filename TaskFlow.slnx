@@ -12,6 +12,7 @@
   <Project Path="Src/Services/Tasks/TaskFlow.Tasks.Domain/TaskFlow.Tasks.Domain.csproj" Id="6a6cbb84-7751-4421-b775-598ee8c4298f" />
   <Project Path="Src/Services/Tasks/TaskFlow.Tasks.Infrastructure.Messaging/TaskFlow.Tasks.Infrastructure.Messaging.csproj" Id="21ab019c-737a-472d-b4be-7dbe0bdfc2af" />
   <Project Path="Src/Services/Tasks/TaskFlow.Tasks.Infrastructure.SqlServer/TaskFlow.Tasks.Infrastructure.SqlServer.csproj" Id="e6753ed3-254c-4c96-868b-b9f149dfa8e8" />
+  <Project Path="Src/Shared/TaskFlow.Shared.ApiClients/TaskFlow.Shared.ApiClients.csproj" Id="0ef3d5b6-a6a1-47ad-a636-9f4596b6b598" />
   <Project Path="Src/Shared/TaskFlow.Shared.Core/TaskFlow.Shared.Core.csproj" Id="f392e1d1-5841-4a95-ba9d-92a9d709eaed" />
   <Project Path="Src/Shared/TaskFlow.Shared.Logging/TaskFlow.Shared.Logging.csproj" Id="8f054e6d-d09f-4eb4-80cf-31a02450164d" />
   <Project Path="Src/Shared/TaskFlow.Shared.Messaging/TaskFlow.Shared.Messaging.csproj" Id="ed726173-81ab-4ee9-add1-2f0245716998" />

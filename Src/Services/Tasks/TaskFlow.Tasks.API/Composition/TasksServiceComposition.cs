@@ -10,6 +10,7 @@ using TaskFlow.Shared.Core.Options;
 using TaskFlow.Shared.Core.Middlewares;
 using TaskFlow.Shared.Messaging.Health;
 using TaskFlow.Shared.Messaging.Options;
+using TaskFlow.Shared.ApiClients.IdentityService;
 using TaskFlow.Tasks.API.Health;
 using TaskFlow.Tasks.Domain.Contracts;
 using TaskFlow.Tasks.Application.Mapping;
@@ -74,6 +75,26 @@ namespace TaskFlow.Tasks.API.Composition {
             builder.Services.AddHealthChecks()
                 .AddCheck<ServiceHealthCheck>("tasks_service_health_check", HealthStatus.Unhealthy);
 
+            // HttpClients 
+            builder.Services.AddHttpClient<IdentityServiceClient>((services, client) => {
+                var configuration = services.GetRequiredService<IConfiguration>();
+
+                var uriBase = builder.Environment.EnvironmentName.ToLower() switch {
+                    "docker" => "http://taskflow-gateway:8080/flow",
+                    _ => "http://localhost:5000/flow"
+                };
+
+                client.BaseAddress = new Uri(uriBase);
+
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
+
+                client.Timeout = TimeSpan.FromSeconds(30);
+            })
+            .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler {
+                PooledConnectionLifetime = TimeSpan.FromMinutes(15),
+                ConnectTimeout = TimeSpan.FromSeconds(5),
+                MaxConnectionsPerServer = 20
+            });
 
             // Swagger Documentation
             builder.Services.AddEndpointsApiExplorer();

@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using AutoMapper;
 using TaskFlow.Shared.Core.Interfaces;
-using TaskFlow.Tasks.Domain.Contracts;
 using TaskFlow.Tasks.Application.Results;
 using TaskFlow.Tasks.Contracts.DTOs.Responses;
+using TaskFlow.Tasks.Domain.Contracts;
 
 namespace TaskFlow.Tasks.Application.Commands.TaskGroup.CreateTaskGroup {
     public class CreateTaskGroupCommandHandler(ILogger logger, IMapper mapper, ITaskGroupRepository repository) : IRequestHandler<CreateTaskGroupCommand, RequestResult<TaskGroupDto>> {

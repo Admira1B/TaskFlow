@@ -4,8 +4,8 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using TaskFlow.Identity.Domain.Options;
 using TaskFlow.Identity.Domain.Entities;
+using TaskFlow.Identity.Application.Options;
 
 namespace TaskFlow.Identity.Application.Services {
     public class JsonWebTokenService(IOptions<JsonWebTokenGenerationOptions> options, UserManager<User> userManager) {
