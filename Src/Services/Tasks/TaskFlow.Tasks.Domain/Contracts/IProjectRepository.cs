@@ -2,6 +2,7 @@
 
 namespace TaskFlow.Tasks.Domain.Contracts {
     public interface IProjectRepository {
+        Task<bool> ExistsAsync(Guid id);
         Task<Project?> GetByIdAsync(Guid id);
         Task<Project?> GetByIdWithGroupsAsync(Guid id);
         Task<List<Project>> GetByProjectMemberAsync(Guid userId);

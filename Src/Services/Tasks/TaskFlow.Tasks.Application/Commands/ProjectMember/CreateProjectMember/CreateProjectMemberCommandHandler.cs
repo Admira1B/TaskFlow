@@ -1,15 +1,18 @@
 ﻿using MediatR;
 using AutoMapper;
 using TaskFlow.Shared.Core.Interfaces;
+using TaskFlow.Shared.ApiClients.IdentityService;
+using TaskFlow.Tasks.Domain.Contracts;
 using TaskFlow.Tasks.Application.Results;
 using TaskFlow.Tasks.Contracts.DTOs.Responses;
-using TaskFlow.Tasks.Domain.Contracts;
 
 namespace TaskFlow.Tasks.Application.Commands.ProjectMember.CreateProjectMember {
-    public class CreateProjectMemberCommandHandler(ILogger logger, IMapper mapper, IProjectMemberRepository repository) : IRequestHandler<CreateProjectMemberCommand, RequestResult<ProjectMemberDto>> {
+    public class CreateProjectMemberCommandHandler(ILogger logger, IMapper mapper, IProjectMemberRepository repository, IProjectRepository projectRepository, IdentityServiceClient client) : IRequestHandler<CreateProjectMemberCommand, RequestResult<ProjectMemberDto>> {
         private readonly ILogger _logger = logger;
         private readonly IMapper _mapper = mapper;
         private readonly IProjectMemberRepository _repository = repository;
+        private readonly IProjectRepository _projectRepository = projectRepository;
+        private readonly IdentityServiceClient _client = client;
 
         public async Task<RequestResult<ProjectMemberDto>> Handle(CreateProjectMemberCommand command, CancellationToken cancellationToken) {
             _logger.Debug("Project member creation attempt. ProjectId: {ProjectId}, UserId: {UserId}, Role: {Role}",
@@ -17,6 +20,35 @@ namespace TaskFlow.Tasks.Application.Commands.ProjectMember.CreateProjectMember 
                 command.UserId.ToString(),
                 command.Role.ToString()
             );
+
+            var userExists = await _client.UserExistsAsync(command.UserId, cancellationToken);
+            if (!userExists.Exists) {
+                _logger.Debug("Failed to create project member. User {UserId} not found", command.UserId.ToString());
+                return RequestResult<ProjectMemberDto>.Failure($"User {command.UserId} not found");
+            }
+
+            var project = await _projectRepository.GetByIdAsync(command.ProjectId);
+            if (project is null) {
+                _logger.Debug("Failed to create project member. Project {ProjectId} not found", command.ProjectId.ToString());
+                return RequestResult<ProjectMemberDto>.Failure($"Project {command.ProjectId} not found");
+            }
+
+            if (project.OwnerId == command.UserId) {
+                _logger.Debug("Failed to create project member. User {UserId} is owner of project {ProjectId}",
+                    command.UserId.ToString(),
+                    command.ProjectId.ToString()
+                );
+                return RequestResult<ProjectMemberDto>.Failure($"Failed to create project member. User {command.UserId} is owner of project {command.ProjectId}");
+            }
+
+            var memberExists = await _repository.UserExistsInProjectAsync(command.UserId, command.ProjectId);
+            if (memberExists) {
+                _logger.Debug("Failed to create project member. User {UserId} already added to project {ProjectId}",
+                    command.UserId.ToString(),
+                    command.ProjectId.ToString()
+                );
+                return RequestResult<ProjectMemberDto>.Failure($"User {command.UserId} already added to project {command.ProjectId}");
+            }
 
             var member = new Domain.Entities.ProjectMember() {
                 ProjectId = command.ProjectId,

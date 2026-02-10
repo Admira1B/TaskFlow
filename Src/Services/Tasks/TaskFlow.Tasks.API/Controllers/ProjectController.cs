@@ -45,7 +45,10 @@ namespace TaskFlow.Tasks.API.Controllers {
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateProjectRequest request) {
-            var command = _mapper.Map<CreateProjectCommand>(request);
+            var command = _mapper.Map<CreateProjectCommand>(
+                request,
+                opts => opts.Items[nameof(CreateProjectCommand.OwnerId)] = User.GetUserId()
+            );
 
             var result = await _mediator.Send(command);
 

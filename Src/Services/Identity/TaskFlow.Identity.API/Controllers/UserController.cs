@@ -4,12 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using TaskFlow.Identity.API.Extensions;
 using TaskFlow.Identity.Contracts.DTOs.Requests.User;
-using TaskFlow.Identity.Application.Queries.User.GetById;
-using TaskFlow.Identity.Application.Queries.User.GetByName;
-using TaskFlow.Identity.Application.Queries.User.GetByEmail;
-using TaskFlow.Identity.Application.Queries.User.GetPaginated;
 using TaskFlow.Identity.Application.Commands.User.UpdateUser;
 using TaskFlow.Identity.Application.Commands.User.DeleteUser;
+using TaskFlow.Identity.Application.Queries.User.Exists;
+using TaskFlow.Identity.Application.Queries.User.GetById;
+using TaskFlow.Identity.Application.Queries.User.GetByEmail;
+using TaskFlow.Identity.Application.Queries.User.GetByName;
+using TaskFlow.Identity.Application.Queries.User.GetPaginated;
 
 namespace TaskFlow.Identity.API.Controllers {
     [ApiController]
@@ -19,13 +20,13 @@ namespace TaskFlow.Identity.API.Controllers {
         private readonly IMediator _mediator = mediator;
         private readonly IMapper _mapper = mapper;
 
-        //[HttpGet("exists/{id:guid}")]
-        //public async Task<IActionResult> CheckForExistence([FromRoute] Guid id) {
-        //    var query = new CheckForExistenceByIdQuery(id);
+        [HttpGet("exists/{id:guid}")]
+        public async Task<IActionResult> Exists([FromRoute] Guid id) {
+            var query = new UserExistsQuery(id);
 
-        //    var result = await _mediator.Send(query);
-        //    return result.ToActionResult();
-        //}
+            var result = await _mediator.Send(query);
+            return result.ToActionResult();
+        }
 
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById([FromRoute] Guid id) {

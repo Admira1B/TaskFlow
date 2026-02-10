@@ -6,6 +6,18 @@ namespace TaskFlow.Tasks.Infrastructure.SqlServer.Repositories {
     public class ProjectMemberRepository(TaskServiceDbContext dbContext) : IProjectMemberRepository {
         private readonly TaskServiceDbContext _dbContext = dbContext;
 
+        public async Task<bool> ExistsAsync(Guid id) { 
+            return await _dbContext.Members
+                .AsNoTracking()
+                .AnyAsync(m => m.Id == id);
+        }
+
+        public async Task<bool> UserExistsInProjectAsync(Guid userId, Guid projectId) {
+            return await _dbContext.Members
+                .AsNoTracking()
+                .AnyAsync(m => m.UserId == userId && (m.ProjectId == projectId));
+        }
+
         public async Task<ProjectMember?> GetByIdAsync(Guid id) {
             return await _dbContext.Members
                 .FirstOrDefaultAsync(m => m.Id == id);

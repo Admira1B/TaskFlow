@@ -38,7 +38,7 @@ namespace TaskFlow.Tasks.API.Controllers {
         public async Task<IActionResult> Create([FromBody] CreateCommentRequest request) {
             var command = _mapper.Map<CreateCommentCommand>(
                 request,
-                opts => opts.Items["CurrentUserId"] = User.GetUserId()
+                opts => opts.Items[nameof(CreateCommentCommand.AuthorId)] = User.GetUserId()
             );
 
             var result = await _mediator.Send(command);
