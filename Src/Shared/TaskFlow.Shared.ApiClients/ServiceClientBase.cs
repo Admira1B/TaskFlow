@@ -1,23 +1,19 @@
-﻿using Polly;
+﻿using System.Net;
+using System.Net.Http.Json;
+using System.Net.Http.Headers;
+using Polly;
+using Polly.CircuitBreaker;
 using Polly.Retry;
 using Polly.Timeout;
-using Polly.CircuitBreaker;
-using System.Net;
-using System.Net.Http.Json;
+using Microsoft.AspNetCore.Http;
 using TaskFlow.Shared.Core.Interfaces;
 
 namespace TaskFlow.Shared.ApiClients {
-    public class ServiceClientBase {
-        protected readonly ILogger _logger;
-        protected readonly HttpClient _httpClient;
-        protected readonly ResiliencePipeline<HttpResponseMessage> _resiliencePipeline;
-
-        protected ServiceClientBase(ILogger logger, HttpClient httpClient, ResiliencePipeline<HttpResponseMessage>? resiliencePipeline = null) {
-            _logger = logger;
-            _httpClient = httpClient;
-
-            _resiliencePipeline = resiliencePipeline ?? CreateDefaultResiliencePipeline();
-        }
+    public abstract class ServiceClientBase(ILogger logger, HttpClient httpClient, IHttpContextAccessor accessor, ResiliencePipeline<HttpResponseMessage>? resiliencePipeline = null) {
+        protected readonly ILogger _logger = logger;
+        protected readonly HttpClient _httpClient = httpClient;
+        protected readonly IHttpContextAccessor _accessor = accessor;
+        protected readonly ResiliencePipeline<HttpResponseMessage> _resiliencePipeline = resiliencePipeline ?? CreateDefaultResiliencePipeline();
 
         protected static ResiliencePipeline<HttpResponseMessage> CreateDefaultResiliencePipeline() {
             return new ResiliencePipelineBuilder<HttpResponseMessage>()
@@ -43,16 +39,27 @@ namespace TaskFlow.Shared.ApiClients {
         }
 
         protected async Task<TResult?> ExecuteGetAsync<TResult>(string endpoint, CancellationToken ct = default) {
+            var clientContext = _accessor.HttpContext;
+            using var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
+            if (clientContext is not null) {
+                var authHeader = clientContext.Request.Headers["Authorization"].FirstOrDefault();
+
+                if (!string.IsNullOrWhiteSpace(authHeader) && authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase)) {
+                    var token = authHeader["Bearer ".Length..].Trim();
+                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+                // Another ways to save token ways checks like context or cookies
+            }
+
             var context = ResilienceContextPool.Shared.Get(ct);
-            
             try {
                 var response = await _resiliencePipeline.ExecuteAsync(
                     async (ctx, state) => {
-                        var (client, ep, log) = state;
-                        return await client.GetAsync(ep, ctx.CancellationToken).ConfigureAwait(false);
+                        var (client, req) = state;
+                        return await client.SendAsync(req, ctx.CancellationToken).ConfigureAwait(false);
                     },
                     context,
-                    (_httpClient, endpoint, _logger))
+                    (_httpClient, request))
                     .ConfigureAwait(false);
 
                 return await ProcessResponseAsync<TResult>(response, endpoint, ct).ConfigureAwait(false);

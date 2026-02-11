@@ -19,29 +19,29 @@ namespace TaskFlow.Tasks.API.Controllers {
         private readonly IMapper _mapper = mapper;
 
         [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetById([FromRoute] Guid id) {
+        public async Task<IActionResult> GetById([FromRoute] Guid id, CancellationToken ct) {
             var query = new GetCommentByIdQuery(id);
 
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(query, cancellationToken: ct);
             return result.ToActionResult();
         }
 
         [HttpGet("by-task/{taskId:guid}")]
-        public async Task<IActionResult> GetByTask([FromRoute] Guid taskId) {
+        public async Task<IActionResult> GetByTask([FromRoute] Guid taskId, CancellationToken ct) {
             var query = new GetCommentsByTaskItemQuery(taskId);
 
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(query, cancellationToken: ct);
             return result.ToActionResult();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateCommentRequest request) {
+        public async Task<IActionResult> Create([FromBody] CreateCommentRequest request, CancellationToken ct) {
             var command = _mapper.Map<CreateCommentCommand>(
                 request,
                 opts => opts.Items[nameof(CreateCommentCommand.AuthorId)] = User.GetUserId()
             );
 
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken: ct);
 
             if (result.Succeeded) {
                 return CreatedAtAction(
@@ -55,21 +55,21 @@ namespace TaskFlow.Tasks.API.Controllers {
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateCommentRequest request) {
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateCommentRequest request, CancellationToken ct) {
             var command = _mapper.Map<UpdateCommentCommand>(
                 request,
                 opts => opts.Items[nameof(UpdateCommentCommand.Id)] = id
             );
 
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken: ct);
             return result.ToActionResult();
         }
 
         [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> Delete([FromRoute] Guid id) {
+        public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken ct) {
             var command = new DeleteCommentCommand(id);
 
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken: ct);
             return result.ToActionResult();
         }
     }

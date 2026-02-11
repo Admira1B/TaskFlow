@@ -19,26 +19,26 @@ namespace TaskFlow.Tasks.API.Controllers {
         private readonly IMapper _mapper = mapper;
 
         [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetById([FromRoute] Guid id) {
+        public async Task<IActionResult> GetById([FromRoute] Guid id, CancellationToken ct) {
             var query = new GetTaskGroupByIdQuery(id);
 
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(query, cancellationToken: ct);
             return result.ToActionResult();
         }
 
         [HttpGet("by-project/{projectId:guid}")]
-        public async Task<IActionResult> GetByProject([FromRoute] Guid projectId) {
+        public async Task<IActionResult> GetByProject([FromRoute] Guid projectId, CancellationToken ct) {
             var query = new GetTaskGroupsByProjectQuery(projectId);
 
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(query, cancellationToken: ct);
             return result.ToActionResult();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateTaskGroupRequest request) {
+        public async Task<IActionResult> Create([FromBody] CreateTaskGroupRequest request, CancellationToken ct) {
             var command = _mapper.Map<CreateTaskGroupCommand>(request);
 
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken: ct);
 
             if (result.Succeeded) {
                 return CreatedAtAction(
@@ -52,21 +52,21 @@ namespace TaskFlow.Tasks.API.Controllers {
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateTaskGroupRequest request) {
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateTaskGroupRequest request, CancellationToken ct) {
             var command = _mapper.Map<UpdateTaskGroupCommand>(
                 request,
                 opts => opts.Items[nameof(UpdateTaskGroupCommand.Id)] = id
             );
             
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken: ct);
             return result.ToActionResult();
         }
 
         [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> Delete([FromRoute] Guid id) {
+        public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken ct) {
             var command = new DeleteTaskGroupCommand(id);
 
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken: ct);
             return result.ToActionResult();
         }
     }

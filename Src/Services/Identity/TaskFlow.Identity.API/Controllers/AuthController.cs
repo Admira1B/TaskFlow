@@ -18,25 +18,25 @@ namespace TaskFlow.Identity.API.Controllers {
         private readonly JsonWebTokenGenerationOptions _jwtOptions = jwtOptions.Value;
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] Contracts.DTOs.Requests.Auth.RegisterRequest request) {
+        public async Task<IActionResult> Register([FromBody] Contracts.DTOs.Requests.Auth.RegisterRequest request, CancellationToken ct) {
             var command = _mapper.Map<RegisterCommand>(request);
 
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken: ct);
             return result.ToActionResult(_jwtOptions);
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] Contracts.DTOs.Requests.Auth.LoginRequest request) {
+        public async Task<IActionResult> Login([FromBody] Contracts.DTOs.Requests.Auth.LoginRequest request, CancellationToken ct) {
             var command = _mapper.Map<LoginCommand>(request);
 
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken: ct);
             return result.ToActionResult(_jwtOptions);
         }
 
         [HttpPost("logout")]
         [Authorize]
-        public async Task<IActionResult> Logout() {
-            await _mediator.Send(new LogoutCommand());
+        public async Task<IActionResult> Logout(CancellationToken ct) {
+            await _mediator.Send(new LogoutCommand(), cancellationToken: ct);
             return Ok();
         }
     }

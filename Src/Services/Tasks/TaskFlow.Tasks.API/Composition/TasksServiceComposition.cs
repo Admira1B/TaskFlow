@@ -81,7 +81,7 @@ namespace TaskFlow.Tasks.API.Composition {
 
                 var uriBase = builder.Environment.EnvironmentName.ToLower() switch {
                     "docker" => "http://taskflow-gateway:8080/flow",
-                    _ => "http://localhost:5000/flow"
+                    _ => "http://localhost:5001"
                 };
 
                 client.BaseAddress = new Uri(uriBase);

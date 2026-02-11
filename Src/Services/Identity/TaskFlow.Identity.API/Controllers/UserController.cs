@@ -21,61 +21,61 @@ namespace TaskFlow.Identity.API.Controllers {
         private readonly IMapper _mapper = mapper;
 
         [HttpGet("exists/{id:guid}")]
-        public async Task<IActionResult> Exists([FromRoute] Guid id) {
+        public async Task<IActionResult> Exists([FromRoute] Guid id, CancellationToken ct) {
             var query = new UserExistsQuery(id);
 
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(query, cancellationToken: ct);
             return result.ToActionResult();
         }
 
         [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetById([FromRoute] Guid id) {
+        public async Task<IActionResult> GetById([FromRoute] Guid id, CancellationToken ct) {
             var query = new GetUserByIdQuery(id);
 
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(query, cancellationToken: ct);
             return result.ToActionResult();
         }
 
         [HttpGet("by-email/{email}")]
-        public async Task<IActionResult> GetByEmail([FromRoute] string email) {
+        public async Task<IActionResult> GetByEmail([FromRoute] string email, CancellationToken ct) {
             var query = new GetUserByEmailQuery(email);
 
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(query, cancellationToken: ct);
             return result.ToActionResult();
         }
 
         [HttpGet("by-name/{name}")]
-        public async Task<IActionResult> GetByName([FromRoute] string name) {
+        public async Task<IActionResult> GetByName([FromRoute] string name, CancellationToken ct) {
             var query = new GetUserByUserNameQuery(name);
 
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(query, cancellationToken: ct);
             return result.ToActionResult();
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetPaginated([FromQuery] GetUsersPaginatedRequest request) {
+        public async Task<IActionResult> GetPaginated([FromQuery] GetUsersPaginatedRequest request, CancellationToken ct) {
             var query = _mapper.Map<GetUsersPaginatedQuery>(request);
 
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(query, cancellationToken: ct);
             return result.ToActionResult();
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateUserRequest request) { 
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateUserRequest request, CancellationToken ct) { 
             var command = _mapper.Map<UpdateUserCommand>(
                 request,
                 opts => opts.Items[nameof(UpdateUserCommand.Id)] = id
             );
 
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken: ct);
             return result.ToActionResult();
         }
 
         [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> Delete([FromRoute] Guid id) {
+        public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken ct) {
             var command = new DeleteUserCommand(id);
 
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken: ct);
             return result.ToActionResult();
         }
     }
