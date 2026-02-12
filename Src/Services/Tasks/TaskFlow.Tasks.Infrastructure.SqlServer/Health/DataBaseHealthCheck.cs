@@ -5,9 +5,9 @@ namespace TaskFlow.Tasks.Infrastructure.SqlServer.Health {
     public class DataBaseHealthCheck(TaskServiceDbContext dbContext) : IHealthCheck {
         private readonly TaskServiceDbContext _dbContext = dbContext;
 
-        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken ct = default) {
+        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default) {
             try {
-                var canConnect = await _dbContext.Database.CanConnectAsync(ct);
+                var canConnect = await _dbContext.Database.CanConnectAsync(cancellationToken);
 
                 if (!canConnect) {
                     return HealthCheckResult.Unhealthy(

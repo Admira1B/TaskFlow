@@ -13,25 +13,25 @@ namespace TaskFlow.Shared.Core.Health {
             _startTime = DateTime.UtcNow;
         }
 
-        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken ct = default) {
+        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default) {
             try {
-                var serviceCheckResult = await CheckServiceHealthAsync(ct);
+                var serviceCheckResult = await CheckServiceHealthAsync(cancellationToken);
                 if (serviceCheckResult.Status != HealthStatus.Healthy) {
                     return serviceCheckResult;
                 }
 
-                var dependenciesCheckResult = await CheckDependenciesHealthAsync(context, ct);
+                var dependenciesCheckResult = await CheckDependenciesHealthAsync(context, cancellationToken);
                 if (dependenciesCheckResult.Status != HealthStatus.Healthy) {
                     return dependenciesCheckResult;
                 }
 
-                return await BuildHealthyResultAsync(ct);
+                return await BuildHealthyResultAsync(cancellationToken);
             } catch (Exception ex) {
-                return await HandleExceptionAsync(ct, ex);
+                return await HandleExceptionAsync(cancellationToken, ex);
             }
         }
 
-        protected virtual Task<HealthCheckResult> CheckServiceHealthAsync(CancellationToken ct) {
+        protected virtual Task<HealthCheckResult> CheckServiceHealthAsync(CancellationToken cancellationToken) {
             var uptime = DateTime.UtcNow - _startTime;
 
             if (uptime.TotalSeconds < 0) {
@@ -50,13 +50,13 @@ namespace TaskFlow.Shared.Core.Health {
             return Task.FromResult(HealthCheckResult.Healthy());
         }
 
-        protected virtual Task<HealthCheckResult> CheckDependenciesHealthAsync(HealthCheckContext context, CancellationToken ct) {
+        protected virtual Task<HealthCheckResult> CheckDependenciesHealthAsync(HealthCheckContext context, CancellationToken cancellationToken) {
             // This method can be override with added Dependencies
 
             return Task.FromResult(HealthCheckResult.Healthy());
         }
 
-        protected virtual Task<HealthCheckResult> BuildHealthyResultAsync(CancellationToken ct) {
+        protected virtual Task<HealthCheckResult> BuildHealthyResultAsync(CancellationToken cancellationToken) {
             var uptime = DateTime.UtcNow - _startTime;
 
             var data = new Dictionary<string, object> {
@@ -82,7 +82,7 @@ namespace TaskFlow.Shared.Core.Health {
             );
         }
 
-        protected virtual Task<HealthCheckResult> HandleExceptionAsync(CancellationToken ct, Exception ex) {
+        protected virtual Task<HealthCheckResult> HandleExceptionAsync(CancellationToken cancellationToken, Exception ex) {
             _logger.Error(
                 "{ServiceName} health check failed with exception", ex, _serviceName);
 

@@ -9,10 +9,10 @@ namespace TaskFlow.Tasks.API.Health {
         private readonly DataBaseHealthCheck _dataBaseHealth = dataBaseHealth;
         private readonly RabbitMqHealthCheck _rabbitMqHealth = rabbitMqHealth;
 
-        protected override async Task<HealthCheckResult> CheckDependenciesHealthAsync(HealthCheckContext context, CancellationToken ct) {
+        protected override async Task<HealthCheckResult> CheckDependenciesHealthAsync(HealthCheckContext context, CancellationToken cancellationToken) {
             var checks = new List<Task<HealthCheckResult>> {
-                _dataBaseHealth.CheckHealthAsync(context, ct),
-                _rabbitMqHealth.CheckHealthAsync(context, ct),
+                _dataBaseHealth.CheckHealthAsync(context, cancellationToken),
+                _rabbitMqHealth.CheckHealthAsync(context, cancellationToken),
             };
 
             var results = await Task.WhenAll(checks);
