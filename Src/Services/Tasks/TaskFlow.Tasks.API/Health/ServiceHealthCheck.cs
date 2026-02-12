@@ -1,18 +1,21 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 using TaskFlow.Shared.Core.Health;
+using TaskFlow.Shared.Consul.Health;
 using TaskFlow.Shared.Messaging.Health;
 using TaskFlow.Tasks.Infrastructure.SqlServer.Health;
 
 namespace TaskFlow.Tasks.API.Health {
-    public class ServiceHealthCheck(Shared.Core.Interfaces.ILogger logger, DataBaseHealthCheck dataBaseHealth, RabbitMqHealthCheck rabbitMqHealth) :
+    public class ServiceHealthCheck(Shared.Core.Interfaces.ILogger logger, DataBaseHealthCheck dataBaseHealth, RabbitMqHealthCheck rabbitMqHealth, ConsulHealthCheck consulHealth) :
              ServiceHealthCheckBase(logger, "Tasks Service") {
         private readonly DataBaseHealthCheck _dataBaseHealth = dataBaseHealth;
         private readonly RabbitMqHealthCheck _rabbitMqHealth = rabbitMqHealth;
+        private readonly ConsulHealthCheck _consulHealth = consulHealth;
 
         protected override async Task<HealthCheckResult> CheckDependenciesHealthAsync(HealthCheckContext context, CancellationToken cancellationToken) {
             var checks = new List<Task<HealthCheckResult>> {
                 _dataBaseHealth.CheckHealthAsync(context, cancellationToken),
                 _rabbitMqHealth.CheckHealthAsync(context, cancellationToken),
+                _consulHealth.CheckHealthAsync(context, cancellationToken)
             };
 
             var results = await Task.WhenAll(checks);

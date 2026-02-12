@@ -34,20 +34,20 @@ namespace TaskFlow.Shared.Messaging {
             };
         }
 
-        protected override async Task ExecuteAsync(CancellationToken ct) {
+        protected override async Task ExecuteAsync(CancellationToken cancellationToken) {
             _logger.Info($"{GetType().Name} starting...");
 
             try {
-                await ConnectAsync(ct);
+                await ConnectAsync(cancellationToken);
 
-                await SetupSubscriptionsAsync(ct);
+                await SetupSubscriptionsAsync(cancellationToken);
 
                 _logger.Info($"Subscribed to {_subscriptions.Count} exchange(s)");
 
                 _logger.Info($"{GetType().Name} started successfully");
 
-                while (!ct.IsCancellationRequested) {
-                    await Task.Delay(1000, ct);
+                while (!cancellationToken.IsCancellationRequested) {
+                    await Task.Delay(1000, cancellationToken);
                 }
             } catch (OperationCanceledException) {
                 _logger.Info($"{GetType().Name} stopped gracefully");
@@ -98,7 +98,7 @@ namespace TaskFlow.Shared.Messaging {
             }
         }
 
-        private async Task SetupSubscriptionAsync(string exchangeName, string routingPattern, CancellationToken ct) {
+        private async Task SetupSubscriptionAsync(string exchangeName, string routingPattern, CancellationToken cancellationToken) {
             var queueName = $"tasks-service.{exchangeName}";
 
             await _channel!.ExchangeDeclareAsync(
@@ -107,7 +107,7 @@ namespace TaskFlow.Shared.Messaging {
                 durable: true,
                 autoDelete: false,
                 arguments: null,
-                cancellationToken: ct
+                cancellationToken: cancellationToken
             );
 
             await _channel.QueueDeclareAsync(
@@ -116,7 +116,7 @@ namespace TaskFlow.Shared.Messaging {
                 exclusive: false,
                 autoDelete: false,
                 arguments: null,
-                cancellationToken: ct
+                cancellationToken: cancellationToken
             );
 
             await _channel.QueueBindAsync(
@@ -124,10 +124,10 @@ namespace TaskFlow.Shared.Messaging {
                 exchange: exchangeName,
                 routingKey: routingPattern,
                 arguments: null,
-                cancellationToken: ct
+                cancellationToken: cancellationToken
             );
 
-            await StartConsumingQueueAsync(queueName, ct);
+            await StartConsumingQueueAsync(queueName, cancellationToken);
         }
 
         private async Task StartConsumingQueueAsync(string queueName, CancellationToken ct) {
