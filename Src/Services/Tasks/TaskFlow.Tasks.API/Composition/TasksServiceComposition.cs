@@ -1,15 +1,19 @@
 ﻿using System.Text;
 using NLog;
 using NLog.Web;
+using Consul;
+using Winton.Extensions.Configuration.Consul;
 using Microsoft.OpenApi;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using TaskFlow.Shared.Consul;
 using TaskFlow.Shared.Core.Options;
 using TaskFlow.Shared.Core.Middlewares;
+using TaskFlow.Shared.Consul.Options;
 using TaskFlow.Shared.Messaging.Health;
 using TaskFlow.Shared.Messaging.Options;
+using TaskFlow.Shared.ApiClients.IdentityService;
 using TaskFlow.Tasks.API.Health;
 using TaskFlow.Tasks.Domain.Contracts;
 using TaskFlow.Tasks.Application.Mapping;
@@ -67,13 +71,66 @@ namespace TaskFlow.Tasks.API.Composition {
             builder.Services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
             builder.Services.AddScoped<ITaskGroupRepository, TaskGroupRepository>();
             builder.Services.AddScoped<ITaskItemRepository, TaskItemRepository>();
-            
+
             // Health Checks
             builder.Services.AddScoped<DataBaseHealthCheck>();
             builder.Services.AddScoped<RabbitMqHealthCheck>();
             builder.Services.AddHealthChecks()
-                .AddCheck<ServiceHealthCheck>("tasks_service_health_check", HealthStatus.Unhealthy);
+                .AddCheck<ServiceHealthCheck>("tasks_service_health_check", Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Unhealthy);
 
+            // Consul 
+            builder.Configuration.AddConsul($"config/tasks/{builder.Environment.EnvironmentName}", options => {
+                options.ConsulConfigurationOptions = cc => {
+                    cc.Address = new Uri(builder.Configuration["ConsulOptions:Address"] ??
+                        throw new InvalidOperationException(
+                            "ConsulOptions:Address configuration is missing. Check 'ConsulOptions:Address' into appsettings.json or environment variables."
+                        )
+                    );
+                };
+                options.Optional = true;
+                options.ReloadOnChange = true;
+                options.PollWaitTime = TimeSpan.FromSeconds(30);
+            });
+
+            builder.Services.Configure<ConsulOptions>(builder.Configuration.GetSection(nameof(ConsulOptions)));
+
+            builder.Services.AddSingleton<IConsulClient>(sp => {
+                var config = sp.GetRequiredService<IConfiguration>();
+                return new ConsulClient(c => {
+                    c.Datacenter = config["ConsulOptions:Datacenter"] ??
+                        throw new InvalidOperationException(
+                            "ConsulOptions:Datacenter configuration is missing. Check 'ConsulOptions:Datacenter' into appsettings.json or environment variables."
+                        );
+                    c.Address = new Uri(config["ConsulOptions:Address"] ??
+                        throw new InvalidOperationException(
+                            "ConsulOptions:Address configuration is missing. Check 'ConsulOptions:Address' into appsettings.json or environment variables."
+                        )
+                    );
+                });
+            });
+
+            builder.Services.AddHostedService<ConsulHostedService>();
+
+            // HttpClients 
+            builder.Services.AddHttpClient<IdentityServiceClient>((services, client) => {
+                var configuration = services.GetRequiredService<IConfiguration>();
+
+                var uriBase = builder.Environment.EnvironmentName.ToLower() switch {
+                    "docker" => "http://taskflow-gateway:8080/flow",
+                    _ => "http://localhost:5001"
+                };
+
+                client.BaseAddress = new Uri(uriBase);
+
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
+
+                client.Timeout = TimeSpan.FromSeconds(30);
+            })
+            .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler {
+                PooledConnectionLifetime = TimeSpan.FromMinutes(15),
+                ConnectTimeout = TimeSpan.FromSeconds(5),
+                MaxConnectionsPerServer = 20
+            });
 
             // Swagger Documentation
             builder.Services.AddEndpointsApiExplorer();

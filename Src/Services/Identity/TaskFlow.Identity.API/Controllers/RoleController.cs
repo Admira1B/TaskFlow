@@ -20,34 +20,34 @@ namespace TaskFlow.Identity.API.Controllers {
         private readonly IMapper _mapper = mapper;
 
         [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetById([FromRoute] Guid id) {
+        public async Task<IActionResult> GetById([FromRoute] Guid id, CancellationToken ct) {
             var query = new GetRoleByIdQuery(id);
 
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(query, cancellationToken: ct);
             return result.ToActionResult();
         }
 
         [HttpGet("by-name/{name}")]
-        public async Task<IActionResult> GetByName([FromRoute] string name) {
+        public async Task<IActionResult> GetByName([FromRoute] string name, CancellationToken ct) {
             var query = new GetRoleByNameQuery(name);
 
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(query, cancellationToken: ct);
             return result.ToActionResult();
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetPaginated([FromQuery] GetRolesPaginatedRequest request) {
+        public async Task<IActionResult> GetPaginated([FromQuery] GetRolesPaginatedRequest request, CancellationToken ct) {
             var query = _mapper.Map<GetRolesPaginatedQuery>(request);
             
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(query, cancellationToken: ct);
             return result.ToActionResult();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateRoleRequest request) {
+        public async Task<IActionResult> Create([FromBody] CreateRoleRequest request, CancellationToken ct) {
             var command = _mapper.Map<CreateRoleCommand>(request);
 
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken: ct);
 
             if (result.Succeeded) {
                 return CreatedAtAction(nameof(GetById), new { result.Value!.Id }, result.Value);  
@@ -57,21 +57,21 @@ namespace TaskFlow.Identity.API.Controllers {
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRoleRequest request) {
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRoleRequest request, CancellationToken ct) {
             var command = _mapper.Map<UpdateRoleCommand>(
                 request,
                 opts => opts.Items[nameof(UpdateRoleCommand.Id)] = id
             );
 
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken: ct);
             return result.ToActionResult();
         }
 
         [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> Delete([FromRoute] Guid id) { 
+        public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken ct) { 
             var command = new DeleteRoleCommand(id);
 
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken: ct);
             return result.ToActionResult();
         }
     }

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace TaskFlow.Identity.Domain.Options {
+namespace TaskFlow.Identity.Application.Options {
     public class JsonWebTokenGenerationOptions {
         public string Issuer { get; set; } = null!;
         public string[] ValidAudiences { get; set; } = [];

@@ -8,7 +8,7 @@ namespace TaskFlow.Identity.Application.Commands.Role.UpdateRole {
         private readonly ILogger _logger = logger;
         private readonly RoleManager<Domain.Entities.Role> _manager = manager;
 
-        public async Task<RequestResult<Unit>> Handle(UpdateRoleCommand command, CancellationToken cancellationToken) {
+        public async Task<RequestResult<Unit>> Handle(UpdateRoleCommand command, CancellationToken cancellationToken = default) {
             _logger.Debug("Role {RoleId} updating attempt", command.Id.ToString());
             var role = await _manager.FindByIdAsync(command.Id.ToString());
 

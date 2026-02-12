@@ -26,7 +26,7 @@ services:
       - taskflow-internal-network
 
     healthcheck:
-      test: [ "CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $${SA_PASSWORD} -Q 'SELECT 1' || exit 1" ]
+      test: ["CMD-SHELL", "timeout 10 bash -c 'cat < /dev/null > /dev/tcp/localhost/1433' || exit 1"]
       interval: 10s  
       timeout: 3s    
       retries: 10    

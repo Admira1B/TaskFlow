@@ -8,7 +8,7 @@ namespace TaskFlow.Identity.Application.Commands.Role.DeleteRole {
         private readonly ILogger _logger = logger;
         private readonly RoleManager<Domain.Entities.Role> _manager = manager;
 
-        public async Task<RequestResult<Unit>> Handle(DeleteRoleCommand command, CancellationToken cancellationToken) {
+        public async Task<RequestResult<Unit>> Handle(DeleteRoleCommand command, CancellationToken cancellationToken = default) {
             _logger.Debug("Role {RoleId} deletion attempt", command.Id.ToString());
 
             var role = await _manager.FindByIdAsync(command.Id.ToString());

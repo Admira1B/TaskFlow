@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using AutoMapper;
-using TaskFlow.Tasks.Domain.Contracts;
 using TaskFlow.Tasks.Application.Results;
 using TaskFlow.Tasks.Contracts.DTOs.Responses;
+using TaskFlow.Tasks.Domain.Contracts;
 
 namespace TaskFlow.Tasks.Application.Queries.TaskItem.GetByTaskGroup {
     public class GetTaskItemsByTaskGroupQueryHandler(IMapper mapper, ITaskItemRepository repository, ITaskGroupRepository groupRepository) : IRequestHandler<GetTaskItemsByTaskGroupQuery, RequestResult<List<TaskItemDto>>> {
@@ -10,14 +10,14 @@ namespace TaskFlow.Tasks.Application.Queries.TaskItem.GetByTaskGroup {
         private readonly ITaskItemRepository _repository = repository;
         private readonly ITaskGroupRepository _groupRepository = groupRepository;
 
-        public async Task<RequestResult<List<TaskItemDto>>> Handle(GetTaskItemsByTaskGroupQuery query, CancellationToken cancellationToken) {
-            var group = await _groupRepository.GetByIdAsync(query.TaskGroupId);
+        public async Task<RequestResult<List<TaskItemDto>>> Handle(GetTaskItemsByTaskGroupQuery query, CancellationToken cancellationToken = default) {
+            var group = await _groupRepository.GetByIdAsync(query.TaskGroupId, cancellationToken);
 
             if (group is null) { 
                 return RequestResult<List<TaskItemDto>>.NotFound("Task Group", query.TaskGroupId);
             }
 
-            var tasks = await _repository.GetByTaskGroupAsync(query.TaskGroupId);
+            var tasks = await _repository.GetByTaskGroupAsync(query.TaskGroupId, cancellationToken);
 
             return RequestResult<List<TaskItemDto>>.Success(_mapper.Map<List<TaskItemDto>>(tasks));
         }

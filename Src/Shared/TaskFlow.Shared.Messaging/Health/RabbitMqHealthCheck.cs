@@ -7,7 +7,7 @@ namespace TaskFlow.Shared.Messaging.Health {
     public class RabbitMqHealthCheck(IOptions<RabbitMqOptions> options) : IHealthCheck {
         private readonly RabbitMqOptions _options = options.Value;
 
-        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken ct = default) {
+        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default) {
             try {
                 var factory = new ConnectionFactory {
                     HostName = _options.HostName,
@@ -20,8 +20,8 @@ namespace TaskFlow.Shared.Messaging.Health {
                     SocketWriteTimeout = TimeSpan.FromSeconds(5)
                 };
 
-                using var connection = await factory.CreateConnectionAsync(cancellationToken: ct);
-                using var channel = await connection.CreateChannelAsync(cancellationToken: ct);
+                using var connection = await factory.CreateConnectionAsync(cancellationToken);
+                using var channel = await connection.CreateChannelAsync(cancellationToken: cancellationToken);
 
                 if (!connection.IsOpen) {
                     return HealthCheckResult.Unhealthy(

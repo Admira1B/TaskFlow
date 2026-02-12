@@ -40,11 +40,11 @@ namespace TaskFlow.Shared.Messaging {
             _channel = _connection.CreateChannelAsync().GetAwaiter().GetResult();
         }
 
-        protected async Task<bool> PublishEventAsync<T>(T @event, string exchange, string routingKey, string serviceName, CancellationToken ct = default) where T : EventBase {
+        protected async Task<bool> PublishEventAsync<T>(T @event, string exchange, string routingKey, string serviceName, CancellationToken cancellationToken = default) where T : EventBase {
             ArgumentNullException.ThrowIfNull(@event);
 
             try {
-                await EnsureExchangeExistsAsync(exchange, ct);
+                await EnsureExchangeExistsAsync(exchange, cancellationToken);
 
                 @event.SourceService = serviceName;
                 var jsonEvent = JsonSerializer.Serialize(@event, _jsonOptions);
@@ -66,7 +66,7 @@ namespace TaskFlow.Shared.Messaging {
                     mandatory: true,
                     basicProperties: props,
                     body: new ReadOnlyMemory<byte>(Encoding.UTF8.GetBytes(jsonEvent)),
-                    cancellationToken: ct
+                    cancellationToken: cancellationToken
                 );
 
                 return true;
@@ -77,7 +77,7 @@ namespace TaskFlow.Shared.Messaging {
             }
         }
 
-        private async Task EnsureExchangeExistsAsync(string exchange, CancellationToken ct) {
+        private async Task EnsureExchangeExistsAsync(string exchange, CancellationToken cancellationToken) {
             if (!_declaredExchanges.Contains(exchange)) {
                 await _channel.ExchangeDeclareAsync(
                     exchange: exchange,
@@ -85,7 +85,7 @@ namespace TaskFlow.Shared.Messaging {
                     durable: true,
                     autoDelete: false,
                     arguments: null,
-                    cancellationToken: ct
+                    cancellationToken: cancellationToken
                 );
                 _declaredExchanges.Add(exchange);
             }

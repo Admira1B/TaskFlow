@@ -1,14 +1,14 @@
 ﻿using MediatR;
 using TaskFlow.Shared.Core.Interfaces;
-using TaskFlow.Tasks.Domain.Contracts;
 using TaskFlow.Tasks.Application.Results;
+using TaskFlow.Tasks.Domain.Contracts;
 
 namespace TaskFlow.Tasks.Application.Commands.TaskItem.UpdateTaskItem {
     public class UpdateTaskItemCommandHandler(ILogger logger, ITaskItemRepository repository) : IRequestHandler<UpdateTaskItemCommand, RequestResult<Unit>> {
         private readonly ILogger _logger = logger;
         private readonly ITaskItemRepository _repository = repository;
 
-        public async Task<RequestResult<Unit>> Handle(UpdateTaskItemCommand command, CancellationToken cancellationToken) {
+        public async Task<RequestResult<Unit>> Handle(UpdateTaskItemCommand command, CancellationToken cancellationToken = default) {
             _logger.Debug("Task item update attempt. TaskId: {TaskId}, Title: {Title}, GroupId: {GroupId}, AssignedId: {AssignedId}, Priority: {Priority}, DescriptionLength: {DescriptionLength}",
                 command.Id.ToString(),
                 command.Title,
@@ -18,7 +18,7 @@ namespace TaskFlow.Tasks.Application.Commands.TaskItem.UpdateTaskItem {
                 command.Description?.Length.ToString() ?? "0"
             );
 
-            var task = await _repository.GetByIdAsync(command.Id);
+            var task = await _repository.GetByIdAsync(command.Id, cancellationToken);
 
             if (task is null) {
                 _logger.Debug("Failed to update task item. Task item {TaskId} not found", command.Id.ToString());
@@ -32,7 +32,7 @@ namespace TaskFlow.Tasks.Application.Commands.TaskItem.UpdateTaskItem {
             task.GroupId = command.GroupId;
 
             try {
-                await _repository.UpdateAsync(task);
+                await _repository.UpdateAsync(task, cancellationToken);
             } catch (Exception ex) {
                 _logger.Debug("Failed to update task item. TaskId: {TaskId}, Exception: {Message}",
                     command.Id.ToString(),

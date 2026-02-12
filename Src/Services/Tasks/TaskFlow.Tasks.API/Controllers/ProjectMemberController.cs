@@ -20,34 +20,34 @@ namespace TaskFlow.Tasks.API.Controllers {
         private readonly IMapper _mapper = mapper;
 
         [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetById([FromRoute] Guid id) {
+        public async Task<IActionResult> GetById([FromRoute] Guid id, CancellationToken ct) {
             var query = new GetProjectMemberByIdQuery(id);
 
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(query, cancellationToken: ct);
             return result.ToActionResult();
         }
 
         [HttpGet("by-user/{userId:guid}")]
-        public async Task<IActionResult> GetByUser([FromRoute] Guid userId) {
+        public async Task<IActionResult> GetByUser([FromRoute] Guid userId, CancellationToken ct) {
             var query = new GetProjectsMembersByUserQuery(userId);
 
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(query, cancellationToken: ct);
             return result.ToActionResult();
         }
 
         [HttpGet("by-project/{projectId:guid}")]
-        public async Task<IActionResult> GetByProject([FromRoute] Guid projectId) {
+        public async Task<IActionResult> GetByProject([FromRoute] Guid projectId, CancellationToken ct) {
             var query = new GetProjectsMembersByProjectQuery(projectId);
 
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(query, cancellationToken: ct);
             return result.ToActionResult();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateProjectMemberRequest request) {
+        public async Task<IActionResult> Create([FromBody] CreateProjectMemberRequest request, CancellationToken ct) {
             var command = _mapper.Map<CreateProjectMemberCommand>(request);
 
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken: ct);
 
             if (result.Succeeded) {
                 return CreatedAtAction(
@@ -61,21 +61,21 @@ namespace TaskFlow.Tasks.API.Controllers {
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateProjectMemberRequest request) {
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateProjectMemberRequest request, CancellationToken ct) {
             var command = _mapper.Map<UpdateProjectMemberCommand>(
                 request,
                 opts => opts.Items[nameof(UpdateProjectMemberCommand.Id)] = id
             );
 
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken: ct);
             return result.ToActionResult();
         }
 
         [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> Delete([FromRoute] Guid id) {
+        public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken ct) {
             var command = new DeleteProjectMemberCommand(id);
 
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken: ct);
             return result.ToActionResult();
         }
     }

@@ -8,7 +8,7 @@ namespace TaskFlow.Identity.Application.Commands.User.UpdateUser {
         private readonly ILogger _logger = logger;
         private readonly UserManager<Domain.Entities.User> _manager = manager;
         
-        public async Task<RequestResult<Unit>> Handle(UpdateUserCommand command, CancellationToken cancellationToken) {
+        public async Task<RequestResult<Unit>> Handle(UpdateUserCommand command, CancellationToken cancellationToken = default) {
             _logger.Debug("User {UserId} updating attempt", command.Id.ToString());
             var user = await _manager.FindByIdAsync(command.Id.ToString());
 

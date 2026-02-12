@@ -7,6 +7,6 @@ namespace TaskFlow.Tasks.Contracts.DTOs.Requests.TaskItem {
         [MaxLength(1000)] string? Description,
         [Required] Priority Priority,
         Guid? AssignedId,
-        Guid? GroupId = null
+        Guid GroupId
     );
 }

@@ -27,69 +27,76 @@ namespace TaskFlow.Tasks.Application.Mapping {
             CreateMap<TaskGroup, TaskGroupDto>();
             CreateMap<TaskItem, TaskItemDto>();
 
-            // Request DTOs to MediatoR commands
+            // ========= Request DTOs to MediatoR commands =========
+
+            // Comment maps
             CreateMap<CreateCommentRequest, CreateCommentCommand>()
-                .ForMember(
-                    dest => dest.AuthorId,
-                    opt => opt.MapFrom((src, dest, destMember, context)
-                        => (Guid)context.Items["CurrentUserId"])
-                )
-                .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
-                .ForMember(dest => dest.TaskId, opt => opt.MapFrom(src => src.TaskId));
+                .ConstructUsing((src, context) => new CreateCommentCommand(
+                    TaskId: src.TaskId,
+                    Content: src.Content,
+                    AuthorId: (Guid)context.Items[nameof(CreateCommentCommand.AuthorId)]
+                ));
+
             CreateMap<UpdateCommentRequest, UpdateCommentCommand>()
-                .ForMember(
-                    dest => dest.Id,
-                    opt => opt.MapFrom((src, dest, destMember, context)
-                        => (Guid)context.Items[nameof(UpdateCommentCommand.Id)])
-                )
-                .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content));
+                .ConstructUsing((src, context) => new UpdateCommentCommand(
+                    Id: (Guid)context.Items[nameof(UpdateCommentCommand.Id)],
+                    Content: src.Content
+                ));
 
-            CreateMap<CreateProjectRequest, CreateProjectCommand>();
+            // Project maps
+            CreateMap<CreateProjectRequest, CreateProjectCommand>()
+                .ConstructUsing((src, context) => new CreateProjectCommand(
+                    Name: src.Name,
+                    Description: src.Description,
+                    OwnerId: (Guid)context.Items[nameof(CreateProjectCommand.OwnerId)]
+                ));
+
             CreateMap<UpdateProjectRequest, UpdateProjectCommand>()
-                .ForMember(
-                    dest => dest.Id,
-                    opt => opt.MapFrom((src, dest, destMember, context)
-                        => (Guid)context.Items[nameof(UpdateProjectCommand.Id)])
-                )
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
-                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive));
+                .ConstructUsing((src, context) => new UpdateProjectCommand(
+                    Id: (Guid)context.Items[nameof(UpdateProjectCommand.Id)],
+                    Name: src.Name,
+                    Description: src.Description,
+                    IsActive: src.IsActive
+                ));
 
+            // ProjectMember maps
             CreateMap<CreateProjectMemberRequest, CreateProjectMemberCommand>();
+
             CreateMap<UpdateProjectMemberRequest, UpdateProjectMemberCommand>()
-                .ForMember(
-                    dest => dest.Id,
-                    opt => opt.MapFrom((src, dest, destMember, context)
-                        => (Guid)context.Items[nameof(UpdateProjectMemberCommand.Id)])
-                )
-                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role));
+                .ConstructUsing((src, context) => new UpdateProjectMemberCommand(
+                    Id: (Guid)context.Items[nameof(UpdateProjectMemberCommand.Id)],
+                    Role: src.Role
+                ));
 
+            // TaskGroup maps
             CreateMap<CreateTaskGroupRequest, CreateTaskGroupCommand>();
-            CreateMap<UpdateTaskGroupRequest, UpdateTaskGroupCommand>()
-                .ForMember(
-                    dest => dest.Id,
-                    opt => opt.MapFrom((src, dest, destMember, context)
-                        => (Guid)context.Items[nameof(UpdateTaskGroupCommand.Id)])
-                )
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
 
+            CreateMap<UpdateTaskGroupRequest, UpdateTaskGroupCommand>()
+                .ConstructUsing((src, context) => new UpdateTaskGroupCommand(
+                    Id: (Guid)context.Items[nameof(UpdateTaskGroupCommand.Id)],
+                    Name: src.Name
+                ));
+
+            // Task maps
             CreateMap<CreateTaskItemRequest, CreateTaskItemCommand>()
-                .ForMember(
-                    dest => dest.ReporterId,
-                    opt => opt.MapFrom((src, dest, destMember, context)
-                        => (Guid)context.Items["CurrentUserId"])
-                );
+                .ConstructUsing((src, context) => new CreateTaskItemCommand(
+                    Title: src.Title,
+                    Description: src.Description,
+                    GroupId: src.GroupId,
+                    ReporterId: (Guid)context.Items[nameof(CreateTaskItemCommand.ReporterId)],
+                    AssignedId: src.AssignedId,
+                    Priority: src.Priority
+                ));
+
             CreateMap<UpdateTaskItemRequest, UpdateTaskItemCommand>()
-                .ForMember(
-                    dest => dest.Id,
-                    opt => opt.MapFrom((src, dest, destMember, context)
-                        => (Guid)context.Items[nameof(UpdateTaskItemCommand.Id)])
-                )
-                .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
-                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
-                .ForMember(dest => dest.AssignedId, opt => opt.MapFrom(src => src.AssignedId))
-                .ForMember(dest => dest.Priority, opt => opt.MapFrom(src => src.Priority))
-                .ForMember(dest => dest.GroupId, opt => opt.MapFrom(src => src.GroupId));
+                .ConstructUsing((src, context) => new UpdateTaskItemCommand(
+                    Id: (Guid)context.Items[nameof(UpdateTaskItemCommand.Id)],
+                    Title: src.Title,
+                    Description: src.Description,
+                    GroupId: src.GroupId,
+                    AssignedId: src.AssignedId,
+                    Priority: src.Priority
+                ));
         }
     }
 }

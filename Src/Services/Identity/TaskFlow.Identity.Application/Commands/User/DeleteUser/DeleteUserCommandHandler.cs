@@ -11,7 +11,7 @@ namespace TaskFlow.Identity.Application.Commands.User.DeleteUser {
         private readonly UserManager<Domain.Entities.User> _manager = manager;
         private readonly IEventPublisher _publisher = publisher;
 
-        public async Task<RequestResult<Unit>> Handle(DeleteUserCommand command, CancellationToken cancellationToken) {
+        public async Task<RequestResult<Unit>> Handle(DeleteUserCommand command, CancellationToken cancellationToken = default) {
             _logger.Debug("User {UserId} deletion attempt", command.Id.ToString());
             var user = await _manager.FindByIdAsync(command.Id.ToString());
 
