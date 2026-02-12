@@ -11,7 +11,7 @@ namespace TaskFlow.Tasks.Application.Commands.Comment.CreateComment {
         private readonly IMapper _mapper = mapper;
         private readonly ICommentRepository _repository = repository;
 
-        public async Task<RequestResult<CommentDto>> Handle(CreateCommentCommand command, CancellationToken cancellationToken) {
+        public async Task<RequestResult<CommentDto>> Handle(CreateCommentCommand command, CancellationToken cancellationToken = default) {
             _logger.Debug("Comment creating attempt. TaskId: {TaskId}, AuthorId: {AuthorId}, ContentLength: {ContentLength}",
                 command.TaskId.ToString(), 
                 command.AuthorId.ToString(), 
@@ -25,7 +25,7 @@ namespace TaskFlow.Tasks.Application.Commands.Comment.CreateComment {
             };
 
             try {
-                await _repository.AddAsync(comment);
+                await _repository.AddAsync(comment, cancellationToken);
             } catch (Exception ex) {
                 _logger.Debug("Failed to create comment. TaskId: {TaskId}, AuthorId: {AuthorId}, Exception {Message}", command.TaskId.ToString(), command.AuthorId.ToString(), ex.Message);
                 return RequestResult<CommentDto>.Failure("Failed to create comment.");

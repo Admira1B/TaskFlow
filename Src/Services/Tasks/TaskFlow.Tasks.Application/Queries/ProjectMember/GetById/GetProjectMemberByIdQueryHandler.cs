@@ -9,8 +9,8 @@ namespace TaskFlow.Tasks.Application.Queries.ProjectMember.GetById {
         private readonly IMapper _mapper = mapper;
         private readonly IProjectMemberRepository _repository = repository;
         
-        public async Task<RequestResult<ProjectMemberDto>> Handle(GetProjectMemberByIdQuery query, CancellationToken cancellationToken) {
-            var member = await _repository.GetByIdAsync(query.Id);
+        public async Task<RequestResult<ProjectMemberDto>> Handle(GetProjectMemberByIdQuery query, CancellationToken cancellationToken = default) {
+            var member = await _repository.GetByIdAsync(query.Id, cancellationToken);
 
             if (member is null) {
                 return RequestResult<ProjectMemberDto>.NotFound("Project Member", query.Id);

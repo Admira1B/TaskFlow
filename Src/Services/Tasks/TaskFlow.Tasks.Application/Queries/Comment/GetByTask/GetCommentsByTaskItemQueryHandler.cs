@@ -10,14 +10,14 @@ namespace TaskFlow.Tasks.Application.Queries.Comment.GetByTask {
         private readonly ICommentRepository _repository = repository;
         private readonly ITaskItemRepository _taskRepository = taskRepository;
 
-        public async Task<RequestResult<List<CommentDto>>> Handle(GetCommentsByTaskItemQuery query, CancellationToken cancellationToken) {
-            var task = await _taskRepository.GetByIdAsync(query.TaskItemId);
+        public async Task<RequestResult<List<CommentDto>>> Handle(GetCommentsByTaskItemQuery query, CancellationToken cancellationToken = default) {
+            var task = await _taskRepository.GetByIdAsync(query.TaskItemId, cancellationToken);
 
             if (task is null) {
                 return RequestResult<List<CommentDto>>.NotFound("Task", query.TaskItemId);
             }
             
-            var comments = await _repository.GetByTaskIdAsync(query.TaskItemId);
+            var comments = await _repository.GetByTaskIdAsync(query.TaskItemId, cancellationToken);
 
             return RequestResult<List<CommentDto>>.Success(_mapper.Map<List<CommentDto>>(comments));
         }

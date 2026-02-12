@@ -8,13 +8,13 @@ namespace TaskFlow.Tasks.Application.Commands.TaskGroup.UpdateTaskGroup {
         private readonly ILogger _logger = logger;
         private readonly ITaskGroupRepository _repository = repository;
 
-        public async Task<RequestResult<Unit>> Handle(UpdateTaskGroupCommand command, CancellationToken cancellationToken) {
+        public async Task<RequestResult<Unit>> Handle(UpdateTaskGroupCommand command, CancellationToken cancellationToken = default) {
             _logger.Debug("Task group update attempt. GroupId: {GroupId}, Name: {Name}",
                 command.Id.ToString(),
                 command.Name
             );
 
-            var group = await _repository.GetByIdAsync(command.Id);
+            var group = await _repository.GetByIdAsync(command.Id, cancellationToken);
 
             if (group is null) {
                 _logger.Debug("Failed to update task group. Task group {GroupId} not found", command.Id.ToString());
@@ -24,7 +24,7 @@ namespace TaskFlow.Tasks.Application.Commands.TaskGroup.UpdateTaskGroup {
             group.Name = command.Name;
 
             try {
-                await _repository.UpdateAsync(group);
+                await _repository.UpdateAsync(group, cancellationToken);
             } catch (Exception ex) {
                 _logger.Debug("Failed to update task group. GroupId: {GroupId}, Exception: {Message}",
                     command.Id.ToString(),

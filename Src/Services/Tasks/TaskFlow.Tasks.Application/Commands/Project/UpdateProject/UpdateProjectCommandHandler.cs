@@ -8,7 +8,7 @@ namespace TaskFlow.Tasks.Application.Commands.Project.UpdateProject {
         private readonly ILogger _logger = logger;
         private readonly IProjectRepository _repository = repository;
         
-        public async Task<RequestResult<Unit>> Handle(UpdateProjectCommand command, CancellationToken cancellationToken) {
+        public async Task<RequestResult<Unit>> Handle(UpdateProjectCommand command, CancellationToken cancellationToken = default) {
             _logger.Debug("Project update attempt. ProjectId: {ProjectId}, Name: {Name}, IsActive: {IsActive}, DescriptionLength: {DescriptionLength}",
                 command.Id.ToString(),
                 command.Name,
@@ -16,7 +16,7 @@ namespace TaskFlow.Tasks.Application.Commands.Project.UpdateProject {
                 command.Description?.Length.ToString() ?? "0"
             );
 
-            var project = await _repository.GetByIdAsync(command.Id);
+            var project = await _repository.GetByIdAsync(command.Id, cancellationToken);
 
             if (project is null) {
                 _logger.Debug("Failed to update project. Project {ProjectId} not found", command.Id.ToString());
@@ -28,7 +28,7 @@ namespace TaskFlow.Tasks.Application.Commands.Project.UpdateProject {
             project.IsActive = command.IsActive;
 
             try {
-                await _repository.UpdateAsync(project);
+                await _repository.UpdateAsync(project, cancellationToken);
             } catch (Exception ex) {
                 _logger.Debug("Failed to update project. ProjectId: {ProjectId}, Exception: {Message}",
                     command.Id.ToString(),

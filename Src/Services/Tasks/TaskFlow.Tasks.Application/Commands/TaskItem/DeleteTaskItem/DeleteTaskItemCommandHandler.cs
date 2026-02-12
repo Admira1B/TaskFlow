@@ -9,10 +9,10 @@ namespace TaskFlow.Tasks.Application.Commands.TaskItem.DeleteTaskItem {
         private readonly ITaskItemRepository _repository = repository;
 
 
-        public async Task<RequestResult<Unit>> Handle(DeleteTaskItemCommand command, CancellationToken cancellationToken) {
+        public async Task<RequestResult<Unit>> Handle(DeleteTaskItemCommand command, CancellationToken cancellationToken = default) {
             _logger.Debug("Task item deletion attempt. TaskId: {TaskId}", command.Id.ToString());
 
-            var task = await _repository.GetByIdAsync(command.Id);
+            var task = await _repository.GetByIdAsync(command.Id, cancellationToken);
 
             if (task is null) {
                 _logger.Debug("Failed to delete task item. Task item {TaskId} not found", command.Id.ToString());
@@ -20,7 +20,7 @@ namespace TaskFlow.Tasks.Application.Commands.TaskItem.DeleteTaskItem {
             }
 
             try {
-                await _repository.DeleteAsync(command.Id);
+                await _repository.DeleteAsync(command.Id, cancellationToken);
             } catch (Exception ex) {
                 _logger.Debug("Failed to delete task item. TaskId: {TaskId}, Exception: {Message}",
                     command.Id.ToString(),

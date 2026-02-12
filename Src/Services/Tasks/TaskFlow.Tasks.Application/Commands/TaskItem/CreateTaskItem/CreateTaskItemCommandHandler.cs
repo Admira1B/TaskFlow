@@ -11,7 +11,7 @@ namespace TaskFlow.Tasks.Application.Commands.TaskItem.CreateTaskItem {
         private readonly IMapper _mapper = mapper;
         private readonly ITaskItemRepository _repository = repository;
 
-        public async Task<RequestResult<TaskItemDto>> Handle(CreateTaskItemCommand command, CancellationToken cancellationToken) {
+        public async Task<RequestResult<TaskItemDto>> Handle(CreateTaskItemCommand command, CancellationToken cancellationToken = default) {
             _logger.Debug("Task item creation attempt. Title: {Title}, GroupId: {GroupId}, ReporterId: {ReporterId}, AssignedId: {AssignedId}, Priority: {Priority}, DescriptionLength: {DescriptionLength}",
                 command.Title,
                 command.GroupId.ToString(),
@@ -31,7 +31,7 @@ namespace TaskFlow.Tasks.Application.Commands.TaskItem.CreateTaskItem {
             );
 
             try {
-                await _repository.AddAsync(task);
+                await _repository.AddAsync(task, cancellationToken);
             } catch (Exception ex) {
                 _logger.Debug("Failed to create task item. Title: {Title}, GroupId: {GroupId}, Exception: {Message}",
                     command.Title,

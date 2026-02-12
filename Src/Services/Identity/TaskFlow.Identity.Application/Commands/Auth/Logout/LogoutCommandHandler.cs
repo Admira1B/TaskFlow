@@ -7,7 +7,7 @@ namespace TaskFlow.Identity.Application.Commands.Auth.Logout {
         private readonly ILogger _logger = logger;
         private readonly SignInManager<Domain.Entities.User> _signInManager = signInManager;
 
-        public async Task<Unit> Handle(LogoutCommand request, CancellationToken cancellationToken) {
+        public async Task<Unit> Handle(LogoutCommand request, CancellationToken cancellationToken = default) {
             await _signInManager.SignOutAsync();
             _logger.Debug("User logout successfully");
 

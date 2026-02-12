@@ -11,7 +11,7 @@ namespace TaskFlow.Identity.Application.Commands.Role.CreateRole {
         private readonly IMapper _mapper = mapper;
         private readonly RoleManager<Domain.Entities.Role> _manager = manager;
         
-        public async Task<RequestResult<RoleDto>> Handle(CreateRoleCommand command, CancellationToken cancellationToken) {
+        public async Task<RequestResult<RoleDto>> Handle(CreateRoleCommand command, CancellationToken cancellationToken = default) {
             _logger.Debug("Role creation attempt with name {RoleName}", command.Name);
             var existingRole = await _manager.FindByNameAsync(command.Name);
 

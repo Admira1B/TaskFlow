@@ -8,13 +8,13 @@ namespace TaskFlow.Tasks.Application.Commands.Comment.UpdateComment {
         private readonly ILogger _logger = logger;
         private readonly ICommentRepository _repository = repository;
         
-        public async Task<RequestResult<Unit>> Handle(UpdateCommentCommand command, CancellationToken cancellationToken) {
+        public async Task<RequestResult<Unit>> Handle(UpdateCommentCommand command, CancellationToken cancellationToken = default) {
             _logger.Debug("Comment update attempt. CommentId: {CommentId}, ContentLength: {ContentLength}",
                 command.Id.ToString(),
                 command.Content?.Length.ToString() ?? "0"
             );
 
-            var comment = await _repository.GetByIdAsync(command.Id);
+            var comment = await _repository.GetByIdAsync(command.Id, cancellationToken);
 
             if (comment is null) {
                 _logger.Debug("Failed to update comment. Comment {CommentId} not found", command.Id.ToString());
@@ -24,7 +24,7 @@ namespace TaskFlow.Tasks.Application.Commands.Comment.UpdateComment {
             comment.Content = command.Content!;
 
             try {
-                await _repository.UpdateAsync(comment);
+                await _repository.UpdateAsync(comment, cancellationToken);
             } catch (Exception ex) {
                 _logger.Debug("Failed to update comment. CommentId: {CommentId}, Exception: {Message}", 
                     command.Id.ToString(),

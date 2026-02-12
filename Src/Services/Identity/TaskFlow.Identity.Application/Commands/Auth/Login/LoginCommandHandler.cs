@@ -14,7 +14,7 @@ namespace TaskFlow.Identity.Application.Commands.Auth.Login {
         private readonly SignInManager<Domain.Entities.User> _signInManager = signInManager;
         private readonly JsonWebTokenService _jwtService = jwtService;
 
-        public async Task<AuthResult> Handle(LoginCommand command, CancellationToken cancellationToken) {
+        public async Task<AuthResult> Handle(LoginCommand command, CancellationToken cancellationToken = default) {
             _logger.Debug("Login attempt for Username: {UserName}", command.UserName);
             var user = await _userManager.FindByNameAsync(command.UserName);
 

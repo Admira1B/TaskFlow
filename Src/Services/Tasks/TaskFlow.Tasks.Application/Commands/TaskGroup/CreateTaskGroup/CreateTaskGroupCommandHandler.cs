@@ -11,7 +11,7 @@ namespace TaskFlow.Tasks.Application.Commands.TaskGroup.CreateTaskGroup {
         private readonly IMapper _mapper = mapper;
         private readonly ITaskGroupRepository _repository = repository;
 
-        public async Task<RequestResult<TaskGroupDto>> Handle(CreateTaskGroupCommand command, CancellationToken cancellationToken) {
+        public async Task<RequestResult<TaskGroupDto>> Handle(CreateTaskGroupCommand command, CancellationToken cancellationToken = default) {
             _logger.Debug("Task group creation attempt. ProjectId: {ProjectId}, Name: {Name}",
                 command.ProjectId.ToString(),
                 command.Name
@@ -23,7 +23,7 @@ namespace TaskFlow.Tasks.Application.Commands.TaskGroup.CreateTaskGroup {
             };
 
             try {
-                await _repository.AddAsync(group);
+                await _repository.AddAsync(group, cancellationToken);
             } catch (Exception ex) {
                 _logger.Debug("Failed to create task group. ProjectId: {ProjectId}, Name: {Name}, Exception: {Message}",
                     command.ProjectId.ToString(),

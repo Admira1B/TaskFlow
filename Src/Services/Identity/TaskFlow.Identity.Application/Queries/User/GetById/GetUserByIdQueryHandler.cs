@@ -9,7 +9,7 @@ namespace TaskFlow.Identity.Application.Queries.User.GetById {
         private readonly IMapper _mapper = mapper;
         private readonly UserManager<Domain.Entities.User> _manager = manager;
 
-        public async Task<RequestResult<UserDto>> Handle(GetUserByIdQuery query, CancellationToken cancellationToken) {
+        public async Task<RequestResult<UserDto>> Handle(GetUserByIdQuery query, CancellationToken cancellationToken = default) {
             var user = await _manager.FindByIdAsync(query.Id.ToString());
 
             if (user is null) {

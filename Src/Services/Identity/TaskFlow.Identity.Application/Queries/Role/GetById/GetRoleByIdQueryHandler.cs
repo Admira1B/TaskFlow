@@ -9,7 +9,7 @@ namespace TaskFlow.Identity.Application.Queries.Role.GetById {
         private readonly IMapper _mapper = mapper;
         private readonly RoleManager<Domain.Entities.Role> _manager = manager;
 
-        public async Task<RequestResult<RoleDto>> Handle(GetRoleByIdQuery query, CancellationToken cancellationToken) {
+        public async Task<RequestResult<RoleDto>> Handle(GetRoleByIdQuery query, CancellationToken cancellationToken = default) {
             var role = await _manager.FindByIdAsync(query.Id.ToString());
 
             if (role is null) {

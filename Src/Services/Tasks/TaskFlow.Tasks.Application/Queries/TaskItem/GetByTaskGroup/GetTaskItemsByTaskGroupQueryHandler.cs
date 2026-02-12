@@ -10,14 +10,14 @@ namespace TaskFlow.Tasks.Application.Queries.TaskItem.GetByTaskGroup {
         private readonly ITaskItemRepository _repository = repository;
         private readonly ITaskGroupRepository _groupRepository = groupRepository;
 
-        public async Task<RequestResult<List<TaskItemDto>>> Handle(GetTaskItemsByTaskGroupQuery query, CancellationToken cancellationToken) {
-            var group = await _groupRepository.GetByIdAsync(query.TaskGroupId);
+        public async Task<RequestResult<List<TaskItemDto>>> Handle(GetTaskItemsByTaskGroupQuery query, CancellationToken cancellationToken = default) {
+            var group = await _groupRepository.GetByIdAsync(query.TaskGroupId, cancellationToken);
 
             if (group is null) { 
                 return RequestResult<List<TaskItemDto>>.NotFound("Task Group", query.TaskGroupId);
             }
 
-            var tasks = await _repository.GetByTaskGroupAsync(query.TaskGroupId);
+            var tasks = await _repository.GetByTaskGroupAsync(query.TaskGroupId, cancellationToken);
 
             return RequestResult<List<TaskItemDto>>.Success(_mapper.Map<List<TaskItemDto>>(tasks));
         }

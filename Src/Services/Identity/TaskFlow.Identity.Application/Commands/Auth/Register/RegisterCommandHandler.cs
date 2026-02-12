@@ -13,7 +13,7 @@ namespace TaskFlow.Identity.Application.Commands.Auth.Register {
         private readonly UserManager<Domain.Entities.User> _userManager = userManager;
         private readonly JsonWebTokenService _jwtService = jwtService;
 
-        public async Task<AuthResult> Handle(RegisterCommand command, CancellationToken cancellationToken) {
+        public async Task<AuthResult> Handle(RegisterCommand command, CancellationToken cancellationToken = default) {
             _logger.Debug("Registration attempt. Email: {Email}, Username: {UserName}", command.Email, command.UserName);
             var existsByEmail = await _userManager.FindByEmailAsync(command.Email);
 

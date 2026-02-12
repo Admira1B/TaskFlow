@@ -8,7 +8,7 @@ namespace TaskFlow.Identity.Application.Queries.User.Exists {
     public class UserExistsQueryHandler(UserManager<Domain.Entities.User> manager) : IRequestHandler<UserExistsQuery, RequestResult<ExistenceResponse>> {
         private readonly UserManager<Domain.Entities.User> _manager = manager;
 
-        public async Task<RequestResult<ExistenceResponse>> Handle(UserExistsQuery query, CancellationToken cancellationToken) {
+        public async Task<RequestResult<ExistenceResponse>> Handle(UserExistsQuery query, CancellationToken cancellationToken = default) {
             try {
                 var result = await _manager.Users.AnyAsync(u => u.Id == query.UserId, cancellationToken: cancellationToken);
 

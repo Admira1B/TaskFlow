@@ -9,7 +9,7 @@ namespace TaskFlow.Identity.Application.Queries.Role.GetPaginated {
         private readonly IMapper _mapper = mapper;
         private readonly IRoleRepository _repository = repository;
 
-        public async Task<RequestResult<IEnumerable<RoleDto>>> Handle(GetRolesPaginatedQuery query, CancellationToken cancellationToken) {
+        public async Task<RequestResult<IEnumerable<RoleDto>>> Handle(GetRolesPaginatedQuery query, CancellationToken cancellationToken = default) {
             var roles = await _repository.GetPaginatedAsync(query.Page, query.PageSize, cancellationToken);
 
             return RequestResult<IEnumerable<RoleDto>>.Success(roles.Select(role => _mapper.Map<RoleDto>(role)));

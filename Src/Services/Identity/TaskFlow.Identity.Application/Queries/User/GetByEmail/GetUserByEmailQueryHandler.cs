@@ -9,7 +9,7 @@ namespace TaskFlow.Identity.Application.Queries.User.GetByEmail {
         private readonly IMapper _mapper = mapper;
         private readonly UserManager<Domain.Entities.User> _manager = manager;
 
-        public async Task<RequestResult<UserDto>> Handle(GetUserByEmailQuery query, CancellationToken cancellationToken) {
+        public async Task<RequestResult<UserDto>> Handle(GetUserByEmailQuery query, CancellationToken cancellationToken = default) {
             var user = await _manager.FindByEmailAsync(query.Email);
 
             if (user is null) {

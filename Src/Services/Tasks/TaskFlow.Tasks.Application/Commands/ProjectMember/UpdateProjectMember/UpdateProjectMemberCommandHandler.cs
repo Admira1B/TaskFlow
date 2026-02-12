@@ -8,13 +8,13 @@ namespace TaskFlow.Tasks.Application.Commands.ProjectMember.UpdateProjectMember 
         private readonly ILogger _logger = logger;
         private readonly IProjectMemberRepository _repository = repository;
 
-        public async Task<RequestResult<Unit>> Handle(UpdateProjectMemberCommand command, CancellationToken cancellationToken) {
+        public async Task<RequestResult<Unit>> Handle(UpdateProjectMemberCommand command, CancellationToken cancellationToken = default) {
             _logger.Debug("Project member update attempt. MemberId: {MemberId}, Role: {Role}",
                 command.Id.ToString(),
                 command.Role.ToString()
             );
 
-            var member = await _repository.GetByIdAsync(command.Id);
+            var member = await _repository.GetByIdAsync(command.Id, cancellationToken);
 
             if (member is null) {
                 _logger.Debug("Failed to update project member. Project {MemberId} member not found", command.Id.ToString());
@@ -24,7 +24,7 @@ namespace TaskFlow.Tasks.Application.Commands.ProjectMember.UpdateProjectMember 
             member.Role = command.Role;
 
             try {
-                await _repository.UpdateAsync(member);
+                await _repository.UpdateAsync(member, cancellationToken);
             } catch (Exception ex) {
                 _logger.Debug("Failed to update project member. MemberId: {MemberId}, Exception: {Message}",
                     command.Id.ToString(),

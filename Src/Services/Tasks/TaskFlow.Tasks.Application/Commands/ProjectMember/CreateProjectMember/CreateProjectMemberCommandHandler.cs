@@ -14,7 +14,7 @@ namespace TaskFlow.Tasks.Application.Commands.ProjectMember.CreateProjectMember 
         private readonly IProjectRepository _projectRepository = projectRepository;
         private readonly IdentityServiceClient _client = client;
 
-        public async Task<RequestResult<ProjectMemberDto>> Handle(CreateProjectMemberCommand command, CancellationToken cancellationToken) {
+        public async Task<RequestResult<ProjectMemberDto>> Handle(CreateProjectMemberCommand command, CancellationToken cancellationToken = default) {
             _logger.Debug("Project member creation attempt. ProjectId: {ProjectId}, UserId: {UserId}, Role: {Role}",
                 command.ProjectId.ToString(),
                 command.UserId.ToString(),
@@ -27,7 +27,7 @@ namespace TaskFlow.Tasks.Application.Commands.ProjectMember.CreateProjectMember 
                 return RequestResult<ProjectMemberDto>.Failure($"User {command.UserId} not found");
             }
 
-            var project = await _projectRepository.GetByIdAsync(command.ProjectId);
+            var project = await _projectRepository.GetByIdAsync(command.ProjectId, cancellationToken);
             if (project is null) {
                 _logger.Debug("Failed to create project member. Project {ProjectId} not found", command.ProjectId.ToString());
                 return RequestResult<ProjectMemberDto>.Failure($"Project {command.ProjectId} not found");
@@ -41,7 +41,7 @@ namespace TaskFlow.Tasks.Application.Commands.ProjectMember.CreateProjectMember 
                 return RequestResult<ProjectMemberDto>.Failure($"Failed to create project member. User {command.UserId} is owner of project {command.ProjectId}");
             }
 
-            var memberExists = await _repository.UserExistsInProjectAsync(command.UserId, command.ProjectId);
+            var memberExists = await _repository.UserExistsInProjectAsync(command.UserId, command.ProjectId, cancellationToken);
             if (memberExists) {
                 _logger.Debug("Failed to create project member. User {UserId} already added to project {ProjectId}",
                     command.UserId.ToString(),
@@ -57,7 +57,7 @@ namespace TaskFlow.Tasks.Application.Commands.ProjectMember.CreateProjectMember 
             };
 
             try {
-                await _repository.AddAsync(member);
+                await _repository.AddAsync(member, cancellationToken);
             } catch (Exception ex) {
                 _logger.Debug("Failed to create project member. ProjectId: {ProjectId}, UserId: {UserId}, Exception: {Message}",
                     command.ProjectId.ToString(),
