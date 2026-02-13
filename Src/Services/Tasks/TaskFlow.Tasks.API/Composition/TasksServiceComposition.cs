@@ -15,10 +15,10 @@ using TaskFlow.Shared.Core.Middlewares;
 using TaskFlow.Shared.Messaging.Health;
 using TaskFlow.Shared.Messaging.Options;
 using TaskFlow.Shared.ApiClients.IdentityService;
-using TaskFlow.Tasks.API.Health;
 using TaskFlow.Tasks.Domain.Contracts;
-using TaskFlow.Tasks.Application.Commands.Comment.CreateComment;
+using TaskFlow.Tasks.API.Health;
 using TaskFlow.Tasks.Application.Mapping;
+using TaskFlow.Tasks.Application.Commands.Comment.CreateComment;
 using TaskFlow.Tasks.Infrastructure.Messaging;
 using TaskFlow.Tasks.Infrastructure.SqlServer;
 using TaskFlow.Tasks.Infrastructure.SqlServer.Health;
@@ -97,7 +97,6 @@ namespace TaskFlow.Tasks.API.Composition {
                 options.PollWaitTime = TimeSpan.FromSeconds(30);
             });
 
-
             builder.Services.AddSingleton<IConsulClient>(sp => {
                 var configuration = sp.GetRequiredService<IConfiguration>();
                 return new ConsulClient(c => {
@@ -112,7 +111,6 @@ namespace TaskFlow.Tasks.API.Composition {
                     );
                 });
             });
-
             builder.Services.AddHostedService<ConsulHostedService>();
 
             // HttpClients 

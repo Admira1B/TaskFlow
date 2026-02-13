@@ -6,6 +6,7 @@
 		<PackageReference Include="NLog.Web.AspNetCore" />
 		<PackageReference Include="NLog.Extensions.Logging" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+		<PackageReference Include="Ocelot.Provider.Consul" />
 	</ItemGroup>
 	
 	<ItemGroup>

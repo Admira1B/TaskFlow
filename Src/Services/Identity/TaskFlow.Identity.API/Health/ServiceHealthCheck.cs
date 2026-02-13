@@ -3,13 +3,15 @@ using TaskFlow.Shared.Core.Health;
 using TaskFlow.Shared.Messaging.Health;
 using TaskFlow.Identity.Application.Health;
 using TaskFlow.Identity.Infrastructure.SqlServer.Health;
+using TaskFlow.Shared.Consul.Health;
 
 namespace TaskFlow.Identity.API.Health {
-    public class ServiceHealthCheck(Shared.Core.Interfaces.ILogger logger, IdentityHealthCheck identityHealth, DataBaseHealthCheck dataBaseHealth, RabbitMqHealthCheck rabbitMqHealth) :
+    public class ServiceHealthCheck(Shared.Core.Interfaces.ILogger logger, IdentityHealthCheck identityHealth, DataBaseHealthCheck dataBaseHealth, RabbitMqHealthCheck rabbitMqHealth, ConsulHealthCheck consulHealth) :
                  ServiceHealthCheckBase(logger, "Identity Service") {
         private readonly IdentityHealthCheck _identityHealth = identityHealth;
         private readonly DataBaseHealthCheck _dataBaseHealth = dataBaseHealth;
         private readonly RabbitMqHealthCheck _rabbitMqHealth = rabbitMqHealth;
+        private readonly ConsulHealthCheck _consulHealth = consulHealth;
 
         protected override async Task<HealthCheckResult> CheckDependenciesHealthAsync(HealthCheckContext context, CancellationToken cancellationToken) {
             List<HealthCheckResult> results = [];
@@ -17,6 +19,7 @@ namespace TaskFlow.Identity.API.Health {
             results.Add(await _identityHealth.CheckHealthAsync(context, cancellationToken));
             results.Add(await _rabbitMqHealth.CheckHealthAsync(context, cancellationToken));
             results.Add(await _dataBaseHealth.CheckHealthAsync(context, cancellationToken));
+            results.Add(await _consulHealth.CheckHealthAsync(context, cancellationToken));
 
             var unhealthyResults = results.Where(r => r.Status != HealthStatus.Healthy).ToList();
 

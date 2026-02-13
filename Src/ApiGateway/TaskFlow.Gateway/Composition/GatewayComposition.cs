@@ -1,13 +1,16 @@
 ﻿using System.Text;
 using NLog;
 using NLog.Web;
+using Consul;
 using Ocelot.Middleware;
+using Ocelot.Provider.Consul;
 using Ocelot.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using TaskFlow.Gateway.Health;
-using TaskFlow.Gateway.Options;
+using TaskFlow.Shared.Consul;
+using TaskFlow.Shared.Consul.Options;
+using TaskFlow.Shared.Core.Options;
 
 namespace TaskFlow.Gateway.Composition {
     internal static class GatewayComposition {
@@ -36,7 +39,7 @@ namespace TaskFlow.Gateway.Composition {
         public static IServiceCollection ConfigureServices(this WebApplicationBuilder builder) {
             // Health Checks
             builder.Services.AddHealthChecks()
-                .AddCheck<GatewayHealthCheck>("gateway_health_check", HealthStatus.Unhealthy);
+                .AddCheck<GatewayHealthCheck>("gateway_health_check", Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Unhealthy);
             
             // Nlog logger
             builder.Logging.ClearProviders();
@@ -53,18 +56,32 @@ namespace TaskFlow.Gateway.Composition {
                 return new Shared.Logging.Logger(nlogLogger, contextAccessor);
             });
 
-            // Ocelot
-            var ocelotConfigFolder = builder.Environment.EnvironmentName.ToLower() switch {
-                "docker" => "OcelotConfigurations/Container",   
-                _ => "OcelotConfigurations/Local"           
-            };
+            // Consul 
+            builder.Services.Configure<ConsulOptions>(builder.Configuration.GetSection(nameof(ConsulOptions)));
+            builder.Services.Configure<ServiceOptions>(builder.Configuration.GetSection(nameof(ServiceOptions)));
 
+            builder.Services.AddSingleton<IConsulClient>(sp => {
+                var configuration = sp.GetRequiredService<IConfiguration>();
+                return new ConsulClient(c => {
+                    c.Datacenter = configuration["ConsulOptions:Datacenter"] ??
+                        throw new InvalidOperationException(
+                            "ConsulOptions:Datacenter configuration is missing. Check 'ConsulOptions:Datacenter' into appsettings.json or environment variables."
+                        );
+                    c.Address = new Uri(configuration["ConsulOptions:Address"] ??
+                        throw new InvalidOperationException(
+                            "ConsulOptions:Address configuration is missing. Check 'ConsulOptions:Address' into appsettings.json or environment variables."
+                        )
+                    );
+                });
+            });
+            builder.Services.AddHostedService<ConsulHostedService>();
+
+            // Ocelot
             builder.Configuration
-                .SetBasePath(builder.Environment.ContentRootPath)
-                .AddOcelot(ocelotConfigFolder, builder.Environment)         
+                .AddOcelot("OcelotConfigurations", builder.Environment)         
                 .AddEnvironmentVariables();
 
-            builder.Services.AddOcelot(builder.Configuration);
+            builder.Services.AddOcelot(builder.Configuration).AddConsul();
 
             // JsonWebToken Authentication & Authorization
             var jwtOptions = builder.Configuration.GetSection(nameof(JsonWebTokenOptions)).Get<JsonWebTokenOptions>();

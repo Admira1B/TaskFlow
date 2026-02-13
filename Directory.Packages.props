@@ -12,6 +12,7 @@
     <PackageVersion Include="MediatR" Version="14.0.0" />
     <PackageVersion Include="MediatR.Contracts" Version="2.0.1" />
     <PackageVersion Include="AutoMapper" Version="13.0.1" />
+    <PackageVersion Include="Ocelot.Provider.Consul" Version="24.1.0" />
     <PackageVersion Include="Polly" Version="8.6.5" />
     <PackageVersion Include="RabbitMQ.Client" Version="7.2.0" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="10.0.1" />
