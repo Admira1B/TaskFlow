@@ -10,7 +10,7 @@
         }
       ],
       "DownstreamPathTemplate": "/health",
-      "UpstreamPathTemplate": "/flow/tasks-service/health",
+      "UpstreamPathTemplate": "/tasks-service/health",
       "UpstreamHttpMethod": [ "GET" ]
     },
     {
@@ -23,7 +23,7 @@
         }
       ],
       "DownstreamPathTemplate": "/api/comments/{everything}",
-      "UpstreamPathTemplate": "/flow/comments/{everything}",
+      "UpstreamPathTemplate": "/comments/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
@@ -39,7 +39,7 @@
         }
       ],
       "DownstreamPathTemplate": "/api/projects/{everything}",
-      "UpstreamPathTemplate": "/flow/projects/{everything}",
+      "UpstreamPathTemplate": "/projects/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
@@ -55,7 +55,7 @@
         }
       ],
       "DownstreamPathTemplate": "/api/members/{everything}",
-      "UpstreamPathTemplate": "/flow/members/{everything}",
+      "UpstreamPathTemplate": "/members/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
@@ -71,7 +71,7 @@
         }
       ],
       "DownstreamPathTemplate": "/api/groups/{everything}",
-      "UpstreamPathTemplate": "/flow/groups/{everything}",
+      "UpstreamPathTemplate": "/groups/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
@@ -87,7 +87,7 @@
         }
       ],
       "DownstreamPathTemplate": "/api/tasks/{everything}",
-      "UpstreamPathTemplate": "/flow/tasks/{everything}",
+      "UpstreamPathTemplate": "/tasks/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"

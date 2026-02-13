@@ -32,7 +32,7 @@
       "UpstreamHttpMethod": [
         "GET"
       ],
-      "UpstreamPathTemplate": "/flow/identity-service/health",
+      "UpstreamPathTemplate": "/identity-service/health",
       "AuthenticationOptions": null,
       "CacheOptions": null,
       "DownstreamHttpVersionPolicy": null,
@@ -80,7 +80,7 @@
       "UpstreamHttpMethod": [
         "POST"
       ],
-      "UpstreamPathTemplate": "/flow/auth/register",
+      "UpstreamPathTemplate": "/auth/register",
       "AuthenticationOptions": null,
       "CacheOptions": null,
       "DownstreamHttpVersionPolicy": null,
@@ -128,7 +128,7 @@
       "UpstreamHttpMethod": [
         "POST"
       ],
-      "UpstreamPathTemplate": "/flow/auth/login",
+      "UpstreamPathTemplate": "/auth/login",
       "AuthenticationOptions": null,
       "CacheOptions": null,
       "DownstreamHttpVersionPolicy": null,
@@ -176,7 +176,7 @@
       "UpstreamHttpMethod": [
         "POST"
       ],
-      "UpstreamPathTemplate": "/flow/auth/logout",
+      "UpstreamPathTemplate": "/auth/logout",
       "AuthenticationOptions": {
         "AllowedScopes": null,
         "AllowAnonymous": null,
@@ -233,7 +233,7 @@
         "PUT",
         "DELETE"
       ],
-      "UpstreamPathTemplate": "/flow/users/{everything}",
+      "UpstreamPathTemplate": "/users/{everything}",
       "AuthenticationOptions": {
         "AllowedScopes": null,
         "AllowAnonymous": null,
@@ -291,7 +291,7 @@
         "PUT",
         "DELETE"
       ],
-      "UpstreamPathTemplate": "/flow/roles/{everything}",
+      "UpstreamPathTemplate": "/roles/{everything}",
       "AuthenticationOptions": {
         "AllowedScopes": null,
         "AllowAnonymous": null,
@@ -346,7 +346,7 @@
       "UpstreamHttpMethod": [
         "GET"
       ],
-      "UpstreamPathTemplate": "/flow/tasks-service/health",
+      "UpstreamPathTemplate": "/tasks-service/health",
       "AuthenticationOptions": null,
       "CacheOptions": null,
       "DownstreamHttpVersionPolicy": null,
@@ -397,7 +397,7 @@
         "PUT",
         "DELETE"
       ],
-      "UpstreamPathTemplate": "/flow/comments/{everything}",
+      "UpstreamPathTemplate": "/comments/{everything}",
       "AuthenticationOptions": {
         "AllowedScopes": null,
         "AllowAnonymous": null,
@@ -455,7 +455,7 @@
         "PUT",
         "DELETE"
       ],
-      "UpstreamPathTemplate": "/flow/projects/{everything}",
+      "UpstreamPathTemplate": "/projects/{everything}",
       "AuthenticationOptions": {
         "AllowedScopes": null,
         "AllowAnonymous": null,
@@ -513,7 +513,7 @@
         "PUT",
         "DELETE"
       ],
-      "UpstreamPathTemplate": "/flow/members/{everything}",
+      "UpstreamPathTemplate": "/members/{everything}",
       "AuthenticationOptions": {
         "AllowedScopes": null,
         "AllowAnonymous": null,
@@ -571,7 +571,7 @@
         "PUT",
         "DELETE"
       ],
-      "UpstreamPathTemplate": "/flow/groups/{everything}",
+      "UpstreamPathTemplate": "/groups/{everything}",
       "AuthenticationOptions": {
         "AllowedScopes": null,
         "AllowAnonymous": null,
@@ -629,7 +629,7 @@
         "PUT",
         "DELETE"
       ],
-      "UpstreamPathTemplate": "/flow/tasks/{everything}",
+      "UpstreamPathTemplate": "/tasks/{everything}",
       "AuthenticationOptions": {
         "AllowedScopes": null,
         "AllowAnonymous": null,

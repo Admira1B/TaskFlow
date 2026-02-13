@@ -7,7 +7,7 @@ namespace TaskFlow.Shared.ApiClients.IdentityService {
     // TODO: Add Exceptions processing
     public class IdentityServiceClient(ILogger logger, HttpClient httpClient, IHttpContextAccessor accessor) : ServiceClientBase(logger, httpClient, accessor) {
         public async Task<ExistenceResponse> UserExistsAsync(Guid userId, CancellationToken ct = default) {
-            string endpoint = $"api/users/exists/{userId}";
+            string endpoint = $"/users/exists/{userId}";
 
             try {
                 var result = await ExecuteGetAsync<ExistenceResponse>(endpoint, ct).ConfigureAwait(false);

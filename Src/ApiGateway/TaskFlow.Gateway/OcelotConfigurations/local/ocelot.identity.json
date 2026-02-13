@@ -10,7 +10,7 @@
         }
       ],
       "DownstreamPathTemplate": "/health",
-      "UpstreamPathTemplate": "/flow/identity-service/health",
+      "UpstreamPathTemplate": "/identity-service/health",
       "UpstreamHttpMethod": [ "GET" ]
     },
     {
@@ -23,7 +23,7 @@
         }
       ],
       "DownstreamPathTemplate": "/api/auth/register",
-      "UpstreamPathTemplate": "/flow/auth/register",
+      "UpstreamPathTemplate": "/auth/register",
       "UpstreamHttpMethod": [ "POST" ]
     },
     {
@@ -36,7 +36,7 @@
         }
       ],
       "DownstreamPathTemplate": "/api/auth/login",
-      "UpstreamPathTemplate": "/flow/auth/login",
+      "UpstreamPathTemplate": "/auth/login",
       "UpstreamHttpMethod": [ "POST" ]
     },
     {
@@ -49,7 +49,7 @@
         }
       ],
       "DownstreamPathTemplate": "/api/auth/logout",
-      "UpstreamPathTemplate": "/flow/auth/logout",
+      "UpstreamPathTemplate": "/auth/logout",
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
@@ -65,7 +65,7 @@
         }
       ],
       "DownstreamPathTemplate": "/api/users/{everything}",
-      "UpstreamPathTemplate": "/flow/users/{everything}",
+      "UpstreamPathTemplate": "/users/{everything}",
       "UpstreamHttpMethod": [ "GET", "PUT", "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
@@ -81,7 +81,7 @@
         }
       ],
       "DownstreamPathTemplate": "/api/roles/{everything}",
-      "UpstreamPathTemplate": "/flow/roles/{everything}",
+      "UpstreamPathTemplate": "/roles/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
