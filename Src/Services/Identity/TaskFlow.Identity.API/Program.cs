@@ -1,7 +1,8 @@
 using NLog;
 using NLog.Web;
-using TaskFlow.Identity.API.Extensions;
+using TaskFlow.Shared.Core.Options;
 using TaskFlow.Identity.API.Composition;
+using TaskFlow.Identity.API.Extensions;
 using TaskFlow.Identity.Infrastructure.SqlServer;
 
 namespace TaskFlow.Identity.API {
@@ -16,6 +17,14 @@ namespace TaskFlow.Identity.API {
                 var builder = WebApplication.CreateBuilder(args);
 
                 builder.ConfigureServices();
+
+                if (builder.Environment.IsDevelopment()) {
+                    var serviceOpts = builder.Configuration.GetSection(nameof(ServiceOptions)).Get<ServiceOptions>()!;
+
+                    builder.WebHost.ConfigureKestrel(options => {
+                        options.ListenAnyIP(serviceOpts.PortParsed);
+                    });
+                }
 
                 var app = builder.Build();
 

@@ -6,6 +6,31 @@ networks:
     driver: bridge
 
 services:
+  consul:
+    image: hashicorp/consul:1.22
+    container_name: taskflow-consul
+    hostname: consul
+  
+    command: agent -server -ui -client=0.0.0.0 -bootstrap-expect=1 -data-dir=/consul/data
+  
+    ports:
+      - "8500:8500" 
+  
+    volumes:
+      - consul-data:/consul/data
+  
+    networks:
+      - taskflow-internal-network
+  
+    healthcheck:
+      test: ["CMD", "consul", "members"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+  #---------------------------------------#
+
   sqlserver:  
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: taskflow-sqlserver
@@ -72,6 +97,8 @@ services:
     
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
+      - ServiceOptions__Port=${SERVICE_PORT}
+      - EdgeService__BaseUrl=${EDGESERVICE} 
       - RabbitMqOptions__Port=5672
       - RabbitMqOptions__VirtualHost=/
       - RabbitMqOptions__HostName=rabbitmq
@@ -83,6 +110,8 @@ services:
       - taskflow-internal-network
     
     depends_on:
+      consul:
+        condition: service_healthy
       sqlserver:
         condition: service_healthy
       rabbitmq:
@@ -104,6 +133,8 @@ services:
     
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
+      - ServiceOptions__Port=${SERVICE_PORT}
+      - EdgeService__BaseUrl=${EDGESERVICE} 
       - RabbitMqOptions__Port=5672
       - RabbitMqOptions__VirtualHost=/
       - RabbitMqOptions__HostName=rabbitmq
@@ -115,6 +146,8 @@ services:
       - taskflow-internal-network
     
     depends_on:
+      consul:
+        condition: service_healthy
       sqlserver:
         condition: service_healthy
       rabbitmq:
@@ -136,6 +169,7 @@ services:
     
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
+      - ServiceOptions__Port=${SERVICE_PORT}
     
     ports:
       - "5000:8080"
@@ -151,4 +185,4 @@ services:
 
 volumes:
   sqlserver-data:
-    
+  consul-data:

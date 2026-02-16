@@ -2,26 +2,16 @@
   "Routes": [
     {
       "Key": "tasks_service_health_check",
+      "ServiceName": "tasks-service-api",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5002
-        }
-      ],
       "DownstreamPathTemplate": "/health",
       "UpstreamPathTemplate": "/tasks-service/health",
       "UpstreamHttpMethod": [ "GET" ]
     },
     {
       "Key": "tasks_service_comments",
+      "ServiceName": "tasks-service-api",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5002
-        }
-      ],
       "DownstreamPathTemplate": "/api/comments/{everything}",
       "UpstreamPathTemplate": "/comments/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
@@ -31,13 +21,8 @@
     },
     {
       "Key": "tasks_service_projects",
+      "ServiceName": "tasks-service-api",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5002
-        }
-      ],
       "DownstreamPathTemplate": "/api/projects/{everything}",
       "UpstreamPathTemplate": "/projects/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
@@ -47,13 +32,8 @@
     },
     {
       "Key": "tasks_service_members",
+      "ServiceName": "tasks-service-api",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5002
-        }
-      ],
       "DownstreamPathTemplate": "/api/members/{everything}",
       "UpstreamPathTemplate": "/members/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
@@ -63,13 +43,8 @@
     },
     {
       "Key": "tasks_service_groups",
+      "ServiceName": "tasks-service-api",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5002
-        }
-      ],
       "DownstreamPathTemplate": "/api/groups/{everything}",
       "UpstreamPathTemplate": "/groups/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
@@ -79,13 +54,8 @@
     },
     {
       "Key": "tasks_service_tasks",
+      "ServiceName": "tasks-service-api",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5002
-        }
-      ],
       "DownstreamPathTemplate": "/api/tasks/{everything}",
       "UpstreamPathTemplate": "/tasks/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],

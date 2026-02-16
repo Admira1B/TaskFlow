@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Http" />
     <PackageReference Include="NLog" />
     <PackageReference Include="NLog.Web.AspNetCore" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" />
   </ItemGroup>
 	
   <ItemGroup>

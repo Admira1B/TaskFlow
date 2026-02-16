@@ -56,9 +56,9 @@ namespace TaskFlow.Gateway.Composition {
                 return new Shared.Logging.Logger(nlogLogger, contextAccessor);
             });
 
-            // Consul 
-            builder.Services.Configure<ConsulOptions>(builder.Configuration.GetSection(nameof(ConsulOptions)));
+            // Services routing (Consul & Ocelot)
             builder.Services.Configure<ServiceOptions>(builder.Configuration.GetSection(nameof(ServiceOptions)));
+            builder.Services.Configure<ConsulOptions>(builder.Configuration.GetSection(nameof(ConsulOptions)));
 
             builder.Services.AddSingleton<IConsulClient>(sp => {
                 var configuration = sp.GetRequiredService<IConfiguration>();
@@ -76,10 +76,22 @@ namespace TaskFlow.Gateway.Composition {
             });
             builder.Services.AddHostedService<ConsulHostedService>();
 
-            // Ocelot
+            var serviceOpts = builder.Configuration.GetSection(nameof(ServiceOptions)).Get<ServiceOptions>()!;
+            var consulOpts = builder.Configuration.GetSection(nameof(ConsulOptions)).Get<ConsulOptions>()!;
+
+            var consulUri = new Uri(consulOpts.Address);
+
             builder.Configuration
-                .AddOcelot("OcelotConfigurations", builder.Environment)         
+                .SetBasePath(builder.Environment.ContentRootPath)
+                .AddOcelot("OcelotConfigurations", builder.Environment)
                 .AddEnvironmentVariables();
+
+            builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?> {
+                ["GlobalConfiguration:BaseUrl"] = $"http://{serviceOpts.Host}:{serviceOpts.Port}",
+                ["GlobalConfiguration:ServiceDiscoveryProvider:Type"] = "Consul",
+                ["GlobalConfiguration:ServiceDiscoveryProvider:Host"] = consulUri.Host,
+                ["GlobalConfiguration:ServiceDiscoveryProvider:Port"] = consulUri.Port.ToString()
+            });
 
             builder.Services.AddOcelot(builder.Configuration).AddConsul();
 

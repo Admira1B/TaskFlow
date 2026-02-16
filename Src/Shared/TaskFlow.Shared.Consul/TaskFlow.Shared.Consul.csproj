@@ -8,8 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="Consul" />
-    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
     <PackageReference Include="Winton.Extensions.Configuration.Consul" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
   </ItemGroup>
 
   <ItemGroup>

@@ -7,16 +7,26 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
-# Identity Service Project files
-COPY ["Src/Services/Identity/TaskFlow.Identity.Contracts/TaskFlow.Identity.Contracts.csproj", "Src/Services/Identity/TaskFlow.Identity.Contracts/"]
+# API project
 COPY ["Src/Services/Identity/TaskFlow.Identity.API/TaskFlow.Identity.API.csproj", "Src/Services/Identity/TaskFlow.Identity.API/"]
+
+# Direct dependencies
 COPY ["Src/Services/Identity/TaskFlow.Identity.Application/TaskFlow.Identity.Application.csproj", "Src/Services/Identity/TaskFlow.Identity.Application/"]
-COPY ["Src/Services/Identity/TaskFlow.Identity.Domain/TaskFlow.Identity.Domain.csproj", "Src/Services/Identity/TaskFlow.Identity.Domain/"]
 COPY ["Src/Services/Identity/TaskFlow.Identity.Infrastructure.Messaging/TaskFlow.Identity.Infrastructure.Messaging.csproj", "Src/Services/Identity/TaskFlow.Identity.Infrastructure.Messaging/"]
+
+# Transitive dependencies
+COPY ["Src/Services/Identity/TaskFlow.Identity.Domain/TaskFlow.Identity.Domain.csproj", "Src/Services/Identity/TaskFlow.Identity.Domain/"]
+COPY ["Src/Services/Identity/TaskFlow.Identity.Contracts/TaskFlow.Identity.Contracts.csproj", "Src/Services/Identity/TaskFlow.Identity.Contracts/"]
 COPY ["Src/Services/Identity/TaskFlow.Identity.Infrastructure.SqlServer/TaskFlow.Identity.Infrastructure.SqlServer.csproj", "Src/Services/Identity/TaskFlow.Identity.Infrastructure.SqlServer/"]
+
+# Shared projects
 COPY ["Src/Shared/TaskFlow.Shared.Core/TaskFlow.Shared.Core.csproj", "Src/Shared/TaskFlow.Shared.Core/"]
+COPY ["Src/Shared/TaskFlow.Shared.Consul/TaskFlow.Shared.Consul.csproj", "Src/Shared/TaskFlow.Shared.Consul/"]
 COPY ["Src/Shared/TaskFlow.Shared.Logging/TaskFlow.Shared.Logging.csproj", "Src/Shared/TaskFlow.Shared.Logging/"]
 COPY ["Src/Shared/TaskFlow.Shared.Messaging/TaskFlow.Shared.Messaging.csproj", "Src/Shared/TaskFlow.Shared.Messaging/"]
+COPY ["Src/Shared/TaskFlow.Shared.ApiClients/TaskFlow.Shared.ApiClients.csproj", "Src/Shared/TaskFlow.Shared.ApiClients/"]
+
+# Solution files
 COPY ["Directory.Build.props", "."]
 COPY ["Directory.Packages.props", "."]
 

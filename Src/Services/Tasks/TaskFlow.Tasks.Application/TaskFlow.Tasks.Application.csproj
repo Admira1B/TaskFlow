@@ -6,10 +6,11 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\Shared\TaskFlow.Shared.ApiClients\TaskFlow.Shared.ApiClients.csproj" />
 		<ProjectReference Include="..\TaskFlow.Tasks.Domain\TaskFlow.Tasks.Domain.csproj" />
 		<ProjectReference Include="..\TaskFlow.Tasks.Contracts\TaskFlow.Tasks.Contracts.csproj" />
 		<ProjectReference Include="..\TaskFlow.Tasks.Infrastructure.SqlServer\TaskFlow.Tasks.Infrastructure.SqlServer.csproj" />
+		
+		<ProjectReference Include="..\..\..\Shared\TaskFlow.Shared.ApiClients\TaskFlow.Shared.ApiClients.csproj" />
 		
 		<ProjectReference Include="..\..\Identity\TaskFlow.Identity.Contracts\TaskFlow.Identity.Contracts.csproj" />
 	</ItemGroup>

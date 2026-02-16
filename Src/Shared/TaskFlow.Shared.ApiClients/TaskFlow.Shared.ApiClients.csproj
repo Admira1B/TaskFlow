@@ -11,8 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Services\Identity\TaskFlow.Identity.Contracts\TaskFlow.Identity.Contracts.csproj" />
     <ProjectReference Include="..\TaskFlow.Shared.Core\TaskFlow.Shared.Core.csproj" />
+	  
+    <ProjectReference Include="..\..\Services\Identity\TaskFlow.Identity.Contracts\TaskFlow.Identity.Contracts.csproj" />
   </ItemGroup>
 
 </Project>
