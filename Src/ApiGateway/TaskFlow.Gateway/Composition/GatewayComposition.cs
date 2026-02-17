@@ -1,12 +1,13 @@
-﻿using System.Text;
+﻿using Consul;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using NLog;
 using NLog.Web;
-using Consul;
+using Ocelot.Configuration.File;
+using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using Ocelot.Provider.Consul;
-using Ocelot.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
 using TaskFlow.Gateway.Health;
 using TaskFlow.Shared.Consul;
 using TaskFlow.Shared.Consul.Options;
@@ -80,20 +81,22 @@ namespace TaskFlow.Gateway.Composition {
             var consulOpts = builder.Configuration.GetSection(nameof(ConsulOptions)).Get<ConsulOptions>()!;
 
             var consulUri = new Uri(consulOpts.Address);
-
             builder.Configuration
                 .SetBasePath(builder.Environment.ContentRootPath)
                 .AddOcelot("OcelotConfigurations", builder.Environment)
                 .AddEnvironmentVariables();
 
-            builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?> {
-                ["GlobalConfiguration:BaseUrl"] = $"http://{serviceOpts.Host}:{serviceOpts.Port}",
-                ["GlobalConfiguration:ServiceDiscoveryProvider:Type"] = "Consul",
-                ["GlobalConfiguration:ServiceDiscoveryProvider:Host"] = consulUri.Host,
-                ["GlobalConfiguration:ServiceDiscoveryProvider:Port"] = consulUri.Port.ToString()
+            builder.Services.PostConfigure<FileConfiguration>(config => {
+                config.GlobalConfiguration.ServiceDiscoveryProvider ??= new FileServiceDiscoveryProvider();
+
+                config.GlobalConfiguration.ServiceDiscoveryProvider.Host = consulUri.Host;
+                config.GlobalConfiguration.ServiceDiscoveryProvider.Port = consulUri.Port;
+                config.GlobalConfiguration.ServiceDiscoveryProvider.Type = "Consul";
+
+                config.GlobalConfiguration.BaseUrl = $"http://{serviceOpts.Host}:{serviceOpts.Port}";
             });
 
-            builder.Services.AddOcelot(builder.Configuration).AddConsul();
+            builder.Services.AddOcelot(builder.Configuration).AddConsul().AddConfigPlaceholders();
 
             // JsonWebToken Authentication & Authorization
             var jwtOptions = builder.Configuration.GetSection(nameof(JsonWebTokenOptions)).Get<JsonWebTokenOptions>();
