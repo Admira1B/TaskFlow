@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Http;
 using TaskFlow.Shared.Core.Interfaces;
 
-namespace TaskFlow.Shared.Core.Middlewares {
+namespace TaskFlow.Shared.Middlewares {
     public class RequestLoggingMiddleware(ILogger logger, RequestDelegate _next) {
         private const long SlowDurationTiming = 3000;
 

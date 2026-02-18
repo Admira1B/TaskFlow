@@ -1,5 +1,5 @@
-﻿namespace TaskFlow.Shared.Core.Entities {
-    public class EntityBase {
+﻿namespace TaskFlow.Shared.Core.Abstractions {
+    public abstract class EntityBase {
         public Guid Id { get; protected set; }
         public DateTime CreatedAt { get; protected set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; protected set; }

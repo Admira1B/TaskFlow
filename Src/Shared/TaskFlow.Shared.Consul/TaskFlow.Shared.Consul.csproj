@@ -1,19 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Consul" />
+		<PackageReference Include="Winton.Extensions.Configuration.Consul" />
+		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Consul" />
-    <PackageReference Include="Winton.Extensions.Configuration.Consul" />
-    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\TaskFlow.Shared.Logging\TaskFlow.Shared.Logging.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\TaskFlow.Shared.Logging\TaskFlow.Shared.Logging.csproj" />
+	</ItemGroup>
 
 </Project>

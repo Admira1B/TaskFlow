@@ -13,7 +13,6 @@ using TaskFlow.Shared.Consul.Health;
 using TaskFlow.Shared.Consul.Options;
 using TaskFlow.Shared.Core.Options;
 using TaskFlow.Shared.Core.Interfaces;
-using TaskFlow.Shared.Core.Middlewares;
 using TaskFlow.Shared.Messaging.Health;
 using TaskFlow.Shared.Messaging.Options;
 using TaskFlow.Identity.API.Health;
@@ -28,6 +27,7 @@ using TaskFlow.Identity.Infrastructure.Messaging;
 using TaskFlow.Identity.Infrastructure.SqlServer;
 using TaskFlow.Identity.Infrastructure.SqlServer.Health;
 using TaskFlow.Identity.Infrastructure.SqlServer.Repositories;
+using TaskFlow.Shared.Middlewares;
 
 namespace TaskFlow.Identity.API.Composition {
     internal static class IdentityServiceComposition {

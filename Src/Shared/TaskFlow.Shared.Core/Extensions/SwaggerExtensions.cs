@@ -1,0 +1,43 @@
+﻿using Microsoft.OpenApi;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace TaskFlow.Shared.Core.Extensions {
+    public static class SwaggerExtensions {
+        public static IServiceCollection AddSwaggerDocumentation(this IServiceCollection services, string serviceName, string version = "v1") {
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen(options => {
+                options.SwaggerDoc(version, new() {
+                    Version = version,
+                    Title = $"TaskFlow {serviceName}",
+                    Contact = new() {
+                        Name = "Vlad Reizenbuk",
+                        Email = "vreizenbuk@mail.ru"
+                    }
+                });
+
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme {
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    Description = "JWT Authorization header using the Bearer scheme. Example: 'Bearer {token}'",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header
+                });
+
+                options.AddSecurityRequirement(document => new OpenApiSecurityRequirement {
+                    [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+                });
+            });
+
+            return services;
+        }
+
+        public static IApplicationBuilder UseSwaggerDocumentation(this IApplicationBuilder app) {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+
+            return app;
+        }
+    }
+}

@@ -1,4 +1,4 @@
-﻿namespace TaskFlow.Shared.Core.Entities {
+﻿namespace TaskFlow.Shared.Core.Abstractions {
     public abstract class EventBase {
         public Guid EventId { get; set; } = Guid.NewGuid();
         public DateTime OccurredOn { get; set; } = DateTime.UtcNow;

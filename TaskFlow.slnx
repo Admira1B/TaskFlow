@@ -17,4 +17,5 @@
   <Project Path="Src/Shared/TaskFlow.Shared.Core/TaskFlow.Shared.Core.csproj" Id="f392e1d1-5841-4a95-ba9d-92a9d709eaed" />
   <Project Path="Src/Shared/TaskFlow.Shared.Logging/TaskFlow.Shared.Logging.csproj" Id="8f054e6d-d09f-4eb4-80cf-31a02450164d" />
   <Project Path="Src/Shared/TaskFlow.Shared.Messaging/TaskFlow.Shared.Messaging.csproj" Id="ed726173-81ab-4ee9-add1-2f0245716998" />
+  <Project Path="Src/Shared/TaskFlow.Shared.Middlewares/TaskFlow.Shared.Middlewares.csproj" Id="43798145-5184-4367-bdd9-d7f0c250668a" />
 </Solution>

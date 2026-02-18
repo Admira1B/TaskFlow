@@ -2,7 +2,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\TaskFlow.Identity.Application\TaskFlow.Identity.Application.csproj" />
-		
+
 		<ProjectReference Include="..\..\..\Shared\TaskFlow.Shared.Messaging\TaskFlow.Shared.Messaging.csproj" />
 	</ItemGroup>
 

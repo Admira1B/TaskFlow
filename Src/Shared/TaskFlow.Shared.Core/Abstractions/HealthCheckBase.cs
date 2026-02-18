@@ -1,7 +1,7 @@
 ﻿using TaskFlow.Shared.Core.Interfaces;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace TaskFlow.Shared.Core.Health {
+namespace TaskFlow.Shared.Core.Abstractions {
     public abstract class ServiceHealthCheckBase : IHealthCheck {
         private readonly ILogger _logger;
         private readonly string _serviceName;

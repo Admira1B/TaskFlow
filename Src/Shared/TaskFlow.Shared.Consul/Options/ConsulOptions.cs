@@ -1,12 +1,26 @@
 ﻿using System.Text.Json.Serialization;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.Extensions.Options;
 
 namespace TaskFlow.Shared.Consul.Options {
     public class ConsulOptions {
-        public string Address { get; set; } = null!;
-        public string Datacenter { get; set; } = null!;
-        public string EnableServiceDiscovery { get; set; } = null!;
+        [Required(ErrorMessage = "Consul datacenter is required")]
+        public required string Datacenter { get; init; }
+
+        [Required(ErrorMessage = "Consul host is required")]
+        public required string Host { get; init; }
+
+        [Required(ErrorMessage = "Consul port is required")]
+        [Range(1, 65535, ErrorMessage = "Consul port must be between 1 and 65535")]
+        public int Port { get; init; }
+
+        public required bool EnableServiceDiscovery { get; init; } = true;
 
         [JsonIgnore]
-        public bool EnableServiceDiscoveryParsed => bool.Parse(EnableServiceDiscovery);
+        public string Address => $"http://{Host}:{Port}";
+    }
+
+    [OptionsValidator]
+    public partial class ServiceOptionsValidator : IValidateOptions<ConsulOptions> { 
     }
 }

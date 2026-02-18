@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
-using TaskFlow.Shared.Core.Health;
 using TaskFlow.Shared.Messaging.Health;
 using TaskFlow.Identity.Application.Health;
 using TaskFlow.Identity.Infrastructure.SqlServer.Health;
 using TaskFlow.Shared.Consul.Health;
+using TaskFlow.Shared.Core.Abstractions;
 
 namespace TaskFlow.Identity.API.Health {
     public class ServiceHealthCheck(Shared.Core.Interfaces.ILogger logger, IdentityHealthCheck identityHealth, DataBaseHealthCheck dataBaseHealth, RabbitMqHealthCheck rabbitMqHealth, ConsulHealthCheck consulHealth) :

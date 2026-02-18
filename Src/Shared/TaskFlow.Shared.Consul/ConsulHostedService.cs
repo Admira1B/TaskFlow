@@ -14,7 +14,7 @@ namespace TaskFlow.Shared.Consul {
         private string _serviceId = string.Empty;
 
         public async Task StartAsync(CancellationToken cancellationToken) {
-            if (!_consulOptions.EnableServiceDiscoveryParsed) {
+            if (!_consulOptions.EnableServiceDiscovery) {
                 _logger.Debug("Service discovery is disabled");
                 return;
             }
@@ -26,9 +26,9 @@ namespace TaskFlow.Shared.Consul {
                     ID = _serviceId,
                     Name = _serviceOptions.Name,
                     Address = _serviceOptions.Host,
-                    Port = _serviceOptions.PortParsed,
+                    Port = _serviceOptions.Port,
                     Check = new AgentServiceCheck {
-                        HTTP = $"http://{_serviceOptions.Host}:{_serviceOptions.PortParsed}/health",
+                        HTTP = $"http://{_serviceOptions.Host}:{_serviceOptions.Port}/health",
                         Interval = TimeSpan.FromSeconds(10),
                         Timeout = TimeSpan.FromSeconds(5),
                         DeregisterCriticalServiceAfter = TimeSpan.FromMinutes(1)
@@ -46,7 +46,7 @@ namespace TaskFlow.Shared.Consul {
         }
 
         public async Task StopAsync(CancellationToken cancellationToken) {
-            if (string.IsNullOrEmpty(_serviceId) || !_consulOptions.EnableServiceDiscoveryParsed)
+            if (string.IsNullOrEmpty(_serviceId) || !_consulOptions.EnableServiceDiscovery)
                 return;
 
             try {

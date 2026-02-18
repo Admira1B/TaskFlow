@@ -8,11 +8,11 @@
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
 		<PackageReference Include="Ocelot.Provider.Consul" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<Content Remove="ocelot.global.json" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<ProjectReference Include="..\..\Shared\TaskFlow.Shared.Consul\TaskFlow.Shared.Consul.csproj" />
 		<ProjectReference Include="..\..\Shared\TaskFlow.Shared.Logging\TaskFlow.Shared.Logging.csproj" />

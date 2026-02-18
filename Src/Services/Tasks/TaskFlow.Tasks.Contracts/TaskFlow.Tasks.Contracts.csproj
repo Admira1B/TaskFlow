@@ -3,10 +3,10 @@
 	<ItemGroup>
 		<PackageReference Include="MediatR.Contracts" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<ProjectReference Include="..\TaskFlow.Tasks.Domain\TaskFlow.Tasks.Domain.csproj" />
-		
+
 		<ProjectReference Include="..\..\..\Shared\TaskFlow.Shared.Messaging\TaskFlow.Shared.Messaging.csproj" />
 	</ItemGroup>
 

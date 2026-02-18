@@ -22,7 +22,7 @@ namespace TaskFlow.Tasks.API {
                     var serviceOpts = builder.Configuration.GetSection(nameof(ServiceOptions)).Get<ServiceOptions>()!;
 
                     builder.WebHost.ConfigureKestrel(options => {
-                        options.ListenAnyIP(serviceOpts.PortParsed);
+                        options.ListenAnyIP(serviceOpts.Port);
                     });
                 }
 

@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.DependencyInjection;
 using TaskFlow.Shared.Core.Interfaces;
 using TaskFlow.Shared.Messaging.Options;
-using TaskFlow.Shared.Core.Entities;
+using TaskFlow.Shared.Core.Abstractions;
 
 namespace TaskFlow.Shared.Messaging {
     public abstract class RabbitMqEventConsumer : BackgroundService {
@@ -64,7 +64,7 @@ namespace TaskFlow.Shared.Messaging {
                 var factory = new ConnectionFactory {
                     UserName = _options.UserName,
                     Password = _options.Password,
-                    Port = _options.PortParsed,
+                    Port = _options.Port,
                     HostName = _options.HostName,
                     VirtualHost = _options.VirtualHost,
                     AutomaticRecoveryEnabled = true
