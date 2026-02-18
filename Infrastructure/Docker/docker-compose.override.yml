@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  identity-service:
+    volumes:
+      - ../../Src:/src:ro
+      - ../../Src/Services/Identity:/app/Src/Services/Identity:ro
+      
+  tasks-service:
+    volumes:
+      - ../../Src:/src:ro
+      
+  gateway:
+    volumes:
+      - ../../Src:/src:ro
+      - ../../OcelotConfigurations:/app/OcelotConfigurations:ro

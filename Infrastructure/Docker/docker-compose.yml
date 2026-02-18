@@ -1,8 +1,188 @@
 version: '3.8'
 name: TaskFlow
 
+#           === Base anchors ===              #
+x-logging: &default-logging
+    driver: "json-file"
+    options:
+        max-size: "10m"
+        max-file: "3"
 
+x-healthcheck: &default-healthcheck
+    interval: 60s
+    timeout: 10s
+    retries: 3
+    start_period: 30s
 
+# === .NET microservices shared variables === #
+x-dotnet-base: &dotnet-base
+    env_file:
+        - .env
+        - .env.${ENVIRONMENT:-dev}
+    environment:
+        ASPNETCORE_ENVIRONMENT: Docker
+
+        ConsulOptions__Address: http://${CONSUL_HOST}:${CONSUL_INTERNAL_PORT}
+        ConsulOptions__Datacenter: ${CONSUL_DATACENTER}
+        ConsulOptions__EnableServiceDiscovery: ${CONSUL_SERVICE_DISCOVERY}
+        
+        RabbitMqOptions__HostName: ${RABBITMQ_HOST}
+        RabbitMqOptions__Port: ${RABBITMQ_AMQP_INTERNAL_PORT}
+        RabbitMqOptions__VirtualHost: ${RABBITMQ_VHOST}
+        RabbitMqOptions__UserName: ${RABBITMQ_USERNAME}
+        RabbitMqOptions__Password: ${RABBITMQ_PASSWORD}
+
+        JsonWebTokenOptions__Issuer: ${JWT_ISSUER}
+        JsonWebTokenOptions__SecretKey: ${JWT_SECRET_KEY}
+
+        ConnectionStrings__SqlServerConnectionString: ${SQL_SERVER_CONNECTION_STRING}
+    logging: *default-logging
+    networks:
+        - taskflow-internal-network
+    restart: unless-stopped
+
+#           === Networks Block ===            #
+networks:
+    taskflow-internal-network:
+        driver: bridge
+
+services:
+#      === Infrastructure Services ===        #
+    consul:
+        image: hashicorp/consul:${CONSUL_VER}
+        container_name: taskflow-consul
+        hostname: ${CONSUL_HOST}
+        ports:
+            - "${CONSUL_PUBLIC_PORT}:${CONSUL_INTERNAL_PORT}"
+        command: agent -server -ui -client=0.0.0.0 -bootstrap-expect=1 -data-dir=/consul/data
+        volumes:
+            - consul-data:/consul/data
+        networks:
+          - taskflow-internal-network
+        healthcheck:
+          test: ["CMD", "consul", "members"]
+          <<: *default-healthcheck
+        restart: unless-stopped
+
+    sqlserver:
+        image: mcr.microsoft.com/mssql/server:${SQL_SERVER_VER}
+        container_name: taskflow-sqlserver
+        hostname: ${SQL_SERVER_HOST}
+        ports: 
+            - "${SQL_SERVER_PUBLIC_PORT}:${SQL_SERVER_INTERNAL_PORT}"
+        environment: 
+            ACCEPT_EULA: Y
+            SA_PASSWORD: ${SQL_SERVER_PASSWORD}
+            MSSQL_PID: Developer
+        volumes:
+            - sqlserver-data:/var/opt/mssql
+        networks:
+            - taskflow-internal-network
+        healthcheck:
+            test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"${SQL_SERVER_PASSWORD}\" -Q \"SELECT 1\" -b -No"]
+            <<: *default-healthcheck
+        restart: unless-stopped
+
+    rabbitmq:
+        image: rabbitmq:${RABBITMQ_VER}
+        container_name: taskflow-rabbitmq
+        hostname: ${RABBITMQ_HOST}
+        ports:
+            - "${RABBITMQ_AMQP_PUBLIC_PORT}:${RABBITMQ_AMQP_INTERNAL_PORT}"
+            - "${RABBITMQ_MGMT_PUBLIC_PORT}:${RABBITMQ_MGMT_INTERNAL_PORT}"
+        environment:
+            RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}
+            RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+        volumes:
+            - rabbitmq-data:/var/lib/rabbitmq
+        networks:
+          - taskflow-internal-network
+        healthcheck:
+          test: ["CMD", "rabbitmqctl", "status"]
+          <<: *default-healthcheck
+        restart: unless-stopped 
+
+#      === Application Microservices ===      #
+    identity-service:
+        <<: *dotnet-base
+        container_name: taskflow-identity-service
+        hostname: ${IDENTITY_SERVICE_HOST}
+        ports: 
+            - "${IDENTITY_SERVICE_PUBLIC_PORT}:${IDENTITY_SERVICE_INTERNAL_PORT}"
+        environment:
+            ServiceOptions__Name: identity-service
+            ServiceOptions__Host: ${IDENTITY_SERVICE_HOST}
+            ServiceOptions__Port: ${IDENTITY_SERVICE_INTERNAL_PORT}
+
+            JsonWebTokenOptions__Audience: ${IDENTITY_SERVICE_AUD}
+
+            JsonWebTokenGenerationOptions__Issuer: ${JWT_ISSUER}
+            JsonWebTokenGenerationOptions__SecretKey: ${JWT_SECRET_KEY}
+            JsonWebTokenGenerationOptions__ExpiresHours: ${JWT_EXPIRES_HOURS}
+            JsonWebTokenGenerationOptions__ValidAudiences__0: ${IDENTITY_SERVICE_AUD}
+            JsonWebTokenGenerationOptions__ValidAudiences__1: ${TASKS_SERVICE_AUD}
+            JsonWebTokenGenerationOptions__ValidAudiences__2: ${GATEWAY_AUD}
+            
+            EdgeService__BaseUrl: http://${GATEWAY_HOST}:${GATEWAY_INTERNAL_PORT}
+        build:
+            context: ../..
+            dockerfile: Src/Services/Identity/TaskFlow.Identity.API/Dockerfile
+        depends_on:
+            consul:
+                condition: service_healthy
+            sqlserver:
+                condition: service_healthy
+            rabbitmq:
+                condition: service_healthy
+
+    tasks-service: 
+        <<: *dotnet-base
+        container_name: taskflow-tasks-service
+        hostname: ${TASKS_SERVICE_HOST}
+        ports:
+            - "${TASKS_SERVICE_PUBLIC_PORT}:${TASKS_SERVICE_INTERNAL_PORT}"
+        environment:
+            ServiceOptions__Name: tasks-service
+            ServiceOptions__Host: ${TASKS_SERVICE_HOST}
+            ServiceOptions__Port: ${TASKS_SERVICE_INTERNAL_PORT}
+
+            JsonWebTokenOptions__Audience: ${TASKS_SERVICE_AUD}
+
+            EdgeService__BaseUrl: http://${GATEWAY_HOST}:${GATEWAY_INTERNAL_PORT}
+        build:
+            context: ../..
+            dockerfile: Src/Services/Tasks/TaskFlow.Tasks.API/Dockerfile
+        depends_on:
+            consul:
+                condition: service_healthy
+            sqlserver:
+                condition: service_healthy
+            rabbitmq:
+                condition: service_healthy
+
+    gateway:
+        <<: *dotnet-base
+        container_name: taskflow-gateway
+        hostname: ${GATEWAY_HOST}
+        ports: 
+            - "${GATEWAY_PUBLIC_PORT}:${GATEWAY_INTERNAL_PORT}"
+        environment:
+            ServiceOptions__Name: gateway
+            ServiceOptions__Host: ${GATEWAY_HOST}
+            ServiceOptions__Port: ${GATEWAY_INTERNAL_PORT}
+
+            JsonWebTokenOptions__Audience: ${GATEWAY_AUD}
+        depends_on:
+            identity-service:
+                condition: service_healthy
+            tasks-service:
+                condition: service_healthy
+
+#         === PERSISTENT VOLUMES ===          #
 volumes:
   sqlserver-data:
+    driver: local
   consul-data:
+    driver: local
+  rabbitmq-data:
+    driver: local
