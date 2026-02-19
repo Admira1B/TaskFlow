@@ -5,7 +5,7 @@ using TaskFlow.Tasks.Infrastructure.SqlServer.Health;
 using TaskFlow.Shared.Core.Abstractions;
 
 namespace TaskFlow.Tasks.API.Health {
-    public class ServiceHealthCheck(Shared.Core.Interfaces.ILogger logger, DataBaseHealthCheck dataBaseHealth, RabbitMqHealthCheck rabbitMqHealth, ConsulHealthCheck consulHealth) :
+    public class TasksServiceHealthCheck(Shared.Core.Interfaces.ILogger logger, DataBaseHealthCheck dataBaseHealth, RabbitMqHealthCheck rabbitMqHealth, ConsulHealthCheck consulHealth) :
              ServiceHealthCheckBase(logger, "Tasks Service") {
         private readonly DataBaseHealthCheck _dataBaseHealth = dataBaseHealth;
         private readonly RabbitMqHealthCheck _rabbitMqHealth = rabbitMqHealth;

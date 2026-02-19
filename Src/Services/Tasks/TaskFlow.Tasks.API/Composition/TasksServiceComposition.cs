@@ -78,7 +78,7 @@ namespace TaskFlow.Tasks.API.Composition {
             builder.Services.AddScoped<RabbitMqHealthCheck>();
             builder.Services.AddScoped<ConsulHealthCheck>();
             builder.Services.AddHealthChecks()
-                .AddCheck<ServiceHealthCheck>("tasks_service_health_check", Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Unhealthy);
+                .AddCheck<TasksServiceHealthCheck>("tasks_service_health_check", Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Unhealthy);
 
             // Consul 
             builder.Services.Configure<ConsulOptions>(builder.Configuration.GetSection(nameof(ConsulOptions)));

@@ -6,7 +6,7 @@ using TaskFlow.Shared.Consul.Health;
 using TaskFlow.Shared.Core.Abstractions;
 
 namespace TaskFlow.Identity.API.Health {
-    public class ServiceHealthCheck(Shared.Core.Interfaces.ILogger logger, IdentityHealthCheck identityHealth, DataBaseHealthCheck dataBaseHealth, RabbitMqHealthCheck rabbitMqHealth, ConsulHealthCheck consulHealth) :
+    public class IdentityServiceHealthCheck(Shared.Core.Interfaces.ILogger logger, IdentityHealthCheck identityHealth, DataBaseHealthCheck dataBaseHealth, RabbitMqHealthCheck rabbitMqHealth, ConsulHealthCheck consulHealth) :
                  ServiceHealthCheckBase(logger, "Identity Service") {
         private readonly IdentityHealthCheck _identityHealth = identityHealth;
         private readonly DataBaseHealthCheck _dataBaseHealth = dataBaseHealth;

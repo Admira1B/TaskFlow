@@ -65,7 +65,7 @@ namespace TaskFlow.Shared.Messaging {
                     UserName = _options.UserName,
                     Password = _options.Password,
                     Port = _options.Port,
-                    HostName = _options.HostName,
+                    HostName = _options.Host,
                     VirtualHost = _options.VirtualHost,
                     AutomaticRecoveryEnabled = true
 
@@ -86,7 +86,7 @@ namespace TaskFlow.Shared.Messaging {
                 _logger.Warn("RabbitMQ connection cancelled");
                 throw;
             } catch (Exception ex) {
-                _logger.Fatal($"Failed to connect to RabbitMQ at {_options.HostName}:{_options.Port}", ex);
+                _logger.Fatal($"Failed to connect to RabbitMQ at {_options.Host}:{_options.Port}", ex);
                 throw;
             }
 

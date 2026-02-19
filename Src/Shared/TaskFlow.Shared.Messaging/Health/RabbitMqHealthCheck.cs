@@ -10,7 +10,7 @@ namespace TaskFlow.Shared.Messaging.Health {
         public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default) {
             try {
                 var factory = new ConnectionFactory {
-                    HostName = _options.HostName,
+                    HostName = _options.Host,
                     Port = _options.Port,
                     UserName = _options.UserName,
                     Password = _options.Password,
@@ -27,7 +27,7 @@ namespace TaskFlow.Shared.Messaging.Health {
                     return HealthCheckResult.Unhealthy(
                         description: "RabbitMQ connection is not open",
                         data: new Dictionary<string, object> {
-                            ["host"] = _options.HostName,
+                            ["host"] = _options.Host,
                             ["port"] = _options.Port,
                             ["virtual_host"] = _options.VirtualHost
                         }
@@ -40,7 +40,7 @@ namespace TaskFlow.Shared.Messaging.Health {
                     description: $"RabbitMQ health check failed: {ex.Message}",
                     exception: ex,
                     data: new Dictionary<string, object> {
-                        ["rabbitmq_host"] = _options?.HostName ?? "unknown"
+                        ["rabbitmq_host"] = _options.Host
                     }
                 );
             }

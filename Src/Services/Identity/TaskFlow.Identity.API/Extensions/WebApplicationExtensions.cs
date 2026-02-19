@@ -1,9 +1,8 @@
-﻿using NLog;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace TaskFlow.Identity.API.Extensions {
     public static class WebApplicationExtensions {
-        public async static Task<WebApplication> AddDataBaseMigration<TContext>(this WebApplication app, Logger logger) where TContext : DbContext {
+        public async static Task<WebApplication> AddDataBaseMigration<TContext>(this WebApplication app, Shared.Core.Interfaces.ILogger logger) where TContext : DbContext {
             try {
                 logger.Info("Starting database migration for {DbContextType}", typeof(TContext).Name);
 
@@ -24,7 +23,7 @@ namespace TaskFlow.Identity.API.Extensions {
 
                 logger.Info(
                     "Applying {Count} pending migration(s) for {DbContextType}: {Migrations}",
-                    pendingMigrationsList.Count,
+                    pendingMigrationsList.Count.ToString(),
                     typeof(TContext).Name,
                     string.Join(", ", pendingMigrationsList));
 
@@ -32,14 +31,14 @@ namespace TaskFlow.Identity.API.Extensions {
 
                 var appliedMigrations = await context.Database.GetAppliedMigrationsAsync();
 
-                logger.Info("Successfully applied migrations. Total applied migrations: {Count}", appliedMigrations.Count());
+                logger.Info("Successfully applied migrations. Total applied migrations: {Count}", appliedMigrations.Count().ToString());
 
                 return app;
             } catch (OperationCanceledException) {
                 logger.Warn("Database migration was cancelled");
                 throw;
             } catch (Exception ex) {
-                logger.Error(ex, "Failed to apply database migrations for {DbContextType}", typeof(TContext).Name);
+                logger.Error("Failed to apply database migrations for {DbContextType}", ex, typeof(TContext).Name);
                 throw;
             }
         }

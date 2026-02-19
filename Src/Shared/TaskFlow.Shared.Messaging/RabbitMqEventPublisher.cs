@@ -30,7 +30,7 @@ namespace TaskFlow.Shared.Messaging {
                 UserName = _options.UserName,
                 Password = _options.Password,
                 Port = _options.Port,
-                HostName = _options.HostName,
+                HostName = _options.Host,
                 VirtualHost = _options.VirtualHost,
                 AutomaticRecoveryEnabled = true,
                 NetworkRecoveryInterval = TimeSpan.FromSeconds(10),

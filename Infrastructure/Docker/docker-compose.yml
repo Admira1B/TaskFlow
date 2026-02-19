@@ -21,11 +21,12 @@ x-dotnet-base: &dotnet-base
     environment:
         ASPNETCORE_ENVIRONMENT: Docker
 
-        ConsulOptions__Address: http://${CONSUL_HOST}:${CONSUL_INTERNAL_PORT}
+        ConsulOptions__Host: ${CONSUL_HOST}
+        ConsulOptions__Port: ${CONSUL_INTERNAL_PORT}
         ConsulOptions__Datacenter: ${CONSUL_DATACENTER}
         ConsulOptions__EnableServiceDiscovery: ${CONSUL_SERVICE_DISCOVERY}
         
-        RabbitMqOptions__HostName: ${RABBITMQ_HOST}
+        RabbitMqOptions__Host: ${RABBITMQ_HOST}
         RabbitMqOptions__Port: ${RABBITMQ_AMQP_INTERNAL_PORT}
         RabbitMqOptions__VirtualHost: ${RABBITMQ_VHOST}
         RabbitMqOptions__UserName: ${RABBITMQ_USERNAME}

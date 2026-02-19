@@ -1,16 +1,15 @@
 using NLog;
-using NLog.Web;
 using TaskFlow.Shared.Core.Options;
-using TaskFlow.Identity.API.Composition;
+using TaskFlow.Shared.Logging.Extensions;
 using TaskFlow.Identity.API.Extensions;
+using TaskFlow.Identity.API.Composition;
 using TaskFlow.Identity.Infrastructure.SqlServer;
 
 namespace TaskFlow.Identity.API {
     public class Program {
         public static async Task Main(string[] args) {
-            var logger = LogManager.Setup()
-                .LoadConfigurationFromAppSettings()
-                .GetCurrentClassLogger();
+            var serviceName = GetServiceName();
+            var logger = LoggingExtensions.CreateStartupLogger(serviceName);
 
             try {
                 logger.Info("Starting Identity Service...");
@@ -44,6 +43,25 @@ namespace TaskFlow.Identity.API {
                 throw;
             } finally {
                 LogManager.Shutdown();
+            }
+        }
+
+        public static string GetServiceName() {
+            var unknownName = "not-configured";
+
+            try {
+                var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+                var config = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json", optional: true)
+                    .AddJsonFile($"appsettings.{environment}.json", optional: true)
+                    .AddEnvironmentVariables()
+                    .Build();
+
+                return config["ServiceOptions:Name"] ?? unknownName;
+            } catch {
+                return unknownName;
             }
         }
     }
