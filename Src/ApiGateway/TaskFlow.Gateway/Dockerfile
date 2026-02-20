@@ -7,15 +7,16 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
-# Gateway project
+# === Project ===
 COPY ["Src/ApiGateway/TaskFlow.Gateway/TaskFlow.Gateway.csproj", "Src/ApiGateway/TaskFlow.Gateway/"]
 
-# Shared projects
+# === Shared projects ===
 COPY ["Src/Shared/TaskFlow.Shared.Core/TaskFlow.Shared.Core.csproj", "Src/Shared/TaskFlow.Shared.Core/"]
 COPY ["Src/Shared/TaskFlow.Shared.Consul/TaskFlow.Shared.Consul.csproj", "Src/Shared/TaskFlow.Shared.Consul/"]
 COPY ["Src/Shared/TaskFlow.Shared.Logging/TaskFlow.Shared.Logging.csproj", "Src/Shared/TaskFlow.Shared.Logging/"]
+COPY ["Src/Shared/TaskFlow.Shared.Middlewares/TaskFlow.Shared.Middlewares.csproj", "Src/Shared/TaskFlow.Shared.Middlewares/"]
 
-# Solution files
+# === Solution files ===
 COPY ["Directory.Build.props", "."]
 COPY ["Directory.Packages.props", "."]
 

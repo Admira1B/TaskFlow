@@ -4,25 +4,24 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace TaskFlow.Identity.Application.Options {
-    public class JsonWebTokenGenerationOptions(string Issuer, string SecretKey, string[] ValidAudiences, int ExpiresHours) {
+    public class JsonWebTokenGenerationOptions {
         [Required(ErrorMessage = "JWT Issuer is required")]
-        public required string Issuer { get; init; } = Issuer;
+        public string Issuer { get; set; } = null!;
 
         [Required(ErrorMessage = "JWT SecretKey is required")]
-        public required string SecretKey { get; init; } = SecretKey;
+        public string SecretKey { get; set; } = null!;
 
         [Required(ErrorMessage = "At least one valid audience is required")]
         [MinLength(1, ErrorMessage = "ValidAudiences must contain at least one audience")]
-        public required string[] ValidAudiences { get; init; } = ValidAudiences;
+        public string[] ValidAudiences { get; set; } = null!;
 
         [Required(ErrorMessage = "JWT ExpiresHours is required")]
         [Range(1, 240, ErrorMessage = "ExpiresHours must be between 1 and 240 (10 days)")]
-        public int ExpiresHours { get; init; } = ExpiresHours;
+        public int ExpiresHours { get; set; }
     }
 
     [OptionsValidator]
-    public partial class JsonWebTokenGenerationValidator : IValidateOptions<JsonWebTokenGenerationOptions> { 
-    }
+    public partial class JsonWebTokenGenerationValidator : IValidateOptions<JsonWebTokenGenerationOptions> { }
 
     public static partial class OptionsExtensions {
         public static IServiceCollection AddJsonWebTokenGenerationOptions(this IServiceCollection services, IConfiguration configuration) {

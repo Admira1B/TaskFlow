@@ -3,24 +3,28 @@ using TaskFlow.Shared.Core.Health;
 using TaskFlow.Shared.Core.Abstractions;
 using TaskFlow.Shared.Consul.Health;
 using TaskFlow.Shared.Messaging.Health;
-using TaskFlow.Tasks.Infrastructure.SqlServer;
+using TaskFlow.Identity.Application.Health;
+using TaskFlow.Identity.Infrastructure.SqlServer;
 
-namespace TaskFlow.Tasks.API.Health {
-    public class TasksServiceHealthCheck(
-        Shared.Core.Interfaces.ILogger logger, 
+namespace TaskFlow.Identity.API.Health {
+    public class IdentityServiceHealthCheck(
+        Shared.Core.Interfaces.ILogger logger,
         ConsulHealthCheck consulHealth,
         RabbitMqHealthCheck rabbitMqHealth, 
-        DataBaseHealthCheck<TasksServiceDbContext> dataBaseHealth) 
-        : ServiceHealthCheckBase(logger, "Tasks Service") {
+        IdentityHealthCheck identityHealth, 
+        DataBaseHealthCheck<IdentityServiceDbContext> dataBaseHealth) 
+        : ServiceHealthCheckBase(logger, "Identity Service") {
         private readonly ConsulHealthCheck _consulHealth = consulHealth;
         private readonly RabbitMqHealthCheck _rabbitMqHealth = rabbitMqHealth;
-        private readonly DataBaseHealthCheck<TasksServiceDbContext> _dataBaseHealth = dataBaseHealth;
+        private readonly IdentityHealthCheck _identityHealth = identityHealth;
+        private readonly DataBaseHealthCheck<IdentityServiceDbContext> _dataBaseHealth = dataBaseHealth;
 
         protected override async Task<HealthCheckResult> CheckDependenciesHealthAsync(HealthCheckContext context, CancellationToken cancellationToken) {
             List<HealthCheckResult> results = [];
 
             results.Add(await _consulHealth.CheckHealthAsync(context, cancellationToken));
             results.Add(await _rabbitMqHealth.CheckHealthAsync(context, cancellationToken));
+            results.Add(await _identityHealth.CheckHealthAsync(context, cancellationToken));
             results.Add(await _dataBaseHealth.CheckHealthAsync(context, cancellationToken));
 
             return GetDependenciesHealthCheckResult(results);

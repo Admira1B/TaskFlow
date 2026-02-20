@@ -4,27 +4,26 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace TaskFlow.Shared.Messaging.Options {
-    public class RabbitMqOptions(string UserName, string Password, string VirtualHost, string Host, int Port) {
+    public class RabbitMqOptions {
         [Required(ErrorMessage = "RabbitMQ username is required")]
-        public required string UserName { get; init; } = UserName;
+        public string UserName { get; set; } = null!;
 
         [Required(ErrorMessage = "RabbitMQ password is required")]
-        public required string Password { get; init; } = Password;
+        public string Password { get; set; } = null!;
 
         [Required(ErrorMessage = "RabbitMQ virtual host is required")]
-        public required string VirtualHost { get; init; } = VirtualHost;
+        public string VirtualHost { get; set; } = null!;
 
         [Required(ErrorMessage = "RabbitMQ host is required")]
-        public required string Host { get; init; } = Host;
-        
+        public string Host { get; set; } = null!;
+
         [Required(ErrorMessage = "RabbitMQ port is required")]
         [Range(1, 65535, ErrorMessage = "Port must be between 1 and 65535")]
-        public int Port { get; init; } = Port;
+        public int Port { get; set; }
     }
 
     [OptionsValidator]
-    public partial class RabbitMqOptionsValidator : IValidateOptions<RabbitMqOptions> { 
-    }
+    public partial class RabbitMqOptionsValidator : IValidateOptions<RabbitMqOptions> { }
 
     public static partial class OptionsExtensions {
         public static IServiceCollection AddRabbitMqOptions(this IServiceCollection services, IConfiguration configuration) {

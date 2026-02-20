@@ -18,8 +18,8 @@ using TaskFlow.Tasks.Application.Commands.TaskItem.CreateTaskItem;
 using TaskFlow.Tasks.Application.Commands.TaskItem.UpdateTaskItem;
 
 namespace TaskFlow.Tasks.Application.Mapping {
-    public class TaskServiceMapperProfile : Profile {
-        public TaskServiceMapperProfile() {
+    public class TasksServiceMapperProfile : Profile {
+        public TasksServiceMapperProfile() {
             // POCOs to Response DTOs
             CreateMap<Comment, CommentDto>();
             CreateMap<Project, ProjectDto>();

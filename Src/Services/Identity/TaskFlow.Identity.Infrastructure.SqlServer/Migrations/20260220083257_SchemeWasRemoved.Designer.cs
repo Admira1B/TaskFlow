@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskFlow.Identity.Infrastructure.SqlServer;
 
@@ -11,9 +12,11 @@ using TaskFlow.Identity.Infrastructure.SqlServer;
 namespace TaskFlow.Identity.Infrastructure.SqlServer.Migrations
 {
     [DbContext(typeof(IdentityServiceDbContext))]
-    partial class IdentityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260220083257_SchemeWasRemoved")]
+    partial class SchemeWasRemoved
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

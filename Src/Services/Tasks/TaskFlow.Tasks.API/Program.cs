@@ -1,16 +1,16 @@
 using NLog;
-using NLog.Web;
+using TaskFlow.Shared.Core.Helpers;
 using TaskFlow.Shared.Core.Options;
+using TaskFlow.Shared.Core.Extensions;
+using TaskFlow.Shared.Logging.Extensions;
 using TaskFlow.Tasks.API.Composition;
-using TaskFlow.Tasks.API.Extensions;
 using TaskFlow.Tasks.Infrastructure.SqlServer;
 
 namespace TaskFlow.Tasks.API {
     public class Program {
         public static async Task Main(string[] args) {
-            var logger = LogManager.Setup()
-                .LoadConfigurationFromAppSettings()
-                .GetCurrentClassLogger();
+            var serviceName = ServiceHelper.GetServiceName();
+            var logger = LoggingExtensions.CreateStartupLogger(serviceName);
 
             try {
                 logger.Info("Starting Tasks Service...");
@@ -28,7 +28,7 @@ namespace TaskFlow.Tasks.API {
 
                 var app = builder.Build();
 
-                await app.AddDataBaseMigration<TaskServiceDbContext>(logger);
+                await app.AddDataBaseMigration<TasksServiceDbContext>(logger);
 
                 app.ConfigurePipeline();
 

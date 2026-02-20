@@ -3,8 +3,8 @@ using TaskFlow.Tasks.Domain.Entities;
 using TaskFlow.Tasks.Domain.Contracts;
 
 namespace TaskFlow.Tasks.Infrastructure.SqlServer.Repositories {
-    public class TaskGroupRepository(TaskServiceDbContext dbContext) : ITaskGroupRepository {
-        private readonly TaskServiceDbContext _dbContext = dbContext;
+    public class TaskGroupRepository(TasksServiceDbContext dbContext) : ITaskGroupRepository {
+        private readonly TasksServiceDbContext _dbContext = dbContext;
         
         public async Task<TaskGroup?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) {
             return await _dbContext.Groups

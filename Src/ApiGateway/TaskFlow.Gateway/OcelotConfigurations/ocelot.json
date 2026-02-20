@@ -39,7 +39,7 @@
       "Metadata": null,
       "QoSOptions": null,
       "RateLimitOptions": null,
-      "ServiceName": "identity-service-api",
+      "ServiceName": "identity-service",
       "ServiceNamespace": null,
       "Timeout": null
     },
@@ -82,7 +82,7 @@
       "Metadata": null,
       "QoSOptions": null,
       "RateLimitOptions": null,
-      "ServiceName": "identity-service-api",
+      "ServiceName": "identity-service",
       "ServiceNamespace": null,
       "Timeout": null
     },
@@ -125,7 +125,7 @@
       "Metadata": null,
       "QoSOptions": null,
       "RateLimitOptions": null,
-      "ServiceName": "identity-service-api",
+      "ServiceName": "identity-service",
       "ServiceNamespace": null,
       "Timeout": null
     },
@@ -175,7 +175,7 @@
       "Metadata": null,
       "QoSOptions": null,
       "RateLimitOptions": null,
-      "ServiceName": "identity-service-api",
+      "ServiceName": "identity-service",
       "ServiceNamespace": null,
       "Timeout": null
     },
@@ -227,7 +227,7 @@
       "Metadata": null,
       "QoSOptions": null,
       "RateLimitOptions": null,
-      "ServiceName": "identity-service-api",
+      "ServiceName": "identity-service",
       "ServiceNamespace": null,
       "Timeout": null
     },
@@ -280,7 +280,7 @@
       "Metadata": null,
       "QoSOptions": null,
       "RateLimitOptions": null,
-      "ServiceName": "identity-service-api",
+      "ServiceName": "identity-service",
       "ServiceNamespace": null,
       "Timeout": null
     },
@@ -323,7 +323,7 @@
       "Metadata": null,
       "QoSOptions": null,
       "RateLimitOptions": null,
-      "ServiceName": "tasks-service-api",
+      "ServiceName": "tasks-service",
       "ServiceNamespace": null,
       "Timeout": null
     },
@@ -376,7 +376,7 @@
       "Metadata": null,
       "QoSOptions": null,
       "RateLimitOptions": null,
-      "ServiceName": "tasks-service-api",
+      "ServiceName": "tasks-service",
       "ServiceNamespace": null,
       "Timeout": null
     },
@@ -429,7 +429,7 @@
       "Metadata": null,
       "QoSOptions": null,
       "RateLimitOptions": null,
-      "ServiceName": "tasks-service-api",
+      "ServiceName": "tasks-service",
       "ServiceNamespace": null,
       "Timeout": null
     },
@@ -482,7 +482,7 @@
       "Metadata": null,
       "QoSOptions": null,
       "RateLimitOptions": null,
-      "ServiceName": "tasks-service-api",
+      "ServiceName": "tasks-service",
       "ServiceNamespace": null,
       "Timeout": null
     },
@@ -535,7 +535,7 @@
       "Metadata": null,
       "QoSOptions": null,
       "RateLimitOptions": null,
-      "ServiceName": "tasks-service-api",
+      "ServiceName": "tasks-service",
       "ServiceNamespace": null,
       "Timeout": null
     },
@@ -588,7 +588,7 @@
       "Metadata": null,
       "QoSOptions": null,
       "RateLimitOptions": null,
-      "ServiceName": "tasks-service-api",
+      "ServiceName": "tasks-service",
       "ServiceNamespace": null,
       "Timeout": null
     }

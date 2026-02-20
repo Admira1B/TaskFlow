@@ -2,7 +2,7 @@
   "Routes": [
     {
       "Key": "tasks_service_health_check",
-      "ServiceName": "tasks-service-api",
+      "ServiceName": "tasks-service",
       "DownstreamScheme": "http",
       "DownstreamPathTemplate": "/health",
       "UpstreamPathTemplate": "/tasks-service/health",
@@ -10,7 +10,7 @@
     },
     {
       "Key": "tasks_service_comments",
-      "ServiceName": "tasks-service-api",
+      "ServiceName": "tasks-service",
       "DownstreamScheme": "http",
       "DownstreamPathTemplate": "/api/comments/{everything}",
       "UpstreamPathTemplate": "/comments/{everything}",
@@ -21,7 +21,7 @@
     },
     {
       "Key": "tasks_service_projects",
-      "ServiceName": "tasks-service-api",
+      "ServiceName": "tasks-service",
       "DownstreamScheme": "http",
       "DownstreamPathTemplate": "/api/projects/{everything}",
       "UpstreamPathTemplate": "/projects/{everything}",
@@ -32,7 +32,7 @@
     },
     {
       "Key": "tasks_service_members",
-      "ServiceName": "tasks-service-api",
+      "ServiceName": "tasks-service",
       "DownstreamScheme": "http",
       "DownstreamPathTemplate": "/api/members/{everything}",
       "UpstreamPathTemplate": "/members/{everything}",
@@ -43,7 +43,7 @@
     },
     {
       "Key": "tasks_service_groups",
-      "ServiceName": "tasks-service-api",
+      "ServiceName": "tasks-service",
       "DownstreamScheme": "http",
       "DownstreamPathTemplate": "/api/groups/{everything}",
       "UpstreamPathTemplate": "/groups/{everything}",
@@ -54,7 +54,7 @@
     },
     {
       "Key": "tasks_service_tasks",
-      "ServiceName": "tasks-service-api",
+      "ServiceName": "tasks-service",
       "DownstreamScheme": "http",
       "DownstreamPathTemplate": "/api/tasks/{everything}",
       "UpstreamPathTemplate": "/tasks/{everything}",

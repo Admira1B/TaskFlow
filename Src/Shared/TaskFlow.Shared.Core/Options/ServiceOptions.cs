@@ -5,24 +5,23 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace TaskFlow.Shared.Core.Options {
-    public class ServiceOptions(string Name, string Host, int Port) {
+    public class ServiceOptions {
         [Required(ErrorMessage = "Service name is required")]
-        public required string Name { get; init; } = Name;
+        public string Name { get; set; } = null!;
 
         [Required(ErrorMessage = "Service host is required")]
-        public required string Host { get; init; } = Host;
+        public string Host { get; set; } = null!;
 
         [Required(ErrorMessage = "Service port is required")]
         [Range(1, 65535, ErrorMessage = "Port must be between 1 and 65535")]
-        public int Port { get; init; } = Port;
+        public int Port { get; set; } = 0;
 
         [JsonIgnore]
         public string Address => $"http://{Host}:{Port}";
     }
 
     [OptionsValidator]
-    public partial class ServiceOptionsValidator : IValidateOptions<ServiceOptions>{
-    }
+    public partial class ServiceOptionsValidator : IValidateOptions<ServiceOptions> { }
 
     public static partial class OptionsExtensions {
         public static IServiceCollection AddServiceOptions(this IServiceCollection services, IConfiguration configuration) {

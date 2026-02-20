@@ -1,21 +1,21 @@
-﻿using Consul;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using NLog;
-using NLog.Web;
+﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Ocelot.Middleware;
 using Ocelot.Configuration.File;
 using Ocelot.DependencyInjection;
-using Ocelot.Middleware;
 using Ocelot.Provider.Consul;
-using System.Text;
-using TaskFlow.Gateway.Health;
-using TaskFlow.Shared.Consul;
-using TaskFlow.Shared.Consul.Options;
 using TaskFlow.Shared.Core.Options;
+using TaskFlow.Shared.Core.Extensions;
+using TaskFlow.Shared.Consul.Options;
+using TaskFlow.Shared.Consul.Extensions;
+using TaskFlow.Shared.Logging.Extensions;
+using TaskFlow.Gateway.Health;
+using TaskFlow.Shared.Middlewares;
 
 namespace TaskFlow.Gateway.Composition {
     internal static class GatewayComposition {
         public async static Task<WebApplication> ConfigurePipelineAsync(this WebApplication app) {
+            app.UseMiddleware<RequestLoggingMiddleware>();
+            
             app.UseRouting();
 
             app.UseEndpoints(endpoints => {
@@ -25,62 +25,38 @@ namespace TaskFlow.Gateway.Composition {
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.Use(async (context, next) => {
-                var logger = LogManager.GetCurrentClassLogger();
-                logger.Info($"Request: {context.Request.Method} {context.Request.Path}");
-                await next();
-                logger.Info($"Response: {context.Response.StatusCode}");
-            });
-
             await app.UseOcelot();
 
             return app;
         }
 
         public static IServiceCollection ConfigureServices(this WebApplicationBuilder builder) {
-            // Health Checks
+            // === Options ===
+            builder.Services.AddConsulOptions(builder.Configuration);
+            builder.Services.AddServiceOptions(builder.Configuration);
+            builder.Services.AddJsonWebTokenOptions(builder.Configuration);
+
+            // === Infrastructure ===
+            builder.Services.AddLogging(builder);
+            builder.Services.AddConsulClient(builder);
+            builder.Services.AddJwtAuthentication(builder);
+            builder.Services.AddGatewayOcelotWithConsulSupport(builder);
+
+            // === Health Checks ===
             builder.Services.AddHealthChecks()
-                .AddCheck<GatewayHealthCheck>("gateway_health_check", Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Unhealthy);
-            
-            // Nlog logger
-            builder.Logging.ClearProviders();
+                .AddCheck<GatewayHealthCheck>(nameof(GatewayHealthCheck), HealthStatus.Unhealthy);
 
-            builder.Host.UseNLog();
+            return builder.Services;
+        }
+    }
 
-            builder.Services.AddHttpContextAccessor();
+    internal static class OcelotExtensions {
+        public static IServiceCollection AddGatewayOcelotWithConsulSupport(this IServiceCollection services, WebApplicationBuilder builder) {
+            var serviceOptions = builder.Configuration.GetSection(nameof(ServiceOptions)).Get<ServiceOptions>()
+                ?? throw new InvalidOperationException("ServiceOptions not configured");
+            var consulOptions = builder.Configuration.GetSection(nameof(ConsulOptions)).Get<ConsulOptions>()
+                ?? throw new InvalidOperationException("ConsulOptions not configured");
 
-            builder.Services.AddSingleton<Shared.Core.Interfaces.ILogger>(provider => {
-                var contextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
-
-                var nlogLogger = LogManager.GetLogger("gateway");
-
-                return new Shared.Logging.Logger(nlogLogger, contextAccessor);
-            });
-
-            // Services routing (Consul & Ocelot)
-            builder.Services.Configure<ServiceOptions>(builder.Configuration.GetSection(nameof(ServiceOptions)));
-            builder.Services.Configure<ConsulOptions>(builder.Configuration.GetSection(nameof(ConsulOptions)));
-
-            builder.Services.AddSingleton<IConsulClient>(sp => {
-                var configuration = sp.GetRequiredService<IConfiguration>();
-                return new ConsulClient(c => {
-                    c.Datacenter = configuration["ConsulOptions:Datacenter"] ??
-                        throw new InvalidOperationException(
-                            "ConsulOptions:Datacenter configuration is missing. Check 'ConsulOptions:Datacenter' into appsettings.json or environment variables."
-                        );
-                    c.Address = new Uri(configuration["ConsulOptions:Address"] ??
-                        throw new InvalidOperationException(
-                            "ConsulOptions:Address configuration is missing. Check 'ConsulOptions:Address' into appsettings.json or environment variables."
-                        )
-                    );
-                });
-            });
-            builder.Services.AddHostedService<ConsulHostedService>();
-
-            var serviceOpts = builder.Configuration.GetSection(nameof(ServiceOptions)).Get<ServiceOptions>()!;
-            var consulOpts = builder.Configuration.GetSection(nameof(ConsulOptions)).Get<ConsulOptions>()!;
-
-            var consulUri = new Uri(consulOpts.Address);
             builder.Configuration
                 .SetBasePath(builder.Environment.ContentRootPath)
                 .AddOcelot("OcelotConfigurations", builder.Environment)
@@ -89,48 +65,16 @@ namespace TaskFlow.Gateway.Composition {
             builder.Services.PostConfigure<FileConfiguration>(config => {
                 config.GlobalConfiguration.ServiceDiscoveryProvider ??= new FileServiceDiscoveryProvider();
 
-                config.GlobalConfiguration.ServiceDiscoveryProvider.Host = consulUri.Host;
-                config.GlobalConfiguration.ServiceDiscoveryProvider.Port = consulUri.Port;
+                config.GlobalConfiguration.ServiceDiscoveryProvider.Host = consulOptions.Host;
+                config.GlobalConfiguration.ServiceDiscoveryProvider.Port = consulOptions.Port;
                 config.GlobalConfiguration.ServiceDiscoveryProvider.Type = "Consul";
 
-                config.GlobalConfiguration.BaseUrl = $"http://{serviceOpts.Host}:{serviceOpts.Port}";
+                config.GlobalConfiguration.BaseUrl = $"http://{serviceOptions.Host}:{serviceOptions.Port}";
             });
 
             builder.Services.AddOcelot(builder.Configuration).AddConsul().AddConfigPlaceholders();
 
-            // JsonWebToken Authentication & Authorization
-            var jwtOptions = builder.Configuration.GetSection(nameof(JsonWebTokenOptions)).Get<JsonWebTokenOptions>();
-
-            builder.Services.AddAuthentication(options => {
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options => {
-                options.SaveToken = true;
-                options.RequireHttpsMetadata = false;
-
-                options.TokenValidationParameters = new TokenValidationParameters {
-                    ValidateIssuer = true,
-                    ValidIssuer = jwtOptions!.Issuer,
-                    ValidateAudience = true,
-                    AudienceValidator = (audiences, token, validationParams) => {
-                        if (audiences is null) {
-                            return false;
-                        }
-
-                        return audiences.Contains(jwtOptions.Audience);
-                    },
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ClockSkew = TimeSpan.Zero,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecretKey))
-                };
-            });
-
-            builder.Services.AddAuthorization();
-
-            return builder.Services;
+            return services;
         }
     }
 }

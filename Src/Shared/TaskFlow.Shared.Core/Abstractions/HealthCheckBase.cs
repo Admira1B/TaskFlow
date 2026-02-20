@@ -1,5 +1,6 @@
-﻿using TaskFlow.Shared.Core.Interfaces;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
+﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
+using TaskFlow.Shared.Core.Interfaces;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TaskFlow.Shared.Core.Abstractions {
     public abstract class ServiceHealthCheckBase : IHealthCheck {
@@ -54,6 +55,30 @@ namespace TaskFlow.Shared.Core.Abstractions {
             // This method can be override with added Dependencies
 
             return Task.FromResult(HealthCheckResult.Healthy());
+        }
+
+        protected virtual HealthCheckResult GetDependenciesHealthCheckResult(List<HealthCheckResult> results) {
+            var unhealthyResults = results.Where(r => r.Status != HealthStatus.Healthy).ToList();
+
+            if (unhealthyResults.Count is not 0) {
+                var errors = string.Join("; ", unhealthyResults.Select(r => r.Description));
+                var data = new Dictionary<string, object>();
+
+                foreach (var result in unhealthyResults) {
+                    if (result.Data != null) {
+                        foreach (var kvp in result.Data) {
+                            data[$"dependency_{kvp.Key}"] = kvp.Value;
+                        }
+                    }
+                }
+
+                return HealthCheckResult.Unhealthy(
+                    description: $"Dependencies issues: {errors}",
+                    data: data
+                );
+            }
+
+            return HealthCheckResult.Healthy();
         }
 
         protected virtual Task<HealthCheckResult> BuildHealthyResultAsync(CancellationToken cancellationToken) {

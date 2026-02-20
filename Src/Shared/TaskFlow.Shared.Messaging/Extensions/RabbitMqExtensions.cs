@@ -10,8 +10,9 @@ namespace TaskFlow.Shared.Messaging.Extensions {
             return services;
         }
 
-        public static IServiceCollection AddRabbitMqEventConsumer(this IServiceCollection services) {
-            
+        public static IServiceCollection AddRabbitMqEventConsumer<TConsumer>(this IServiceCollection services)
+            where TConsumer : RabbitMqEventConsumer {
+            services.AddHostedService<TConsumer>();
             
             return services;
         }

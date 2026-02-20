@@ -6,8 +6,6 @@ using TaskFlow.Tasks.Domain.Enums;
 namespace TaskFlow.Tasks.Infrastructure.SqlServer.Configurations {
     public class ProjectMemberConfiguration : IEntityTypeConfiguration<ProjectMember> {
         public void Configure(EntityTypeBuilder<ProjectMember> builder) {
-            builder.ToTable("ProjectMembers", "Tasks");
-            
             builder.HasKey(m => m.Id);
 
             builder.Property(m => m.Role)

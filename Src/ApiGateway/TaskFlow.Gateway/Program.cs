@@ -1,13 +1,13 @@
 using NLog;
-using NLog.Web;
 using TaskFlow.Gateway.Composition;
+using TaskFlow.Shared.Core.Helpers;
+using TaskFlow.Shared.Logging.Extensions;
 
 namespace TaskFlow.Gateway {
     public class Program {
         public async static Task Main(string[] args) {
-            var logger = LogManager.Setup()
-                .LoadConfigurationFromAppSettings()
-                .GetCurrentClassLogger();
+            var serviceName = ServiceHelper.GetServiceName();
+            var logger = LoggingExtensions.CreateStartupLogger(serviceName);
 
             try {
                 logger.Info("Starting Gateway Service...");

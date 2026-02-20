@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskFlow.Tasks.Infrastructure.SqlServer;
 
@@ -11,9 +12,11 @@ using TaskFlow.Tasks.Infrastructure.SqlServer;
 namespace TaskFlow.Tasks.Infrastructure.SqlServer.Migrations
 {
     [DbContext(typeof(TasksServiceDbContext))]
-    partial class TaskServiceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260220083457_SchemeWasRemoved")]
+    partial class SchemeWasRemoved
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
