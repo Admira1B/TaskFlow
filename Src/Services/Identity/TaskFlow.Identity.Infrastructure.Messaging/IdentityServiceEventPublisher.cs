@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
-using TaskFlow.Shared.Core.Entities;
+using TaskFlow.Shared.Core.Abstractions;
 using TaskFlow.Shared.Core.Interfaces;
 using TaskFlow.Shared.Messaging;
 using TaskFlow.Shared.Messaging.Options;

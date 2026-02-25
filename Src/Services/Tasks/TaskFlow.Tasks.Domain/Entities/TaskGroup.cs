@@ -1,4 +1,4 @@
-﻿using TaskFlow.Shared.Core.Entities;
+﻿using TaskFlow.Shared.Core.Abstractions;
 
 namespace TaskFlow.Tasks.Domain.Entities {
     public class TaskGroup : EntityBase {

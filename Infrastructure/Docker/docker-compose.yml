@@ -1,154 +1,198 @@
-version: '3.8'
 name: TaskFlow
 
+#           === Base anchors ===              #
+x-logging: &default-logging
+    driver: "json-file"
+    options:
+        max-size: "10m"
+        max-file: "3"
+
+x-healthcheck: &default-healthcheck
+    interval: 60s
+    timeout: 10s
+    retries: 3
+    start_period: 30s
+
+# === .NET microservices shared variables === #
+x-dotnet-base: &dotnet-base
+    env_file:
+        - .env
+        - .env.${ENVIRONMENT:-dev}
+    logging: *default-logging
+    networks:
+        - taskflow-internal-network
+    restart: unless-stopped
+
+
+x-env-dotnet-base: &env-dotnet-base
+    ASPNETCORE_ENVIRONMENT: Docker
+
+    ConsulOptions__Host: ${CONSUL_HOST}
+    ConsulOptions__Port: ${CONSUL_INTERNAL_PORT}
+    ConsulOptions__Datacenter: ${CONSUL_DATACENTER}
+    ConsulOptions__EnableServiceDiscovery: ${CONSUL_SERVICE_DISCOVERY}
+        
+    RabbitMqOptions__Host: ${RABBITMQ_HOST}
+    RabbitMqOptions__Port: ${RABBITMQ_AMQP_INTERNAL_PORT}
+    RabbitMqOptions__VirtualHost: ${RABBITMQ_VHOST}
+    RabbitMqOptions__UserName: ${RABBITMQ_USERNAME}
+    RabbitMqOptions__Password: ${RABBITMQ_PASSWORD}
+
+    JsonWebTokenOptions__Issuer: ${JWT_ISSUER}
+    JsonWebTokenOptions__SecretKey: ${JWT_SECRET_KEY}
+
+#           === Networks Block ===            #
 networks:
-  taskflow-internal-network:
-    driver: bridge
+    taskflow-internal-network:
+        driver: bridge
 
 services:
-  sqlserver:  
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: taskflow-sqlserver
-    hostname: sqlserver
+#      === Infrastructure Services ===        #
+    consul:
+        image: hashicorp/consul:${CONSUL_VER}
+        container_name: taskflow-consul
+        hostname: ${CONSUL_HOST}
+        ports:
+            - "${CONSUL_PUBLIC_PORT}:${CONSUL_INTERNAL_PORT}"
+        command: agent -server -ui -client=0.0.0.0 -bootstrap-expect=1 -data-dir=/consul/data
+        volumes:
+            - consul-data:/consul/data
+        networks:
+          - taskflow-internal-network
+        healthcheck:
+          test: ["CMD", "consul", "members"]
+          <<: *default-healthcheck
+        restart: unless-stopped
 
-    environment:
-      - ACCEPT_EULA=Y
-      - SA_PASSWORD=${SQL_SERVER_PASSWORD}
-      - MSSQL_PID=Developer
+    sqlserver:
+        image: mcr.microsoft.com/mssql/server:${SQL_SERVER_VER}
+        container_name: taskflow-sqlserver
+        hostname: ${SQL_SERVER_HOST}
+        ports: 
+            - "${SQL_SERVER_PUBLIC_PORT}:${SQL_SERVER_INTERNAL_PORT}"
+        environment: 
+            ACCEPT_EULA: Y
+            SA_PASSWORD: ${SQL_SERVER_PASSWORD}
+            MSSQL_PID: Developer
+        volumes:
+            - sqlserver-data:/var/opt/mssql
+        networks:
+            - taskflow-internal-network
+        healthcheck:
+            test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"${SQL_SERVER_PASSWORD}\" -Q \"SELECT 1\" -b -No"]
+            <<: *default-healthcheck
+        restart: unless-stopped
 
-    ports:
-      - "1433:1433"
-  
-    volumes:
-      - sqlserver-data:/var/opt/mssql
+    rabbitmq:
+        image: rabbitmq:${RABBITMQ_VER}
+        container_name: taskflow-rabbitmq
+        hostname: ${RABBITMQ_HOST}
+        ports:
+            - "${RABBITMQ_AMQP_PUBLIC_PORT}:${RABBITMQ_AMQP_INTERNAL_PORT}"
+            - "${RABBITMQ_MGMT_PUBLIC_PORT}:${RABBITMQ_MGMT_INTERNAL_PORT}"
+        environment:
+            RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}
+            RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+        volumes:
+            - rabbitmq-data:/var/lib/rabbitmq
+        networks:
+          - taskflow-internal-network
+        healthcheck:
+          test: ["CMD", "rabbitmqctl", "status"]
+          <<: *default-healthcheck
+        restart: unless-stopped 
 
-    networks:
-      - taskflow-internal-network
+#      === Application Microservices ===      #
+    identity-service:
+        <<: *dotnet-base
+        container_name: taskflow-identity-service
+        hostname: ${IDENTITY_SERVICE_HOST}
+        ports: 
+            - "${IDENTITY_SERVICE_PUBLIC_PORT}:${IDENTITY_SERVICE_INTERNAL_PORT}"
+        environment:
+            <<: *env-dotnet-base
+            ServiceOptions__Name: ${IDENTITY_SERVICE_NAME}
+            ServiceOptions__Host: ${IDENTITY_SERVICE_HOST}
+            ServiceOptions__Port: ${IDENTITY_SERVICE_INTERNAL_PORT}
 
-    healthcheck:
-      test: ["CMD-SHELL", "timeout 10 bash -c 'cat < /dev/null > /dev/tcp/localhost/1433' || exit 1"]
-      interval: 10s  
-      timeout: 3s    
-      retries: 10    
-      start_period: 30s  
-    restart: unless-stopped
-  #---------------------------------------#
+            ConnectionStrings__SqlServerConnectionString: Server=${SQL_SERVER_HOST};Database=${SQL_SERVER_DATABASE}.${IDENTITY_SERVICE_NAME};User Id=${SQL_SERVER_USER};Password=${SQL_SERVER_PASSWORD};TrustServerCertificate=True;
 
-  rabbitmq:
-    image: rabbitmq:3-management-alpine
-    container_name: taskflow-rabbitmq
-    hostname: rabbitmq
-    
-    environment:
-      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USERNAME}
-      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
-    
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    
-    networks:
-      - taskflow-internal-network
-    
-    healthcheck:
-      test: ["CMD", "rabbitmqctl", "status"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    restart: unless-stopped
-  #---------------------------------------#
+            JsonWebTokenOptions__Audience: ${IDENTITY_SERVICE_AUD}
 
-  identity-service.api:
-    container_name: taskflow-identity-service
-    hostname: identity-service.api
-    
-    build:
-      context: ../..  
-      dockerfile: Src/Services/Identity/TaskFlow.Identity.API/Dockerfile
-    
-    env_file:
-      - .env
-      - .env.identity-service
-    
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Docker
-      - RabbitMqOptions__Port=5672
-      - RabbitMqOptions__VirtualHost=/
-      - RabbitMqOptions__HostName=rabbitmq
-      - RabbitMqOptions__UserName=${RABBITMQ_USERNAME}
-      - RabbitMqOptions__Password=${RABBITMQ_PASSWORD}
-      - ConnectionStrings__SqlServerConnectionString=Server=${SQL_SERVER_HOST};Database=${SQL_SERVER_DB_NAME};User Id=${SQL_SERVER_USER};Password=${SQL_SERVER_PASSWORD};TrustServerCertificate=True;
-    
-    networks:
-      - taskflow-internal-network
-    
-    depends_on:
-      sqlserver:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    restart: unless-stopped
-  #---------------------------------------#
+            JsonWebTokenGenerationOptions__Issuer: ${JWT_ISSUER}
+            JsonWebTokenGenerationOptions__SecretKey: ${JWT_SECRET_KEY}
+            JsonWebTokenGenerationOptions__ExpiresHours: ${JWT_EXPIRES_HOURS}
+            JsonWebTokenGenerationOptions__ValidAudiences__0: ${IDENTITY_SERVICE_AUD}
+            JsonWebTokenGenerationOptions__ValidAudiences__1: ${TASKS_SERVICE_AUD}
+            JsonWebTokenGenerationOptions__ValidAudiences__2: ${GATEWAY_AUD}
+            
+            EdgeService__BaseUrl: http://${GATEWAY_HOST}:${GATEWAY_INTERNAL_PORT}
+        build:
+            context: ../..
+            dockerfile: Src/Services/Identity/TaskFlow.Identity.API/Dockerfile
+        depends_on:
+            consul:
+                condition: service_healthy
+            sqlserver:
+                condition: service_healthy
+            rabbitmq:
+                condition: service_healthy
 
-  tasks-service.api:
-    container_name: taskflow-tasks-service
-    hostname: tasks-service.api
-    
-    build:
-      context: ../..
-      dockerfile: Src/Services/Tasks/TaskFlow.Tasks.API/Dockerfile
-    
-    env_file:
-      - .env
-      - .env.tasks-service
-    
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Docker
-      - RabbitMqOptions__Port=5672
-      - RabbitMqOptions__VirtualHost=/
-      - RabbitMqOptions__HostName=rabbitmq
-      - RabbitMqOptions__UserName=${RABBITMQ_USERNAME}
-      - RabbitMqOptions__Password=${RABBITMQ_PASSWORD}
-      - ConnectionStrings__SqlServerConnectionString=Server=${SQL_SERVER_HOST};Database=${SQL_SERVER_DB_NAME};User Id=${SQL_SERVER_USER};Password=${SQL_SERVER_PASSWORD};TrustServerCertificate=True;
-    
-    networks:
-      - taskflow-internal-network
-    
-    depends_on:
-      sqlserver:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    restart: unless-stopped
-  #---------------------------------------#
+    tasks-service: 
+        <<: *dotnet-base
+        container_name: taskflow-tasks-service
+        hostname: ${TASKS_SERVICE_HOST}
+        ports:
+            - "${TASKS_SERVICE_PUBLIC_PORT}:${TASKS_SERVICE_INTERNAL_PORT}"
+        environment:
+            <<: *env-dotnet-base
+            ServiceOptions__Name: ${TASKS_SERVICE_NAME}
+            ServiceOptions__Host: ${TASKS_SERVICE_HOST}
+            ServiceOptions__Port: ${TASKS_SERVICE_INTERNAL_PORT}
 
-  gateway:
-    container_name: taskflow-gateway
-    hostname: taskflow
-    
-    build:
-      context: ../..
-      dockerfile: Src/ApiGateway/TaskFlow.Gateway/Dockerfile
-    
-    env_file:
-      - .env
-      - .env.gateway
-    
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Docker
-    
-    ports:
-      - "5000:8080"
-    
-    networks:
-      - taskflow-internal-network
-    
-    depends_on:
-      - identity-service.api
-      - tasks-service.api
-    restart: unless-stopped
-  #---------------------------------------#
+            ConnectionStrings__SqlServerConnectionString: Server=${SQL_SERVER_HOST};Database=${SQL_SERVER_DATABASE}.${TASKS_SERVICE_NAME};User Id=${SQL_SERVER_USER};Password=${SQL_SERVER_PASSWORD};TrustServerCertificate=True;
 
+            JsonWebTokenOptions__Audience: ${TASKS_SERVICE_AUD}
+
+            EdgeService__BaseUrl: http://${GATEWAY_HOST}:${GATEWAY_INTERNAL_PORT}
+        build:
+            context: ../..
+            dockerfile: Src/Services/Tasks/TaskFlow.Tasks.API/Dockerfile
+        depends_on:
+            consul:
+                condition: service_healthy
+            sqlserver:
+                condition: service_healthy
+            rabbitmq:
+                condition: service_healthy
+
+    gateway:
+        <<: *dotnet-base
+        container_name: taskflow-gateway
+        hostname: ${GATEWAY_HOST}
+        ports: 
+            - "${GATEWAY_PUBLIC_PORT}:${GATEWAY_INTERNAL_PORT}"
+        environment:
+            <<: *env-dotnet-base
+            ServiceOptions__Name: ${GATEWAY_NAME}
+            ServiceOptions__Host: ${GATEWAY_HOST}
+            ServiceOptions__Port: ${GATEWAY_INTERNAL_PORT}
+
+            JsonWebTokenOptions__Audience: ${GATEWAY_AUD}
+        build:
+            context: ../..
+            dockerfile: Src/ApiGateway/TaskFlow.Gateway/Dockerfile
+        depends_on:
+            identity-service:
+                condition: service_healthy
+            tasks-service:
+                condition: service_healthy
+
+#         === PERSISTENT VOLUMES ===          #
 volumes:
   sqlserver-data:
-    
+    driver: local
+  consul-data:
+    driver: local
+  rabbitmq-data:
+    driver: local

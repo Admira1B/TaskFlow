@@ -10,14 +10,13 @@ using TaskFlow.Tasks.Infrastructure.SqlServer;
 
 namespace TaskFlow.Tasks.Infrastructure.SqlServer.Migrations
 {
-    [DbContext(typeof(TaskServiceDbContext))]
+    [DbContext(typeof(TasksServiceDbContext))]
     partial class TaskServiceDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasDefaultSchema("Tasks")
                 .HasAnnotation("ProductVersion", "10.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
@@ -54,7 +53,7 @@ namespace TaskFlow.Tasks.Infrastructure.SqlServer.Migrations
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("Comments", "Tasks");
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("TaskFlow.Tasks.Domain.Entities.Project", b =>
@@ -92,7 +91,7 @@ namespace TaskFlow.Tasks.Infrastructure.SqlServer.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Projects", "Tasks");
+                    b.ToTable("Projects");
                 });
 
             modelBuilder.Entity("TaskFlow.Tasks.Domain.Entities.ProjectMember", b =>
@@ -127,7 +126,7 @@ namespace TaskFlow.Tasks.Infrastructure.SqlServer.Migrations
                     b.HasIndex("ProjectId", "UserId")
                         .IsUnique();
 
-                    b.ToTable("ProjectMembers", "Tasks");
+                    b.ToTable("Members");
                 });
 
             modelBuilder.Entity("TaskFlow.Tasks.Domain.Entities.TaskGroup", b =>
@@ -157,7 +156,7 @@ namespace TaskFlow.Tasks.Infrastructure.SqlServer.Migrations
                     b.HasIndex("ProjectId", "Name")
                         .IsUnique();
 
-                    b.ToTable("TaskGroups", "Tasks");
+                    b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("TaskFlow.Tasks.Domain.Entities.TaskItem", b =>
@@ -205,7 +204,7 @@ namespace TaskFlow.Tasks.Infrastructure.SqlServer.Migrations
 
                     b.HasIndex("GroupId", "Priority");
 
-                    b.ToTable("TaskItems", "Tasks");
+                    b.ToTable("Tasks");
                 });
 
             modelBuilder.Entity("TaskFlow.Tasks.Domain.Entities.Comment", b =>

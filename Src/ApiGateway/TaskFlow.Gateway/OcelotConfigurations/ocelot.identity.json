@@ -1,0 +1,61 @@
+{
+  "Routes": [
+    {
+      "Key": "identity_service_health_check",
+      "ServiceName": "identity-service",
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/health",
+      "UpstreamPathTemplate": "/identity-service/health",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "Key": "identity_service_auth_register",
+      "ServiceName": "identity-service",
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/api/auth/register",
+      "UpstreamPathTemplate": "/auth/register",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "Key": "identity_service_auth_login",
+      "ServiceName": "identity-service",
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/api/auth/login",
+      "UpstreamPathTemplate": "/auth/login",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "Key": "identity_service_auth_logout",
+      "ServiceName": "identity-service",
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/api/auth/logout",
+      "UpstreamPathTemplate": "/auth/logout",
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "Key": "identity_service_users",
+      "ServiceName": "identity-service",
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/api/users/{everything}",
+      "UpstreamPathTemplate": "/users/{everything}",
+      "UpstreamHttpMethod": [ "GET", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "Key": "identity_service_roles",
+      "ServiceName": "identity-service",
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/api/roles/{everything}",
+      "UpstreamPathTemplate": "/roles/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    }
+  ]
+}

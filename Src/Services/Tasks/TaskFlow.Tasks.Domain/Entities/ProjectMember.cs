@@ -1,4 +1,4 @@
-﻿using TaskFlow.Shared.Core.Entities;
+﻿using TaskFlow.Shared.Core.Abstractions;
 using TaskFlow.Tasks.Domain.Enums;
 
 namespace TaskFlow.Tasks.Domain.Entities {

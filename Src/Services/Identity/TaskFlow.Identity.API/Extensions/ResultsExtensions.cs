@@ -36,7 +36,7 @@ namespace TaskFlow.Identity.API.Extensions {
                         user = result.User,
                         token = result.Token,
                         // Token Lifetime in seconds
-                        expiresIn = (jwtOptions?.ExpiresHoursParsed ?? _baseTokenLifetime) * 3600
+                        expiresIn = (jwtOptions?.ExpiresHours ?? _baseTokenLifetime) * 3600
                     }
                 );
             }

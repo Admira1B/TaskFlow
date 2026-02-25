@@ -1,4 +1,4 @@
-﻿using TaskFlow.Shared.Core.Health;
+﻿using TaskFlow.Shared.Core.Abstractions;
 
 namespace TaskFlow.Gateway.Health {
     public class GatewayHealthCheck(Shared.Core.Interfaces.ILogger logger) :

@@ -5,8 +5,6 @@ using TaskFlow.Tasks.Domain.Entities;
 namespace TaskFlow.Tasks.Infrastructure.SqlServer.Configurations {
     public class ProjectConfiguration : IEntityTypeConfiguration<Project> {
         public void Configure(EntityTypeBuilder<Project> builder) {
-            builder.ToTable("Projects", "Tasks");
-            
             builder.HasKey(p => p.Id);
 
             builder.Property(p => p.Name)

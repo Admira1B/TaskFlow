@@ -1,4 +1,4 @@
-﻿using TaskFlow.Shared.Core.Entities;
+﻿using TaskFlow.Shared.Core.Abstractions;
 
 namespace TaskFlow.Shared.Core.Interfaces {
     public interface IEventPublisher {

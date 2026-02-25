@@ -1,6 +1,0 @@
-﻿{
-  "GlobalConfiguration": {
-    "BaseUrl": "http://taskflow:8080",
-    "RequestIdKey": "X-Request-ID"
-  }
-}

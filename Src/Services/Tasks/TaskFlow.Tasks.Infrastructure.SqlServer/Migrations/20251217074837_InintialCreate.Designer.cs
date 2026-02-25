@@ -11,7 +11,7 @@ using TaskFlow.Tasks.Infrastructure.SqlServer;
 
 namespace TaskFlow.Tasks.Infrastructure.SqlServer.Migrations
 {
-    [DbContext(typeof(TaskServiceDbContext))]
+    [DbContext(typeof(TasksServiceDbContext))]
     [Migration("20251217074837_InintialCreate")]
     partial class InintialCreate
     {

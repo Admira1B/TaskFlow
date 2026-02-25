@@ -5,7 +5,7 @@
 		<PackageReference Include="AutoMapper" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<ProjectReference Include="..\TaskFlow.Identity.Domain\TaskFlow.Identity.Domain.csproj" />
 		<ProjectReference Include="..\TaskFlow.Identity.Contracts\TaskFlow.Identity.Contracts.csproj" />

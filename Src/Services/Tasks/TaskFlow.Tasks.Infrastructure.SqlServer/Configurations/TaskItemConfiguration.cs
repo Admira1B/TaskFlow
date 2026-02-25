@@ -6,8 +6,6 @@ using TaskFlow.Tasks.Domain.Enums;
 namespace TaskFlow.Tasks.Infrastructure.SqlServer.Configurations {
     public class TaskItemConfiguration : IEntityTypeConfiguration<TaskItem> {
         public void Configure(EntityTypeBuilder<TaskItem> builder) {
-            builder.ToTable("TaskItems", "Tasks");
-            
             builder.HasKey(t => t.Id);
 
             builder.Property(t => t.Title)

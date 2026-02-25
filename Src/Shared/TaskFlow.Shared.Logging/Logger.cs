@@ -24,7 +24,7 @@ namespace TaskFlow.Shared.Logging {
         }
 
         public void Fatal(string message, Exception? exception = null, params string[] args) { 
-            Log(LogLevel.Error, message, exception, args: args);
+            Log(LogLevel.Fatal, message, exception, args: args);
         }
 
         private void Log(LogLevel loggingLevel, string message, Exception? exception = null, params string[] args) {

@@ -3,8 +3,8 @@ using TaskFlow.Tasks.Domain.Entities;
 using TaskFlow.Tasks.Domain.Contracts;
 
 namespace TaskFlow.Tasks.Infrastructure.SqlServer.Repositories {
-    public class CommentRepository(TaskServiceDbContext dbContext) : ICommentRepository {
-        private readonly TaskServiceDbContext _dbContext = dbContext;
+    public class CommentRepository(TasksServiceDbContext dbContext) : ICommentRepository {
+        private readonly TasksServiceDbContext _dbContext = dbContext;
 
         public async Task<Comment?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) {
             return await _dbContext.Comments

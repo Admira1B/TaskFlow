@@ -12,7 +12,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
 		<PackageReference Include="Swashbuckle.AspNetCore" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<ProjectReference Include="..\TaskFlow.Identity.Application\TaskFlow.Identity.Application.csproj" />
 		<ProjectReference Include="..\TaskFlow.Identity.Infrastructure.Messaging\TaskFlow.Identity.Infrastructure.Messaging.csproj" />
@@ -20,12 +20,13 @@
 		<ProjectReference Include="..\..\..\Shared\TaskFlow.Shared.Consul\TaskFlow.Shared.Consul.csproj" />
 		<ProjectReference Include="..\..\..\Shared\TaskFlow.Shared.Logging\TaskFlow.Shared.Logging.csproj" />
 		<ProjectReference Include="..\..\..\Shared\TaskFlow.Shared.ApiClients\TaskFlow.Shared.ApiClients.csproj" />
+		<ProjectReference Include="..\..\..\Shared\TaskFlow.Shared.Middlewares\TaskFlow.Shared.Middlewares.csproj" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<None Update="nlog.config">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
-	
+
 </Project>

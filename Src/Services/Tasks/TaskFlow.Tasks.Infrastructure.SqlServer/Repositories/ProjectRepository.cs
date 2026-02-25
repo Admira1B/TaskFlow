@@ -3,8 +3,8 @@ using TaskFlow.Tasks.Domain.Entities;
 using TaskFlow.Tasks.Domain.Contracts;
 
 namespace TaskFlow.Tasks.Infrastructure.SqlServer.Repositories {
-    public class ProjectRepository(TaskServiceDbContext dbContext) : IProjectRepository {
-        private readonly TaskServiceDbContext _dbContext = dbContext;
+    public class ProjectRepository(TasksServiceDbContext dbContext) : IProjectRepository {
+        private readonly TasksServiceDbContext _dbContext = dbContext;
 
         public async Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default) { 
             return await _dbContext.Projects

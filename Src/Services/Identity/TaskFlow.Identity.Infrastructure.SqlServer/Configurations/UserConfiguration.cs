@@ -5,7 +5,7 @@ using TaskFlow.Identity.Domain.Entities;
 namespace TaskFlow.Identity.Infrastructure.SqlServer.Configurations {
     internal class UserConfiguration : IEntityTypeConfiguration<User> {
         public void Configure(EntityTypeBuilder<User> builder) {
-            builder.ToTable("Users", "Identity");
+            builder.ToTable("Users");
 
             builder.HasIndex(u => u.Email).IsUnique();
             builder.HasIndex(u => u.NormalizedEmail).IsUnique();

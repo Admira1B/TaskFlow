@@ -1,0 +1,67 @@
+{
+  "Routes": [
+    {
+      "Key": "tasks_service_health_check",
+      "ServiceName": "tasks-service",
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/health",
+      "UpstreamPathTemplate": "/tasks-service/health",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "Key": "tasks_service_comments",
+      "ServiceName": "tasks-service",
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/api/comments/{everything}",
+      "UpstreamPathTemplate": "/comments/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "Key": "tasks_service_projects",
+      "ServiceName": "tasks-service",
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/api/projects/{everything}",
+      "UpstreamPathTemplate": "/projects/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "Key": "tasks_service_members",
+      "ServiceName": "tasks-service",
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/api/members/{everything}",
+      "UpstreamPathTemplate": "/members/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "Key": "tasks_service_groups",
+      "ServiceName": "tasks-service",
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/api/groups/{everything}",
+      "UpstreamPathTemplate": "/groups/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "Key": "tasks_service_tasks",
+      "ServiceName": "tasks-service",
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/api/tasks/{everything}",
+      "UpstreamPathTemplate": "/tasks/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    }
+  ]
+}
