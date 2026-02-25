@@ -1,14 +1,12 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.OpenApi;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi;
 using TaskFlow.Shared.Core.Options;
 
 namespace TaskFlow.Shared.Core.Extensions {
     public static class SwaggerExtensions {
         public static IServiceCollection AddSwaggerDocumentation(this IServiceCollection services, WebApplicationBuilder builder, string version = "v1") {
-            var serviceOptions = builder.Configuration.GetSection(nameof(ServiceOptions)).Get<ServiceOptions>()
-                ?? throw new InvalidOperationException("ServiceOptions not configured");
+            var serviceOptions = builder.Configuration.GetServiceOptions();
 
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(options => {

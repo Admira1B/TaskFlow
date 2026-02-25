@@ -34,5 +34,10 @@ namespace TaskFlow.Shared.Consul.Options {
 
             return services;
         }
+
+        public static ConsulOptions GetConsulOptions(this IConfiguration configuration) {
+            return configuration.GetSection(nameof(ConsulOptions)).Get<ConsulOptions>()
+                   ?? throw new InvalidOperationException($"{nameof(ConsulOptions)} not configured");
+        }
     }
 }

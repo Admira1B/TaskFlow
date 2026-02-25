@@ -34,5 +34,10 @@ namespace TaskFlow.Shared.Messaging.Options {
 
             return services;
         }
+
+        public static RabbitMqOptions GetRabbitMqOptions(this IConfiguration configuration) {
+            return configuration.GetSection(nameof(RabbitMqOptions)).Get<RabbitMqOptions>()
+                   ?? throw new InvalidOperationException($"{nameof(RabbitMqOptions)} not configured");
+        }
     }
 }

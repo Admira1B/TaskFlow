@@ -1,16 +1,14 @@
 ﻿using System.Text;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using TaskFlow.Shared.Core.Options;
-using Microsoft.AspNetCore.Builder;
 
 namespace TaskFlow.Shared.Core.Extensions {
     public static class JwtExtensions {
         public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, WebApplicationBuilder builder) {
-            var jwtOptions = builder.Configuration.GetSection(nameof(JsonWebTokenOptions)).Get<JsonWebTokenOptions>()
-                ?? throw new InvalidOperationException("JsonWebTokenOptions not configured");
+            var jwtOptions = builder.Configuration.GetJsonWebTokenOptions();
 
             services
                 .AddAuthentication(options => {

@@ -32,5 +32,10 @@ namespace TaskFlow.Identity.Application.Options {
 
             return services;
         }
+
+        public static JsonWebTokenGenerationOptions GetJsonWebTokenGenerationOptions(this IConfiguration configuration) {
+            return configuration.GetSection(nameof(JsonWebTokenGenerationOptions)).Get<JsonWebTokenGenerationOptions>()
+                   ?? throw new InvalidOperationException($"{nameof(JsonWebTokenGenerationOptions)} not configured");
+        }
     }
 }

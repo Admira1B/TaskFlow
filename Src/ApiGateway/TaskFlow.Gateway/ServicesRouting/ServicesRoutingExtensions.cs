@@ -7,10 +7,8 @@ using TaskFlow.Shared.Consul.Options;
 namespace TaskFlow.Gateway.ServicesRouting {
     internal static class ServicesRoutingExtensions {
         public static IServiceCollection AddOcelotRoutingWithConsulSupport(this IServiceCollection services, WebApplicationBuilder builder) {
-            var serviceOptions = builder.Configuration.GetSection(nameof(ServiceOptions)).Get<ServiceOptions>()
-                ?? throw new InvalidOperationException("ServiceOptions not configured");
-            var consulOptions = builder.Configuration.GetSection(nameof(ConsulOptions)).Get<ConsulOptions>()
-                ?? throw new InvalidOperationException("ConsulOptions not configured");
+            var serviceOptions = builder.Configuration.GetServiceOptions();
+            var consulOptions = builder.Configuration.GetConsulOptions();
 
             builder.Configuration
                 .SetBasePath(builder.Environment.ContentRootPath)

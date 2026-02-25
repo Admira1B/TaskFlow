@@ -1,18 +1,16 @@
-﻿using Consul;
-using Winton.Extensions.Configuration.Consul;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Consul;
+using Winton.Extensions.Configuration.Consul;
 using TaskFlow.Shared.Core.Options;
 using TaskFlow.Shared.Consul.Options;
 
 namespace TaskFlow.Shared.Consul.Extensions {
     public static class ConsulExtensions {
         public static IServiceCollection AddConsulConfiguration(this IServiceCollection services, WebApplicationBuilder builder) {
-            var serviceOptions = builder.Configuration.GetSection(nameof(ServiceOptions)).Get<ServiceOptions>()
-                ?? throw new InvalidOperationException("ServiceOptions not configured");
-            var consulOptions = builder.Configuration.GetSection(nameof(ConsulOptions)).Get<ConsulOptions>()
-                ?? throw new InvalidOperationException("ConsulOptions not configured");
+            var serviceOptions = builder.Configuration.GetServiceOptions();
+            var consulOptions = builder.Configuration.GetConsulOptions();
 
             builder.Configuration.AddConsul($"config/{serviceOptions.Name}/{builder.Environment.EnvironmentName}", options => {
                 options.ConsulConfigurationOptions = configOptions => {
@@ -27,8 +25,7 @@ namespace TaskFlow.Shared.Consul.Extensions {
         }
 
         public static IServiceCollection AddConsulClient(this IServiceCollection services, WebApplicationBuilder builder) {
-            var consulOptions = builder.Configuration.GetSection(nameof(ConsulOptions)).Get<ConsulOptions>()
-                ?? throw new InvalidOperationException("ConsulOptions not configured");
+            var consulOptions = builder.Configuration.GetConsulOptions();
 
             services.AddSingleton<IConsulClient>(sp => {
                 var configuration = sp.GetRequiredService<IConfiguration>();
