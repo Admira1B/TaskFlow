@@ -2,6 +2,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Consul" />
+		<PackageReference Include="Ocelot.Provider.Consul" />
 		<PackageReference Include="Winton.Extensions.Configuration.Consul" />
 		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
 	</ItemGroup>

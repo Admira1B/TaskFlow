@@ -34,11 +34,13 @@ namespace TaskFlow.Tasks.API {
 
                 logger.Info($"Environment: {app.Environment.EnvironmentName}");
                 logger.Info($"Application Name: {builder.Environment.ApplicationName}");
-                logger.Info("Tasks Service started successfully. Press Ctrl+C to shut down.");
+                logger.Info("Tasks Service started successfully");
 
                 app.Run();
 
                 logger.Info("Tasks Service is shutting down...");
+            } catch (OperationCanceledException) {
+                logger.Info("Tasks Service startup was canceled");
             } catch (Exception ex) {
                 logger.Fatal("Stopped Tasks Service because of exception", ex);
                 throw;

@@ -34,11 +34,13 @@ namespace TaskFlow.Identity.API {
 
                 logger.Info($"Environment: {app.Environment.EnvironmentName}");
                 logger.Info($"Application Name: {builder.Environment.ApplicationName}");
-                logger.Info("Identity Service started successfully. Press Ctrl+C to shut down.");
+                logger.Info("Identity Service started successfully");
 
                 app.Run();
 
                 logger.Info("Identity Service is shutting down...");
+            } catch (OperationCanceledException) { 
+                logger.Info("Identity Service startup was canceled");
             } catch (Exception ex) {
                 logger.Fatal("Stopped Identity Service because of exception", ex);
                 throw;

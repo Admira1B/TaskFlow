@@ -1,7 +1,7 @@
 using NLog;
-using TaskFlow.Gateway.Composition;
 using TaskFlow.Shared.Core.Helpers;
 using TaskFlow.Shared.Logging.Extensions;
+using TaskFlow.Gateway.Composition;
 
 namespace TaskFlow.Gateway {
     public class Program {
@@ -21,11 +21,13 @@ namespace TaskFlow.Gateway {
 
                 logger.Info($"Environment: {app.Environment.EnvironmentName}");
                 logger.Info($"Application Name: {builder.Environment.ApplicationName}");
-                logger.Info("Gateway Service started successfully. Press Ctrl+C to shut down.");
+                logger.Info("Gateway Service started successfully");
 
                 app.Run();
 
                 logger.Info("Gateway Service is shutting down...");
+            } catch (OperationCanceledException) {
+                logger.Info("Gateway Service startup was canceled");
             } catch (Exception ex) {
                 logger.Fatal("Stopped Gateway Service because of exception", ex);
                 throw;
