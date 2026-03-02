@@ -1,14 +1,14 @@
 ﻿using MediatR;
-using TaskFlow.Tasks.Domain.Enums;
+using TaskFlow.Shared.Core.Enums;
 
-namespace TaskFlow.Tasks.Application.Results {
+namespace TaskFlow.Shared.Core.Results {
     public class RequestResult<T> {
         public bool Succeeded { get; }
         public ErrorType ErrorType { get; }
         public T? Value { get; }
         public string? ErrorMessage { get; }
 
-        protected RequestResult(bool succeeded, ErrorType errorType, T? value, string? errorMessage) {
+        private RequestResult(bool succeeded, ErrorType errorType, T? value, string? errorMessage) {
             Succeeded = succeeded;
             ErrorType = errorType;
             Value = value;
@@ -19,7 +19,6 @@ namespace TaskFlow.Tasks.Application.Results {
             return new RequestResult<T>(true, ErrorType.Ok, value, null);
         }
 
-        // For methods that returns void
         public static RequestResult<Unit> Success() {
             return new RequestResult<Unit>(true, ErrorType.Ok, Unit.Value, null);
         }
@@ -46,6 +45,10 @@ namespace TaskFlow.Tasks.Application.Results {
 
         public static RequestResult<T> InvalidOperation(string message) {
             return Failure(message, ErrorType.InvalidOperation);
+        }
+
+        public static RequestResult<T> FailedToPublishEvent(string message) {
+            return Failure(message, ErrorType.FailedToPublishEvent);
         }
 
         public void Deconstruct(out bool succeeded, out T? value, out string? errorMessage, out ErrorType errorType) {

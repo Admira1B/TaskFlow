@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using AutoMapper;
-using TaskFlow.Tasks.Application.Results;
-using TaskFlow.Tasks.Contracts.DTOs.Responses;
+using TaskFlow.Shared.Core.Results;
 using TaskFlow.Tasks.Domain.Contracts;
+using TaskFlow.Tasks.Contracts.DTOs.Responses;
 
 namespace TaskFlow.Tasks.Application.Queries.Comment.GetByTask {
     public class GetCommentsByTaskItemQueryHandler(IMapper mapper, ICommentRepository repository, ITaskItemRepository taskRepository) : IRequestHandler<GetCommentsByTaskItemQuery, RequestResult<List<CommentDto>>> {

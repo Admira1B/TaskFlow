@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using TaskFlow.Tasks.Application.Results;
+using TaskFlow.Shared.Core.Results;
 using TaskFlow.Tasks.Contracts.DTOs.Responses;
 
 namespace TaskFlow.Tasks.Application.Queries.ProjectMember.GetById {

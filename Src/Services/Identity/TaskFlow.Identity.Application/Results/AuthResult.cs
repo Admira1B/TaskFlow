@@ -1,4 +1,4 @@
-﻿using TaskFlow.Identity.Domain.Enums;
+﻿using TaskFlow.Shared.Core.Enums;
 using TaskFlow.Identity.Contracts.DTOs.Responses;
 
 namespace TaskFlow.Identity.Application.Results {

@@ -1,6 +1,6 @@
 ﻿using MediatR;
+using TaskFlow.Shared.Core.Results;
 using TaskFlow.Tasks.Domain.Enums;
-using TaskFlow.Tasks.Application.Results;
 
 namespace TaskFlow.Tasks.Application.Commands.TaskItem.UpdateTaskItem {
     public record UpdateTaskItemCommand(

@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using TaskFlow.Identity.Application.Results;
+using TaskFlow.Shared.Core.Results;
 using TaskFlow.Identity.Contracts.DTOs.Responses;
 
 namespace TaskFlow.Identity.Application.Queries.Role.GetPaginated {

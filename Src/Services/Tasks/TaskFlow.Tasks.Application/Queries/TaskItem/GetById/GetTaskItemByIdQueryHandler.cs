@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using AutoMapper;
-using TaskFlow.Tasks.Application.Results;
-using TaskFlow.Tasks.Contracts.DTOs.Responses;
+using TaskFlow.Shared.Core.Results;
 using TaskFlow.Tasks.Domain.Contracts;
+using TaskFlow.Tasks.Contracts.DTOs.Responses;
 
 namespace TaskFlow.Tasks.Application.Queries.TaskItem.GetById {
     public class GetTaskItemByIdQueryHandler(IMapper mapper, ITaskItemRepository repository) : IRequestHandler<GetTaskItemByIdQuery, RequestResult<TaskItemDto>> {

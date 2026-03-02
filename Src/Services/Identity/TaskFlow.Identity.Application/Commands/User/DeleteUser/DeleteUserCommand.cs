@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using TaskFlow.Identity.Application.Results;
+using TaskFlow.Shared.Core.Results;
 
 namespace TaskFlow.Identity.Application.Commands.User.DeleteUser {
     public record DeleteUserCommand (

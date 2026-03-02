@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
+using TaskFlow.Shared.Core.Results;
 using TaskFlow.Shared.Core.Interfaces;
-using TaskFlow.Identity.Application.Results;
 
 namespace TaskFlow.Identity.Application.Commands.User.UpdateUser {
     public class UpdateUserCommandHandler(ILogger logger, UserManager<Domain.Entities.User> manager) : IRequestHandler<UpdateUserCommand, RequestResult<Unit>> {

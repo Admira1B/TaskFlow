@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using TaskFlow.Tasks.Application.Results;
+using TaskFlow.Shared.Core.Results;
 
 namespace TaskFlow.Tasks.Application.Commands.Project.UpdateProject {
     public record UpdateProjectCommand(

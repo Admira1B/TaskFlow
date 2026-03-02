@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using TaskFlow.Identity.Application.Results;
+using TaskFlow.Shared.Core.Results;
 using TaskFlow.Identity.Contracts.DTOs.Responses;
 
 namespace TaskFlow.Identity.Application.Queries.User.Exists {
