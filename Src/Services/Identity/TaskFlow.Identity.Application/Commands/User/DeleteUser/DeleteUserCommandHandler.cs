@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
+using TaskFlow.Shared.Core.Results;
 using TaskFlow.Shared.Core.Interfaces;
 using TaskFlow.Identity.Contracts.Events;
-using TaskFlow.Identity.Application.Results;
 using static TaskFlow.Shared.Messaging.Constants.RabbitMqConstants.IdentityService;
 
 namespace TaskFlow.Identity.Application.Commands.User.DeleteUser {

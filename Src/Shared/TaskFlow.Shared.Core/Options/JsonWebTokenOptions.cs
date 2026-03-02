@@ -27,5 +27,10 @@ namespace TaskFlow.Shared.Core.Options {
 
             return services;
         }
+
+        public static JsonWebTokenOptions GetJsonWebTokenOptions(this IConfiguration configuration) {
+            return configuration.GetSection(nameof(JsonWebTokenOptions)).Get<JsonWebTokenOptions>()
+                   ?? throw new InvalidOperationException($"{nameof(JsonWebTokenOptions)} not configured");
+        }
     }
 }

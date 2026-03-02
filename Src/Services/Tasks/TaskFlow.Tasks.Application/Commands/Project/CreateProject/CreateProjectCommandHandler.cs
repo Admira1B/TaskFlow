@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using AutoMapper;
+using TaskFlow.Shared.Core.Results;
 using TaskFlow.Shared.Core.Interfaces;
-using TaskFlow.Tasks.Application.Results;
-using TaskFlow.Tasks.Contracts.DTOs.Responses;
 using TaskFlow.Tasks.Domain.Contracts;
+using TaskFlow.Tasks.Contracts.DTOs.Responses;
 
 namespace TaskFlow.Tasks.Application.Commands.Project.CreateProject {
     public class CreateProjectCommandHandler(ILogger logger, IMapper mapper, IProjectRepository repository) : IRequestHandler<CreateProjectCommand, RequestResult<ProjectDto>> {

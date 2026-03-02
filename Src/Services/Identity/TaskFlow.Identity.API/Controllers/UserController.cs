@@ -2,6 +2,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using TaskFlow.Shared.Core.Extensions;
 using TaskFlow.Identity.API.Extensions;
 using TaskFlow.Identity.Contracts.DTOs.Requests.User;
 using TaskFlow.Identity.Application.Commands.User.UpdateUser;

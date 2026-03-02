@@ -24,8 +24,7 @@ namespace TaskFlow.Shared.Logging.Extensions {
 
             services.AddHttpContextAccessor();
 
-            var serviceOptions = builder.Configuration.GetSection(nameof(ServiceOptions)).Get<ServiceOptions>()
-                ?? throw new InvalidOperationException("ServiceOptions not configured");
+            var serviceOptions = builder.Configuration.GetServiceOptions();
 
             services.AddSingleton<Core.Interfaces.ILogger>(provider =>
             {

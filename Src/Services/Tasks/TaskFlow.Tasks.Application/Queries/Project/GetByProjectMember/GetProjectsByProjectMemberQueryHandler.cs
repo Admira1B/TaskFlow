@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using AutoMapper;
-using TaskFlow.Tasks.Application.Results;
+using TaskFlow.Shared.Core.Results;
 using TaskFlow.Tasks.Contracts.DTOs.Responses;
 using TaskFlow.Tasks.Domain.Contracts;
 

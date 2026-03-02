@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
+using TaskFlow.Shared.Core.Results;
 using TaskFlow.Shared.Core.Interfaces;
-using TaskFlow.Identity.Application.Results;
 
 namespace TaskFlow.Identity.Application.Commands.Role.UpdateRole {
     public class UpdateRoleCommandHandler(ILogger logger, RoleManager<Domain.Entities.Role> manager) : IRequestHandler<UpdateRoleCommand, RequestResult<Unit>> {

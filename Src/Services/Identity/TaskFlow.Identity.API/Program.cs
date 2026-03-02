@@ -19,7 +19,7 @@ namespace TaskFlow.Identity.API {
                 builder.ConfigureServices();
 
                 if (builder.Environment.IsDevelopment()) {
-                    var serviceOpts = builder.Configuration.GetSection(nameof(ServiceOptions)).Get<ServiceOptions>()!;
+                    var serviceOpts = builder.Configuration.GetServiceOptions();
 
                     builder.WebHost.ConfigureKestrel(options => {
                         options.ListenAnyIP(serviceOpts.Port);

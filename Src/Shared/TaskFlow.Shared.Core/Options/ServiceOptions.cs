@@ -32,5 +32,10 @@ namespace TaskFlow.Shared.Core.Options {
 
             return services;
         }
+
+        public static ServiceOptions GetServiceOptions(this IConfiguration configuration) {
+            return configuration.GetSection(nameof(ServiceOptions)).Get<ServiceOptions>()
+                   ?? throw new InvalidOperationException($"{nameof(ServiceOptions)} not configured");
+        }
     }
 }

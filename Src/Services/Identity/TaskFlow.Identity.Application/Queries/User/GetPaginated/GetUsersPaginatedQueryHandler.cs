@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using AutoMapper;
-using TaskFlow.Identity.Application.Results;
-using TaskFlow.Identity.Contracts.DTOs.Responses;
+using TaskFlow.Shared.Core.Results;
 using TaskFlow.Identity.Domain.Contracts;
+using TaskFlow.Identity.Contracts.DTOs.Responses;
 
 namespace TaskFlow.Identity.Application.Queries.User.GetPaginated {
     public class GetUsersPaginatedQueryHandler(IMapper mapper, IUserRepository repository) : IRequestHandler<GetUsersPaginatedQuery, RequestResult<IEnumerable<UserDto>>> {
