@@ -26,7 +26,7 @@ namespace TaskFlow.Tasks.API.Composition {
             app.MapHealthChecks("/health");
 
             if (app.Environment.IsDevelopment()) {
-                app.UseSwaggerDocumentation();
+                app.UseServiceSwaggerDocumentation();
             }
 
             app.UseAuthentication();

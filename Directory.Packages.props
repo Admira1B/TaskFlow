@@ -8,6 +8,7 @@
     <PackageVersion Include="NLog.Extensions.Logging" Version="6.1.0" />
     <PackageVersion Include="Ocelot" Version="24.1.0" />
     <PackageVersion Include="Ocelot.Provider.Consul" Version="24.1.0" />
+    <PackageVersion Include="MMLib.SwaggerForOcelot" Version="10.0.0" />
     <PackageVersion Include="Consul" Version="1.7.14.10" />
     <PackageVersion Include="Winton.Extensions.Configuration.Consul" Version="3.4.0" />
     <PackageVersion Include="MediatR" Version="14.0.0" />

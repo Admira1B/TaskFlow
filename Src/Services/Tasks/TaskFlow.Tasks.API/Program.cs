@@ -14,8 +14,9 @@ namespace TaskFlow.Tasks.API {
 
             try {
                 logger.Info("Starting Tasks Service...");
-                var builder = WebApplication.CreateBuilder(args);
+                var version = ApplicationHelper.GetApplicationVersion();
 
+                var builder = WebApplication.CreateBuilder(args);
                 builder.ConfigureServices();
 
                 if (builder.Environment.IsDevelopment()) {
@@ -27,12 +28,10 @@ namespace TaskFlow.Tasks.API {
                 }
 
                 var app = builder.Build();
-
                 await app.AddDataBaseMigration<TasksServiceDbContext>(logger);
-
                 app.ConfigurePipeline();
 
-                logger.Info($"Environment: {app.Environment.EnvironmentName}");
+                logger.Info($"Environment: {app.Environment.EnvironmentName} | Version: {version}");
                 logger.Info($"Application Name: {builder.Environment.ApplicationName}");
                 logger.Info("Tasks Service started successfully");
 

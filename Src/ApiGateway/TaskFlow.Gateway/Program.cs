@@ -11,15 +11,15 @@ namespace TaskFlow.Gateway {
 
             try {
                 logger.Info("Starting Gateway Service...");
-                var builder = WebApplication.CreateBuilder(args);
+                var version = ApplicationHelper.GetApplicationVersion();
 
+                var builder = WebApplication.CreateBuilder(args);
                 builder.ConfigureServices();
 
                 var app = builder.Build();
-
                 await app.ConfigurePipelineAsync();
 
-                logger.Info($"Environment: {app.Environment.EnvironmentName}");
+                logger.Info($"Environment: {app.Environment.EnvironmentName} | Version: {version}");
                 logger.Info($"Application Name: {builder.Environment.ApplicationName}");
                 logger.Info("Gateway Service started successfully");
 
