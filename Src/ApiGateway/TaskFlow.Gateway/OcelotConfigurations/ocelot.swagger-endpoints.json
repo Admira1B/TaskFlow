@@ -1,0 +1,20 @@
+{
+  "SwaggerEndPoints": [
+    {
+      "Key": "identity-service",
+      "Config": [
+        {
+          "Name": "Identity Service API"
+        }
+      ]
+    },
+    {
+      "Key": "tasks-service",
+      "Config": [
+        {
+          "Name": "Tasks Service API"
+        }
+      ]
+    }
+  ]
+}

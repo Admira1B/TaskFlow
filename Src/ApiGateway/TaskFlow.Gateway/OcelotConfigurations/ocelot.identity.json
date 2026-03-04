@@ -1,17 +1,4 @@
 {
-  //"SwaggerEndPoints": [
-  //  {
-  //    "Key": "identity-service",
-  //    "Config": [
-  //      {
-  //        "Name": "Identity Service API",
-  //        "Service": {
-  //          "Name": "identity-service"
-  //        }
-  //      }
-  //    ]
-  //  }
-  //],
   "Routes": [
     {
       "Key": "identity_service_health_check",

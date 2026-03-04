@@ -2,33 +2,64 @@
 using Ocelot.Provider.Consul;
 using TaskFlow.Shared.Consul;
 using TaskFlow.Shared.Consul.Options;
-using TaskFlow.Shared.Core.Helpers;
 using TaskFlow.Shared.Core.Options;
+using TaskFlow.Shared.Core.Helpers;
 
 namespace TaskFlow.Gateway.Extensions {
     internal static class ServicesRoutingExtensions {
         public static IServiceCollection AddOcelotRoutingWithConsulSupport(this IServiceCollection services, WebApplicationBuilder builder) {
             var serviceOptions = builder.Configuration.GetServiceOptions();
             var consulOptions = builder.Configuration.GetConsulOptions();
-            var applicationVersion = ApplicationHelper.GetMajorVersion();
+
+            builder.Configuration.AddJsonFile("OcelotConfigurations/ocelot.swagger-endpoints.json", optional: false, reloadOnChange: false);
 
             builder.Configuration
                 .SetBasePath(builder.Environment.ContentRootPath)
                 .AddOcelot("OcelotConfigurations", builder.Environment, MergeOcelotJson.ToMemory)
                 .AddEnvironmentVariables()
-                .AddInMemoryCollection(new Dictionary<string, string?> {
-                    ["GlobalConfiguration:ServiceDiscoveryProvider:Host"] = consulOptions.Host,
-                    ["GlobalConfiguration:ServiceDiscoveryProvider:Port"] = consulOptions.Port.ToString(),
-                    ["GlobalConfiguration:ServiceDiscoveryProvider:Type"] = "Consul",
-                    ["GlobalConfiguration:BaseUrl"] = serviceOptions.Address,
-
-                    ["SwaggerEndPoints:0:Config:0:Version"] = "v0",
-                    ["SwaggerEndPoints:0:Config:0:Service:Path"] = $"/swagger/v0/swagger.json"
-                });
+                .AddInMemoryCollection(
+                    builder.Configuration.BuildDynamicOcelotConfiguration(serviceOptions, consulOptions)
+                );
 
             services.AddOcelot(builder.Configuration).AddConsul<OcelotServiceConsulProviderBuilder>();
 
             return services;
+        }
+
+        private static Dictionary<string, string?> BuildDynamicOcelotConfiguration(this IConfiguration configuration, ServiceOptions serviceOptions, ConsulOptions consulOptions) {
+            var version = ApplicationHelper.GetMajorVersion();
+            var dynamicConfiguration = new Dictionary<string, string?> {
+                // Global configuration
+                ["GlobalConfiguration:ServiceDiscoveryProvider:Host"] = consulOptions.Host,
+                ["GlobalConfiguration:ServiceDiscoveryProvider:Port"] = consulOptions.Port.ToString(),
+                ["GlobalConfiguration:ServiceDiscoveryProvider:Type"] = "Consul",
+                ["GlobalConfiguration:BaseUrl"] = serviceOptions.Address,
+            };
+
+            var swaggerEndPoints = configuration.GetSection("SwaggerEndPoints").GetChildren().ToList();
+
+            for (int counter = 0; counter < swaggerEndPoints.Count; counter++) {
+                var key = swaggerEndPoints[counter].GetValue<string>("Key");
+
+                if (key is not null) {
+                    dynamicConfiguration[$"SwaggerEndPoints:{counter}:Config:0:Version"] = version;
+
+                    dynamicConfiguration[$"SwaggerEndPoints:{counter}:Config:0:Service:Name"] = key;
+                    dynamicConfiguration[$"SwaggerEndPoints:{counter}:Config:0:Service:Path"] = $"/swagger/{version}/swagger.json";
+
+                    var currentName = swaggerEndPoints[counter].GetSection("Config").GetChildren().FirstOrDefault()?["Name"];
+                    if (string.IsNullOrEmpty(currentName)) {
+                        dynamicConfiguration[$"SwaggerEndPoints:{counter}:Config:0:Name"] = key.KeyToName();
+                    }
+                }
+            }
+
+            return dynamicConfiguration;
+        }
+
+        private static string KeyToName(this string key) { 
+            return string.Join(" ", key.Split('-')
+                .Select(word => char.ToUpperInvariant(word[0]) + word.Substring(1))) + " API";
         }
     }
 }
