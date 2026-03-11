@@ -9,12 +9,12 @@ namespace TaskFlow.Tasks.Application.Commands.ProjectMember.DeleteProjectMember 
         private readonly IProjectMemberRepository _repository = repository;
 
         public async Task<RequestResult<Unit>> Handle(DeleteProjectMemberCommand command, CancellationToken cancellationToken = default) {
-            _logger.Debug("Project member deletion attempt. MemberId: {MemberId}", command.Id.ToString());
+            _logger.Debug("Project member deletion attempt. MemberId: {MemberId}", command.Id);
 
             var member = await _repository.GetByIdAsync(command.Id, cancellationToken);
 
             if (member is null) {
-                _logger.Debug("Failed to delete project member. Project {MemberId} member not found", command.Id.ToString());
+                _logger.Debug("Failed to delete project member. Project {MemberId} member not found", command.Id);
                 return RequestResult<Unit>.NotFound("Project Member", command.Id);
             }
 
@@ -22,14 +22,14 @@ namespace TaskFlow.Tasks.Application.Commands.ProjectMember.DeleteProjectMember 
                 await _repository.DeleteAsync(command.Id, cancellationToken);
             } catch (Exception ex) {
                 _logger.Debug("Failed to delete project member. MemberId: {MemberId}, Exception: {Message}",
-                    command.Id.ToString(),
+                    command.Id,
                     ex.Message
                 );
 
                 return RequestResult<Unit>.Failure("Failed to delete project member.");
             }
 
-            _logger.Debug("Project member successfully deleted. MemberId: {MemberId}", command.Id.ToString());
+            _logger.Debug("Project member successfully deleted. MemberId: {MemberId}", command.Id);
 
             return RequestResult<Unit>.Success();
         }

@@ -48,7 +48,7 @@ namespace TaskFlow.Identity.Application.Commands.Auth.Register {
 
             var token = await _jwtService.GenerateWebTokenAsync(user);
 
-            _logger.Debug("User registered successfully. UserId: {UserId}, Email: {Email}", user.Id.ToString(), user.Email);
+            _logger.Debug("User registered successfully. UserId: {UserId}, Email: {Email}", user.Id, user.Email);
 
             return AuthResult.Success(_mapper.Map<UserDto>(user), token);
         }

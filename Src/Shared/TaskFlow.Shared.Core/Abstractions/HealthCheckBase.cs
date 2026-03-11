@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 using TaskFlow.Shared.Core.Interfaces;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TaskFlow.Shared.Core.Abstractions {
     public abstract class ServiceHealthCheckBase : IHealthCheck {
@@ -109,7 +108,10 @@ namespace TaskFlow.Shared.Core.Abstractions {
 
         protected virtual Task<HealthCheckResult> HandleExceptionAsync(CancellationToken cancellationToken, Exception ex) {
             _logger.Error(
-                "{ServiceName} health check failed with exception", ex, _serviceName);
+                "{ServiceName} health check failed with exception",
+                ex,
+                _serviceName
+            );
 
             var data = new Dictionary<string, object> {
                 ["service"] = _serviceName,

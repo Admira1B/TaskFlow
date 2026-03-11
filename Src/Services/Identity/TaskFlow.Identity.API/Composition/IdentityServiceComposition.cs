@@ -8,9 +8,7 @@ using TaskFlow.Shared.Consul.Health;
 using TaskFlow.Shared.Consul.Options;
 using TaskFlow.Shared.Consul.Extensions;
 using TaskFlow.Shared.Logging.Extensions;
-using TaskFlow.Shared.Messaging.Health;
 using TaskFlow.Shared.Messaging.Options;
-using TaskFlow.Shared.Messaging.Extensions;
 using TaskFlow.Identity.API.Health;
 using TaskFlow.Identity.Domain.Entities;
 using TaskFlow.Identity.Application.Health;
@@ -21,6 +19,8 @@ using TaskFlow.Identity.Application.Commands.Auth.Register;
 using TaskFlow.Identity.Infrastructure.Messaging;
 using TaskFlow.Identity.Infrastructure.SqlServer;
 using TaskFlow.Identity.Infrastructure.SqlServer.Repositories;
+using TaskFlow.Shared.Messaging.RabbitMQ.Health;
+using TaskFlow.Shared.Messaging.RabbitMQ.Extensions;
 
 namespace TaskFlow.Identity.API.Composition {
     internal static class IdentityServiceComposition {
@@ -30,7 +30,7 @@ namespace TaskFlow.Identity.API.Composition {
             app.MapHealthChecks("/health");
 
             if (app.Environment.IsDevelopment()) {
-                app.UseSwaggerDocumentation();
+                app.UseServiceSwaggerDocumentation();
             }
 
             app.UseAuthentication();

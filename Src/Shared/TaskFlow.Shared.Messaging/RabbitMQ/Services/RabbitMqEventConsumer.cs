@@ -7,11 +7,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.DependencyInjection;
 using TaskFlow.Shared.Core.Interfaces;
-using TaskFlow.Shared.Messaging.Options;
 using TaskFlow.Shared.Core.Abstractions;
+using TaskFlow.Shared.Messaging.Options;
 
-namespace TaskFlow.Shared.Messaging {
-    public abstract class RabbitMqEventConsumer : BackgroundService {
+namespace TaskFlow.Shared.Messaging.RabbitMQ.Services {
+    public abstract class RabbitMqEventConsumer : BackgroundService, IEventConsumer {
         private readonly ILogger _logger;
         private readonly RabbitMqOptions _options;
         private readonly IServiceProvider _services;

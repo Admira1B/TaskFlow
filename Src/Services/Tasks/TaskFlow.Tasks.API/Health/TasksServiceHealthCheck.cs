@@ -2,8 +2,8 @@
 using TaskFlow.Shared.Core.Health;
 using TaskFlow.Shared.Core.Abstractions;
 using TaskFlow.Shared.Consul.Health;
-using TaskFlow.Shared.Messaging.Health;
 using TaskFlow.Tasks.Infrastructure.SqlServer;
+using TaskFlow.Shared.Messaging.RabbitMQ.Health;
 
 namespace TaskFlow.Tasks.API.Health {
     public class TasksServiceHealthCheck(

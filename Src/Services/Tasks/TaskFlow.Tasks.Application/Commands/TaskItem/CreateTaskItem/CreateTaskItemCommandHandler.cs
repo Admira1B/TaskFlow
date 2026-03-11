@@ -14,10 +14,10 @@ namespace TaskFlow.Tasks.Application.Commands.TaskItem.CreateTaskItem {
         public async Task<RequestResult<TaskItemDto>> Handle(CreateTaskItemCommand command, CancellationToken cancellationToken = default) {
             _logger.Debug("Task item creation attempt. Title: {Title}, GroupId: {GroupId}, ReporterId: {ReporterId}, AssignedId: {AssignedId}, Priority: {Priority}, DescriptionLength: {DescriptionLength}",
                 command.Title,
-                command.GroupId.ToString(),
-                command.ReporterId.ToString(),
+                command.GroupId,
+                command.ReporterId,
                 command.AssignedId?.ToString() ?? "null",
-                command.Priority.ToString(),
+                command.Priority,
                 command.Description?.Length.ToString() ?? "0"
             );
 
@@ -35,17 +35,17 @@ namespace TaskFlow.Tasks.Application.Commands.TaskItem.CreateTaskItem {
             } catch (Exception ex) {
                 _logger.Debug("Failed to create task item. Title: {Title}, GroupId: {GroupId}, Exception: {Message}",
                     command.Title,
-                    command.GroupId.ToString(),
+                    command.GroupId,
                     ex.Message
                 );
                 return RequestResult<TaskItemDto>.Failure("Failed to create task.");
             }
 
             _logger.Debug("Task item successfully created. TaskId: {TaskId}, Title: {Title}, GroupId: {GroupId}, ReporterId: {ReporterId}",
-                task.Id.ToString(),
+                task.Id,
                 task.Title,
-                task.GroupId.ToString(),
-                task.ReporterId.ToString()
+                task.GroupId,
+                task.ReporterId
             );
 
             return RequestResult<TaskItemDto>.Success(_mapper.Map<TaskItemDto>(task));

@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package services;
+
+import "messages/user_messages.proto";
+
+service IdentityService {
+    rpc CheckUserExistence(messages.CheckUserExistenceRequest) returns (messages.CheckUserExistenceResponse);
+}

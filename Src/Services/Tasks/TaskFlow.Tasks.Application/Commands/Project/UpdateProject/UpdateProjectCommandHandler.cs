@@ -10,16 +10,16 @@ namespace TaskFlow.Tasks.Application.Commands.Project.UpdateProject {
         
         public async Task<RequestResult<Unit>> Handle(UpdateProjectCommand command, CancellationToken cancellationToken = default) {
             _logger.Debug("Project update attempt. ProjectId: {ProjectId}, Name: {Name}, IsActive: {IsActive}, DescriptionLength: {DescriptionLength}",
-                command.Id.ToString(),
+                command.Id,
                 command.Name,
-                command.IsActive.ToString(),
+                command.IsActive,
                 command.Description?.Length.ToString() ?? "0"
             );
 
             var project = await _repository.GetByIdAsync(command.Id, cancellationToken);
 
             if (project is null) {
-                _logger.Debug("Failed to update project. Project {ProjectId} not found", command.Id.ToString());
+                _logger.Debug("Failed to update project. Project {ProjectId} not found", command.Id);
                 return RequestResult<Unit>.NotFound("Project", command.Id);
             }
 
@@ -31,14 +31,14 @@ namespace TaskFlow.Tasks.Application.Commands.Project.UpdateProject {
                 await _repository.UpdateAsync(project, cancellationToken);
             } catch (Exception ex) {
                 _logger.Debug("Failed to update project. ProjectId: {ProjectId}, Exception: {Message}",
-                    command.Id.ToString(),
+                    command.Id,
                     ex.Message
                 );
 
                 return RequestResult<Unit>.Failure("Failed to update project.");
             }
 
-            _logger.Debug("Project successfully updated. ProjectId: {ProjectId}", command.Id.ToString());
+            _logger.Debug("Project successfully updated. ProjectId: {ProjectId}", command.Id);
 
             return RequestResult<Unit>.Success();
         }

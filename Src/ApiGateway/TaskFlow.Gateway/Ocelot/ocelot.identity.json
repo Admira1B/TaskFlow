@@ -3,6 +3,7 @@
     {
       "Key": "identity_service_health_check",
       "ServiceName": "identity-service",
+      "SwaggerKey": "identity-service",
       "DownstreamScheme": "http",
       "DownstreamPathTemplate": "/health",
       "UpstreamPathTemplate": "/identity-service/health",
@@ -11,6 +12,7 @@
     {
       "Key": "identity_service_auth_register",
       "ServiceName": "identity-service",
+      "SwaggerKey": "identity-service",
       "DownstreamScheme": "http",
       "DownstreamPathTemplate": "/api/auth/register",
       "UpstreamPathTemplate": "/auth/register",
@@ -19,6 +21,7 @@
     {
       "Key": "identity_service_auth_login",
       "ServiceName": "identity-service",
+      "SwaggerKey": "identity-service",
       "DownstreamScheme": "http",
       "DownstreamPathTemplate": "/api/auth/login",
       "UpstreamPathTemplate": "/auth/login",
@@ -27,6 +30,7 @@
     {
       "Key": "identity_service_auth_logout",
       "ServiceName": "identity-service",
+      "SwaggerKey": "identity-service",
       "DownstreamScheme": "http",
       "DownstreamPathTemplate": "/api/auth/logout",
       "UpstreamPathTemplate": "/auth/logout",
@@ -38,6 +42,7 @@
     {
       "Key": "identity_service_users",
       "ServiceName": "identity-service",
+      "SwaggerKey": "identity-service",
       "DownstreamScheme": "http",
       "DownstreamPathTemplate": "/api/users/{everything}",
       "UpstreamPathTemplate": "/users/{everything}",
@@ -49,6 +54,7 @@
     {
       "Key": "identity_service_roles",
       "ServiceName": "identity-service",
+      "SwaggerKey": "identity-service",
       "DownstreamScheme": "http",
       "DownstreamPathTemplate": "/api/roles/{everything}",
       "UpstreamPathTemplate": "/roles/{everything}",

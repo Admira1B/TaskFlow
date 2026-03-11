@@ -7,7 +7,7 @@ using TaskFlow.Shared.Consul.Options;
 using TaskFlow.Shared.Consul.Extensions;
 using TaskFlow.Shared.Logging.Extensions;
 using TaskFlow.Gateway.Health;
-using TaskFlow.Gateway.ServicesRouting;
+using TaskFlow.Gateway.Extensions;
 
 namespace TaskFlow.Gateway.Composition {
     internal static class GatewayComposition {
@@ -19,6 +19,10 @@ namespace TaskFlow.Gateway.Composition {
             app.UseEndpoints(endpoints => {
                 endpoints.MapHealthChecks("/health");
             });
+
+            if (app.Environment.IsDevelopment()) {
+                app.UseOcelotSwaggerDocumentation();
+            }
 
             app.UseAuthentication();
             app.UseAuthorization();
@@ -39,6 +43,7 @@ namespace TaskFlow.Gateway.Composition {
             builder.Services.AddConsulClient(builder);
             builder.Services.AddJwtAuthentication(builder);
             builder.Services.AddOcelotRoutingWithConsulSupport(builder);
+            builder.Services.AddOcelotSwaggerDocumentation(builder);
 
             // === Health Checks ===
             builder.Services.AddHealthChecks()

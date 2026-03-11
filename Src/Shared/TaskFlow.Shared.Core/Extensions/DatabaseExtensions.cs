@@ -28,7 +28,7 @@ namespace TaskFlow.Shared.Core.Extensions {
 
                 logger.Info(
                     "Applying {Count} pending migration(s) for {DbContextType}: {Migrations}",
-                    pendingMigrationsList.Count.ToString(),
+                    pendingMigrationsList.Count,
                     typeof(TContext).Name,
                     string.Join(", ", pendingMigrationsList));
 
@@ -36,7 +36,7 @@ namespace TaskFlow.Shared.Core.Extensions {
 
                 var appliedMigrations = await context.Database.GetAppliedMigrationsAsync();
 
-                logger.Info("Successfully applied migrations. Total applied migrations: {Count}", appliedMigrations.Count().ToString());
+                logger.Info("Successfully applied migrations. Total applied migrations: {Count}", appliedMigrations.Count());
 
                 return app;
             } catch (OperationCanceledException) {

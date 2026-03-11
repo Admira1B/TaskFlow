@@ -10,14 +10,14 @@ namespace TaskFlow.Tasks.Application.Commands.Comment.UpdateComment {
         
         public async Task<RequestResult<Unit>> Handle(UpdateCommentCommand command, CancellationToken cancellationToken = default) {
             _logger.Debug("Comment update attempt. CommentId: {CommentId}, ContentLength: {ContentLength}",
-                command.Id.ToString(),
+                command.Id,
                 command.Content?.Length.ToString() ?? "0"
             );
 
             var comment = await _repository.GetByIdAsync(command.Id, cancellationToken);
 
             if (comment is null) {
-                _logger.Debug("Failed to update comment. Comment {CommentId} not found", command.Id.ToString());
+                _logger.Debug("Failed to update comment. Comment {CommentId} not found", command.Id);
                 return RequestResult<Unit>.NotFound("Comment", command.Id);
             }
 
@@ -27,14 +27,14 @@ namespace TaskFlow.Tasks.Application.Commands.Comment.UpdateComment {
                 await _repository.UpdateAsync(comment, cancellationToken);
             } catch (Exception ex) {
                 _logger.Debug("Failed to update comment. CommentId: {CommentId}, Exception: {Message}", 
-                    command.Id.ToString(),
+                    command.Id,
                     ex.Message
                 );
 
                 return RequestResult<Unit>.Failure("Failed to update comment.");
             }
 
-            _logger.Debug("Comment successfully updated. CommentId: {CommentId}", command.Id.ToString());
+            _logger.Debug("Comment successfully updated. CommentId: {CommentId}", command.Id);
 
             return RequestResult<Unit>.Success();
         }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using TaskFlow.Shared.Messaging.RabbitMQ.Services;
 
-namespace TaskFlow.Shared.Messaging.Extensions {
+namespace TaskFlow.Shared.Messaging.RabbitMQ.Extensions {
     public static class RabbitMqExtensions {
         public static IServiceCollection AddRabbitMqEventPublisher<TInterface, TImplementation>(this IServiceCollection services)
             where TInterface : class 
