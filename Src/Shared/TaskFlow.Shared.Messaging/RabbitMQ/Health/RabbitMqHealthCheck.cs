@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using RabbitMQ.Client;
 using TaskFlow.Shared.Messaging.Options;
 
-namespace TaskFlow.Shared.Messaging.Health {
+namespace TaskFlow.Shared.Messaging.RabbitMQ.Health {
     public class RabbitMqHealthCheck(IOptions<RabbitMqOptions> options) : IHealthCheck {
         private readonly RabbitMqOptions _options = options.Value;
 

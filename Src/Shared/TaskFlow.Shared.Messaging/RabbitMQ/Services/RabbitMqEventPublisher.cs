@@ -3,11 +3,11 @@ using System.Text.Json;
 using RabbitMQ.Client;
 using Microsoft.Extensions.Options;
 using TaskFlow.Shared.Core.Interfaces;
-using TaskFlow.Shared.Messaging.Options;
 using TaskFlow.Shared.Core.Abstractions;
+using TaskFlow.Shared.Messaging.Options;
 
-namespace TaskFlow.Shared.Messaging {
-    public abstract class RabbitMqEventPublisher : IDisposable {
+namespace TaskFlow.Shared.Messaging.RabbitMQ.Services {
+    public abstract class RabbitMqEventPublisher : IEventPublisher, IDisposable {
         private readonly ILogger _logger;
         private readonly IChannel _channel;
         private readonly IConnection _connection;
@@ -16,6 +16,8 @@ namespace TaskFlow.Shared.Messaging {
         private readonly HashSet<string> _declaredExchanges;
 
         private bool _disposed = false;
+
+        public abstract Task<bool> PublishEventAsync<T>(T @event, string routingKey, CancellationToken ct = default) where T : EventBase;
 
         protected RabbitMqEventPublisher(ILogger logger, IOptions<RabbitMqOptions> options) {
             _logger = logger;

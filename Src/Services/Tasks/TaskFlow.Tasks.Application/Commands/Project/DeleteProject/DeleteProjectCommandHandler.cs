@@ -9,12 +9,12 @@ namespace TaskFlow.Tasks.Application.Commands.Project.DeleteProject {
         private readonly IProjectRepository _repository = repository;
 
         public async Task<RequestResult<Unit>> Handle(DeleteProjectCommand command, CancellationToken cancellationToken = default) {
-            _logger.Debug("Project deletion attempt. ProjectId: {ProjectId}", command.Id.ToString());
+            _logger.Debug("Project deletion attempt. ProjectId: {ProjectId}", command.Id);
 
             var project = await _repository.GetByIdAsync(command.Id, cancellationToken);
 
             if (project is null) {
-                _logger.Debug("Failed to delete project. Project {ProjectId} not found", command.Id.ToString());
+                _logger.Debug("Failed to delete project. Project {ProjectId} not found", command.Id);
                 return RequestResult<Unit>.NotFound("Project", command.Id);
             }
 
@@ -22,14 +22,14 @@ namespace TaskFlow.Tasks.Application.Commands.Project.DeleteProject {
                 await _repository.DeleteAsync(command.Id, cancellationToken);
             } catch (Exception ex) {
                 _logger.Debug("Failed to delete project. ProjectId: {ProjectId}, Exception: {Message}",
-                    command.Id.ToString(),
+                    command.Id,
                     ex.Message
                 );
 
                 return RequestResult<Unit>.Failure("Failed to delete project.");
             }
 
-            _logger.Debug("Project successfully deleted. ProjectId: {ProjectId}", command.Id.ToString());
+            _logger.Debug("Project successfully deleted. ProjectId: {ProjectId}", command.Id);
 
             return RequestResult<Unit>.Success();
         }

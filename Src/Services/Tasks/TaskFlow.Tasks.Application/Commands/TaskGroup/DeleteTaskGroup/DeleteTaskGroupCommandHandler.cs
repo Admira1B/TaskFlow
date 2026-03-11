@@ -9,12 +9,12 @@ namespace TaskFlow.Tasks.Application.Commands.TaskGroup.DeleteTaskGroup {
         private readonly ITaskGroupRepository _repository = repository;
 
         public async Task<RequestResult<Unit>> Handle(DeleteTaskGroupCommand command, CancellationToken cancellationToken = default) {
-            _logger.Debug("Task group deletion attempt. GroupId: {GroupId}", command.Id.ToString());
+            _logger.Debug("Task group deletion attempt. GroupId: {GroupId}", command.Id);
 
             var group = await _repository.GetByIdAsync(command.Id, cancellationToken);
 
             if (group is null) {
-                _logger.Debug("Failed to delete task group. Task group {GroupId} not found", command.Id.ToString());
+                _logger.Debug("Failed to delete task group. Task group {GroupId} not found", command.Id);
                 return RequestResult<Unit>.NotFound("Task Group", command.Id);
             }
 
@@ -22,14 +22,14 @@ namespace TaskFlow.Tasks.Application.Commands.TaskGroup.DeleteTaskGroup {
                 await _repository.DeleteAsync(command.Id, cancellationToken);
             } catch (Exception ex) {
                 _logger.Debug("Failed to delete task group. GroupId: {GroupId}, Exception: {Message}",
-                    command.Id.ToString(),
+                    command.Id,
                     ex.Message
                 );
 
                 return RequestResult<Unit>.Failure("Failed to delete task group.");
             }
 
-            _logger.Debug("Task group successfully deleted. GroupId: {GroupId}", command.Id.ToString());
+            _logger.Debug("Task group successfully deleted. GroupId: {GroupId}", command.Id);
 
             return RequestResult<Unit>.Success();
         }

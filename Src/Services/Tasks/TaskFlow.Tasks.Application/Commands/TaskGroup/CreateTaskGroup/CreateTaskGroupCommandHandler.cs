@@ -13,7 +13,7 @@ namespace TaskFlow.Tasks.Application.Commands.TaskGroup.CreateTaskGroup {
 
         public async Task<RequestResult<TaskGroupDto>> Handle(CreateTaskGroupCommand command, CancellationToken cancellationToken = default) {
             _logger.Debug("Task group creation attempt. ProjectId: {ProjectId}, Name: {Name}",
-                command.ProjectId.ToString(),
+                command.ProjectId,
                 command.Name
             );
 
@@ -26,7 +26,7 @@ namespace TaskFlow.Tasks.Application.Commands.TaskGroup.CreateTaskGroup {
                 await _repository.AddAsync(group, cancellationToken);
             } catch (Exception ex) {
                 _logger.Debug("Failed to create task group. ProjectId: {ProjectId}, Name: {Name}, Exception: {Message}",
-                    command.ProjectId.ToString(),
+                    command.ProjectId,
                     command.Name,
                     ex.Message
                 );
@@ -35,8 +35,8 @@ namespace TaskFlow.Tasks.Application.Commands.TaskGroup.CreateTaskGroup {
             }
 
             _logger.Debug("Task group successfully created. GroupId: {GroupId}, ProjectId: {ProjectId}, Name: {Name}",
-                group.Id.ToString(),
-                group.ProjectId.ToString(),
+                group.Id,
+                group.ProjectId,
                 group.Name
             );
 

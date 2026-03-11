@@ -9,11 +9,11 @@ namespace TaskFlow.Identity.Application.Commands.User.UpdateUser {
         private readonly UserManager<Domain.Entities.User> _manager = manager;
         
         public async Task<RequestResult<Unit>> Handle(UpdateUserCommand command, CancellationToken cancellationToken = default) {
-            _logger.Debug("User {UserId} updating attempt", command.Id.ToString());
+            _logger.Debug("User {UserId} updating attempt", command.Id);
             var user = await _manager.FindByIdAsync(command.Id.ToString());
 
             if (user is null) {
-                _logger.Debug("User updating failed. User {UserId} not found", command.Id.ToString());
+                _logger.Debug("User updating failed. User {UserId} not found", command.Id);
                 return RequestResult<Unit>.NotFound("User", command.Id);
             }
 
@@ -27,7 +27,7 @@ namespace TaskFlow.Identity.Application.Commands.User.UpdateUser {
                 var errors = result.Errors.Select(e => e.Description);
                 var message = string.Join(",", errors);
 
-                _logger.Debug("User updating failed. UserId: {UserId}, Exception: {Message}", command.Id.ToString(), message);
+                _logger.Debug("User updating failed. UserId: {UserId}, Exception: {Message}", command.Id, message);
                 return RequestResult<Unit>.Failure(message);
             }
             

@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package messages;
+
+import "common/base.proto";
+
+// === Requests ===
+message CheckUserExistenceRequest {
+    common.Guid user_id = 1;
+}
+
+// === Responses ===
+message CheckUserExistenceResponse {
+    bool exists = 1;
+}

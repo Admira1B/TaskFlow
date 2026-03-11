@@ -29,13 +29,14 @@ namespace TaskFlow.Gateway.Extensions {
         private static Dictionary<string, string?> BuildDynamicOcelotConfiguration(this IConfiguration configuration, ServiceOptions serviceOptions, ConsulOptions consulOptions) {
             var version = ApplicationHelper.GetMajorVersion();
             var dynamicConfiguration = new Dictionary<string, string?> {
-                // Global configuration
+                // Building dynamics Global configuration
                 ["GlobalConfiguration:ServiceDiscoveryProvider:Host"] = consulOptions.Host,
                 ["GlobalConfiguration:ServiceDiscoveryProvider:Port"] = consulOptions.Port.ToString(),
                 ["GlobalConfiguration:ServiceDiscoveryProvider:Type"] = "Consul",
                 ["GlobalConfiguration:BaseUrl"] = serviceOptions.Address,
             };
 
+            // Building Swagger documentation from downstream services
             var swaggerEndPoints = configuration.GetSection("SwaggerEndPoints").GetChildren().ToList();
 
             for (int counter = 0; counter < swaggerEndPoints.Count; counter++) {

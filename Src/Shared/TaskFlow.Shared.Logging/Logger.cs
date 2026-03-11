@@ -7,27 +7,27 @@ namespace TaskFlow.Shared.Logging {
         private readonly ILogger _logger = logger;
         private readonly IHttpContextAccessor? _contextAccessor = contextAccessor;
 
-        public void Debug(string message, params string[] args) {
+        public void Debug(string message, params object[] args) {
             Log(LogLevel.Debug, message, args: args);
         }
 
-        public void Info(string message, params string[] args) { 
+        public void Info(string message, params object[] args) { 
             Log(LogLevel.Info, message, args: args);
         }
 
-        public void Warn(string message, params string[] args) {
+        public void Warn(string message, params object[] args) {
             Log(LogLevel.Warn, message, args: args);
         }
 
-        public void Error(string message, Exception? exception = null, params string[] args) { 
+        public void Error(string message, Exception? exception = null, params object[] args) { 
             Log(LogLevel.Error, message, exception, args: args);
         }
 
-        public void Fatal(string message, Exception? exception = null, params string[] args) { 
+        public void Fatal(string message, Exception? exception = null, params object[] args) { 
             Log(LogLevel.Fatal, message, exception, args: args);
         }
 
-        private void Log(LogLevel loggingLevel, string message, Exception? exception = null, params string[] args) {
+        private void Log(LogLevel loggingLevel, string message, Exception? exception = null, params object[] args) {
             var logEvent = new LogEventInfo(loggingLevel, _logger.Name, null, message, args) {
                 Exception = exception
             };

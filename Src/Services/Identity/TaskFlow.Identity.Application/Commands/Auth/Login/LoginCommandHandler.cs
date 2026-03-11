@@ -37,7 +37,7 @@ namespace TaskFlow.Identity.Application.Commands.Auth.Login {
 
             var token = await _jwtService.GenerateWebTokenAsync(user);
 
-            _logger.Debug("User {UserId} logged in successfully", user.Id.ToString());
+            _logger.Debug("User {UserId} logged in successfully", user.Id);
             return AuthResult.Success(_mapper.Map<UserDto>(user), token);
         }
     }

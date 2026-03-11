@@ -5,10 +5,25 @@
 		<PackageReference Include="RabbitMQ.Client" />
 		<PackageReference Include="Microsoft.Extensions.Options" />
 		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
+		<PackageReference Include="Google.Protobuf" />
+		<PackageReference Include="Grpc.Tools">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Grpc.Net.Client" />
+		<PackageReference Include="Grpc.HealthCheck" />
+		<PackageReference Include="Grpc.AspNetCore.Server" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\TaskFlow.Shared.Core\TaskFlow.Shared.Core.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="gRPC\Client\" />
+	  <Folder Include="gRPC\Protos\Messages\" />
+	  <Folder Include="gRPC\Protos\Services\" />
+	  <Folder Include="gRPC\Server\" />
 	</ItemGroup>
 
 </Project>

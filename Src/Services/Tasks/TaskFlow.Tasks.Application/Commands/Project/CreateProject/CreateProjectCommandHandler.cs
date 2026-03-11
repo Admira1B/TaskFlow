@@ -14,7 +14,7 @@ namespace TaskFlow.Tasks.Application.Commands.Project.CreateProject {
         public async Task<RequestResult<ProjectDto>> Handle(CreateProjectCommand command, CancellationToken cancellationToken = default) {
             _logger.Debug("Project creation attempt. Name: {Name}, OwnerId: {OwnerId}, DescriptionLength: {DescriptionLength}",
                 command.Name,
-                command.OwnerId.ToString(),
+                command.OwnerId,
                 command.Description?.Length.ToString() ?? "0"
             );
 
@@ -29,16 +29,16 @@ namespace TaskFlow.Tasks.Application.Commands.Project.CreateProject {
             } catch (Exception ex) {
                 _logger.Debug("Failed to create project. Name: {Name}, OwnerId: {OwnerId}, Exception: {Message}",
                     command.Name,
-                    command.OwnerId.ToString(),
+                    command.OwnerId,
                     ex.Message
                 );
                 return RequestResult<ProjectDto>.Failure("Failed to create project.");
             }
 
             _logger.Debug("Project successfully created. ProjectId: {ProjectId}, Name: {Name}, OwnerId: {OwnerId}", 
-                project.Id.ToString(),
+                project.Id,
                 project.Name,
-                project.OwnerId.ToString()
+                project.OwnerId
             );
 
             return RequestResult<ProjectDto>.Success(_mapper.Map<ProjectDto>(project));

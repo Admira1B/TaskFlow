@@ -2,9 +2,9 @@
 using TaskFlow.Shared.Core.Health;
 using TaskFlow.Shared.Core.Abstractions;
 using TaskFlow.Shared.Consul.Health;
-using TaskFlow.Shared.Messaging.Health;
 using TaskFlow.Identity.Application.Health;
 using TaskFlow.Identity.Infrastructure.SqlServer;
+using TaskFlow.Shared.Messaging.RabbitMQ.Health;
 
 namespace TaskFlow.Identity.API.Health {
     public class IdentityServiceHealthCheck(

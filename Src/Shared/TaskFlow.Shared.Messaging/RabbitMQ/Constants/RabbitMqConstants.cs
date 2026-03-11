@@ -1,4 +1,4 @@
-﻿namespace TaskFlow.Shared.Messaging.Constants {
+﻿namespace TaskFlow.Shared.Messaging.RabbitMQ.Constants {
     public static class RabbitMqConstants {
         public const string TopicExchangeType = "topic";
         public const string FanoutExchangeType = "fanout";

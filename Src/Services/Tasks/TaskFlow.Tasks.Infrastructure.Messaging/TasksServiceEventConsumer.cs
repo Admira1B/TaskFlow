@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
 using TaskFlow.Shared.Core.Interfaces;
-using TaskFlow.Shared.Messaging;
 using TaskFlow.Shared.Messaging.Options;
-using TaskFlow.Shared.Messaging.Constants;
+using TaskFlow.Shared.Messaging.RabbitMQ.Constants;
+using TaskFlow.Shared.Messaging.RabbitMQ.Services;
 
 namespace TaskFlow.Tasks.Infrastructure.Messaging {
     public class TasksServiceEventConsumer(ILogger logger, IOptions<RabbitMqOptions> options, IServiceProvider services) 
